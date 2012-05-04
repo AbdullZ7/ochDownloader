@@ -1,3 +1,11 @@
+Requirements and Dependencies:
+Python 2.7.3
+PySide 1.1.0
+PIL 1.1.7 (tesseract addon)
+PyCrypto (to import .och files)
+____________________________________________________________________________
+
+
 Copyright (C) 2011-2012 Esteban Borsani ochdownloader@gmail.com
 
 This program is free software; you can redistribute it and/or modify
