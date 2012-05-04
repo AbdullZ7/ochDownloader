@@ -1,0 +1,237 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-10-02 19:16-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: igorruckert <igorruckert@yahoo.com.br>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Select Folder"
+msgstr "Selecionar Pasta"
+
+msgid "Paste Your Links (one link per line):"
+msgstr "Cole Seus Links (um link por linha):"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Add"
+msgstr "Adicionar"
+
+msgid "Host Accounts"
+msgstr "Contas do Servidor"
+
+msgid "Server:"
+msgstr "Servidor"
+
+msgid "Accounts:"
+msgstr "Contas"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Username"
+msgstr "Usuário"
+
+msgid "Password"
+msgstr "Senha"
+
+msgid "Enable"
+msgstr "Habilitar"
+
+msgid "Remove"
+msgstr "Remover"
+
+msgid "Check"
+msgstr "Verificar"
+
+msgid "Login:"
+msgstr "Login"
+
+msgid "Username:"
+msgstr "Usuário"
+
+msgid "Password:"
+msgstr "Senha"
+
+msgid "Done"
+msgstr "Feito"
+
+msgid "Slots limit:"
+msgstr "Limite de slots:"
+
+msgid "Speed limit:"
+msgstr "Limite de velocidade"
+
+msgid "Update checking..."
+msgstr "Verificando atualização..."
+
+msgid "Update available"
+msgstr "Atualização disponível"
+
+msgid "View Full Log"
+msgstr "Ver Log Completo"
+
+msgid "Full Log File"
+msgstr "Log Completo"
+
+msgid "Activity Log:"
+msgstr "Log de Atividades"
+
+msgid "Close"
+msgstr "Fechar"
+
+msgid "File Name"
+msgstr "Nome do Arquivo"
+
+msgid "Host"
+msgstr "Servidor"
+
+msgid "Size"
+msgstr "Tamanho"
+
+msgid "Complete"
+msgstr "Completado"
+
+msgid "Progress"
+msgstr "Progresso"
+
+msgid "Time"
+msgstr "Tempo"
+
+msgid "Remain"
+msgstr "Restante"
+
+msgid "Speed"
+msgstr "Velocidade"
+
+msgid "Status Message"
+msgstr "Mensagem de Statua"
+
+msgid "Do you want to remove the downloaded segments?"
+msgstr "Deseja remover os segmentos baixados?"
+
+msgid "Remove Files"
+msgstr "Remover Arquivos"
+
+msgid "Stop Download"
+msgstr "Parar Download"
+
+msgid "Start Download"
+msgstr "Iniciar Download"
+
+msgid "Accounts"
+msgstr "Contas"
+
+msgid "Configuration"
+msgstr "Configuração"
+
+msgid "About"
+msgstr "Sobre"
+
+msgid "Clipboard watcher"
+msgstr "Monitorar área de transferência"
+
+msgid "Preferences"
+msgstr "Preferências"
+
+msgid "Downloads"
+msgstr "Downloads"
+
+msgid "Add downloads"
+msgstr "Adicionar downloads"
+
+msgid "Log"
+msgstr "Log"
+
+msgid ""
+"ochDownload still has some active downloads. Do you want to quit anyway?"
+msgstr "O ochDownload possui alguns downloads ativos. Deseja sair assim mesmo?"
+
+msgid "Active Downloads"
+msgstr "Downloads Ativos"
+
+msgid "No"
+msgstr "Não"
+
+msgid "Yes"
+msgstr "Sim"
+
+msgid "Link checker:"
+msgstr "Verificar link:"
+
+msgid "Name"
+msgstr "Nome"
+
+msgid "Examine..."
+msgstr "Examinar"
+
+msgid "Accept"
+msgstr "Aceitar"
+
+msgid "Checking"
+msgstr "Verificando"
+
+msgid "Open Folder"
+msgstr "Abrir Pasta"
+
+msgid "General:"
+msgstr "Geral"
+
+msgid "Retries limit:"
+msgstr "Limite de tentativas:"
+
+msgid "Proxy:"
+msgstr "Proxy:"
+
+msgid "Without proxy"
+msgstr "Sem proxy"
+
+msgid "Manual proxy config"
+msgstr "Config. manual do proxy"
+
+msgid "HTTP Proxy:"
+msgstr "Proxy HTTP:"
+
+msgid "Port:"
+msgstr "Porta:"
+
+msgid "Connection"
+msgstr "Conexão"
+
+msgid "ochDownloader is a simple tool for One Click Hoster automated download"
+msgstr "O ochDownloader é uma simples ferramenta para downloads automáticos de servidores Um Clique"
+
+msgid "Re-check"
+msgstr "Verificar novamente"
+
+msgid "Add Links"
+msgstr "Adicionar Links"
+
+msgid "Download Selected"
+msgstr "Baixar Selecionados"
+
+msgid "Import Container"
+msgstr "Importar Container"
+
+msgid "Clear list"
+msgstr "Limpar Lista"
+
+msgid "Open File"
+msgstr "Abrir Arquivo"
+
+msgid "Shutdown"
+msgstr "Desligar"
+
+msgid "The system is going to shout down."
+msgstr "O sistema está se desligando."
+
+msgid "Shutting in"
+msgstr "Desligando em"
+
+msgid "Expires in"
+msgstr "Expira em"

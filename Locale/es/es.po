@@ -1,0 +1,238 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.6.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-10-02 18:54-0300\n"
+"PO-Revision-Date: 2011-10-02 18:54-0300\n"
+"Last-Translator: <ochdownloader@gmail.com>\n"
+"Language-Team: Language\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Select Folder"
+msgstr "Seleccionar Directorio"
+
+msgid "Paste Your Links (one link per line):"
+msgstr "Pegue sus enlaces (uno por linea)"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Add"
+msgstr "Añadir"
+
+msgid "Host Accounts"
+msgstr "Cuentas de servicios"
+
+msgid "Server:"
+msgstr "Servidor:"
+
+msgid "Accounts:"
+msgstr "Cuentas:"
+
+msgid "Status"
+msgstr "Estado"
+
+msgid "Username"
+msgstr "Usuario"
+
+msgid "Password"
+msgstr "Contraseña"
+
+msgid "Enable"
+msgstr "Habilitar"
+
+msgid "Remove"
+msgstr "Remover"
+
+msgid "Check"
+msgstr "Comprobar"
+
+msgid "Login:"
+msgstr "Ingreso:"
+
+msgid "Username:"
+msgstr "Usuario:"
+
+msgid "Password:"
+msgstr "Contraseña:"
+
+msgid "Done"
+msgstr "Hecho"
+
+msgid "Slots limit:"
+msgstr "Limitar Slots"
+
+msgid "Speed limit:"
+msgstr "Limitar velocidad"
+
+msgid "Update checking..."
+msgstr "Comprobando actualización..."
+
+msgid "Update available"
+msgstr "Actualización disponible"
+
+msgid "View Full Log"
+msgstr "Ver Registro Completo"
+
+msgid "Full Log File"
+msgstr "Registro Completo"
+
+msgid "Activity Log:"
+msgstr "Registro de Actividad"
+
+msgid "Close"
+msgstr "Cerrar"
+
+msgid "File Name"
+msgstr "Nombre"
+
+msgid "Host"
+msgstr "Servidor"
+
+
+msgid "Size"
+msgstr "Tamaño"
+
+msgid "Complete"
+msgstr "Completo"
+
+msgid "Progress"
+msgstr "Progreso"
+
+msgid "Time"
+msgstr "Tiempo"
+
+msgid "Remain"
+msgstr "Restante"
+
+msgid "Speed"
+msgstr "Velocidad"
+
+msgid "Status Message"
+msgstr ""
+
+msgid "Do you want to remove the downloaded segments?"
+msgstr "¿Quiere remover los segmentos descargados?"
+
+msgid "Remove Files"
+msgstr "Remover Archivos"
+
+msgid "Stop Download"
+msgstr "Detener Descarga"
+
+msgid "Start Download"
+msgstr "Iniciar Descarga"
+
+msgid "Accounts"
+msgstr "Cuentas"
+
+msgid "Configuration"
+msgstr "Configuración"
+
+msgid "About"
+msgstr "Acerca de..."
+
+msgid "Clipboard watcher"
+msgstr "Monitorear clipboard"
+
+msgid "Preferences"
+msgstr "Preferencias"
+
+msgid "Downloads"
+msgstr "Descargas"
+
+msgid "Add downloads"
+msgstr "Añadir descargas"
+
+msgid "Log"
+msgstr "Registro"
+
+msgid ""
+"ochDownload still has some active downloads. Do you want to quit anyway?"
+msgstr "ochDownloader aun tiene descargas activas. ¿Desea salir de todos modos?"
+
+msgid "Active Downloads"
+msgstr "Descargas Activas"
+
+msgid "No"
+msgstr "No"
+
+msgid "Yes"
+msgstr "Si"
+
+msgid "Link checker:"
+msgstr "Comprobador de enlaces"
+
+msgid "Name"
+msgstr "Nombre"
+
+msgid "Examine..."
+msgstr "Examinar..."
+
+msgid "Accept"
+msgstr "Aceptar"
+
+msgid "Checking"
+msgstr "Comprobar"
+
+msgid "Open Folder"
+msgstr "Abrir Directorio"
+
+msgid "General:"
+msgstr "General:"
+
+msgid "Retries limit:"
+msgstr "Limite de reintentos"
+
+msgid "Proxy:"
+msgstr "Proxy:"
+
+msgid "Without proxy"
+msgstr "Sin proxy"
+
+msgid "Manual proxy config"
+msgstr "Configuración manual de proxy"
+
+msgid "HTTP Proxy:"
+msgstr "Proxy HTTP:"
+
+msgid "Port:"
+msgstr "Puerto:"
+
+msgid "Connection"
+msgstr "Conexion"
+
+msgid "ochDownloader is a simple tool for One Click Hoster automated download"
+msgstr "ochDownloader es un herramienta simple para descargar automaticamente de Servidores de Un Click"
+
+msgid "Re-check"
+msgstr "Chequear"
+
+msgid "Add Links"
+msgstr "Añadir"
+
+msgid "Download Selected"
+msgstr "Descargar Seleccionados"
+
+msgid "Import Container"
+msgstr "Import. Contenedor"
+
+msgid "Clear list"
+msgstr "Limpiar"
+
+msgid "Open File"
+msgstr "Abrir Archivo"
+
+msgid "Shutdown"
+msgstr "Auto apagado"
+
+msgid "The system is going to shout down."
+msgstr "El sistema esta a punto de cerrarse"
+
+msgid "Shutting in"
+msgstr "Cerrando en"
+
+msgid "Expires in"
+msgstr "Expira en"

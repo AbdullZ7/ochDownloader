@@ -1,0 +1,236 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.6.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-10-02 19:16-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Select Folder"
+msgstr "Selectează directorul"
+
+msgid "Paste Your Links (one link per line):"
+msgstr "Lipeşte adresele aici (una pe fiecare rând)"
+
+msgid "Cancel"
+msgstr "Anulează"
+
+msgid "Add"
+msgstr "Adaugă"
+
+msgid "Host Accounts"
+msgstr "Conturi de găzduire"
+
+msgid "Server:"
+msgstr "Server:"
+
+msgid "Accounts:"
+msgstr "Conturi:"
+
+msgid "Status"
+msgstr "Stare"
+
+msgid "Username"
+msgstr "Nume utilizator"
+
+msgid "Password"
+msgstr "Parolă"
+
+msgid "Enable"
+msgstr "Activează"
+
+msgid "Remove"
+msgstr "Elimină"
+
+msgid "Check"
+msgstr "Verifică"
+
+msgid "Login:"
+msgstr "Logare:"
+
+msgid "Username:"
+msgstr "Nume utilizator:"
+
+msgid "Password:"
+msgstr "Parolă:"
+
+msgid "Done"
+msgstr "Gata"
+
+msgid "Slots limit:"
+msgstr "Limită sloturi:"
+
+msgid "Speed limit:"
+msgstr "Limită viteză:"
+
+msgid "Update checking..."
+msgstr "Verificare actualizare..."
+
+msgid "Update available"
+msgstr "Actualizare disponibilă"
+
+msgid "View Full Log"
+msgstr "Vezi raport complet"
+
+msgid "Full Log File"
+msgstr "Fişier raport complet"
+
+msgid "Activity Log:"
+msgstr "Raport activitate:"
+
+msgid "Close"
+msgstr "Închide"
+
+msgid "File Name"
+msgstr "Nume fişier"
+
+msgid "Host"
+msgstr "Gazda"
+
+msgid "Size"
+msgstr "Mărime"
+
+msgid "Complete"
+msgstr "Complet"
+
+msgid "Progress"
+msgstr "Progres"
+
+msgid "Time"
+msgstr "Timp"
+
+msgid "Remain"
+msgstr "Rămâne"
+
+msgid "Speed"
+msgstr "Viteză"
+
+msgid "Status Message"
+msgstr "Mesaj stare"
+
+msgid "Do you want to remove the downloaded segments?"
+msgstr "Doriţi să eliminaţi segmentele descărcate?"
+
+msgid "Remove Files"
+msgstr "Elimină fişierele"
+
+msgid "Stop Download"
+msgstr "Opreşte descărcarea"
+
+msgid "Start Download"
+msgstr "Porneşte descărcarea"
+
+msgid "Accounts"
+msgstr "Conturi"
+
+msgid "Configuration"
+msgstr "Configurare"
+
+msgid "About"
+msgstr "Despre"
+
+msgid "Clipboard watcher"
+msgstr "Preluare clipboard"
+
+msgid "Preferences"
+msgstr "Preferinţe"
+
+msgid "Downloads"
+msgstr "Descărcari"
+
+msgid "Add downloads"
+msgstr "Adaugă descărcări"
+
+msgid "Log"
+msgstr "Raport"
+
+msgid "ochDownload still has some active downloads. Do you want to quit anyway?"
+msgstr "ochDownload are descărcări active. Doriţi totuşi să închideţi?"
+
+msgid "Active Downloads"
+msgstr "Descărcări active"
+
+msgid "No"
+msgstr "Nu"
+
+msgid "Yes"
+msgstr "Da"
+
+msgid "Link checker:"
+msgstr "Verificare adrese:"
+
+msgid "Name"
+msgstr "Nume"
+
+msgid "Examine..."
+msgstr "Examinare..."
+
+msgid "Accept"
+msgstr "Accept"
+
+msgid "Checking"
+msgstr "Verificare"
+
+msgid "Open Folder"
+msgstr "Deschidere director"
+
+msgid "General:"
+msgstr "General:"
+
+msgid "Retries limit:"
+msgstr "Limita reîncercări:"
+
+msgid "Proxy:"
+msgstr "Proxy:"
+
+msgid "Without proxy"
+msgstr "Fară proxy"
+
+msgid "Manual proxy config"
+msgstr "Configurare manuală a proxy-ului"
+
+msgid "HTTP Proxy:"
+msgstr "HTTP Proxy:"
+
+msgid "Port:"
+msgstr "Port:"
+
+msgid "Connection"
+msgstr "Conexiune"
+
+msgid "ochDownloader is a simple tool for One Click Hoster automated download"
+msgstr "ochDownloader este o unealtă simplă pentru descărcare automată de pe site-uri 'one-click hosting'"
+
+msgid "Re-check"
+msgstr "Reverificare"
+
+msgid "Add Links"
+msgstr "Adaugă adrese"
+
+msgid "Download Selected"
+msgstr "Descarcă selectate"
+
+msgid "Import Container"
+msgstr "Importă container"
+
+msgid "Clear list"
+msgstr "Goleşte lista"
+
+msgid "Open File"
+msgstr "Deschide fişier"
+
+msgid "Shutdown"
+msgstr "Închide"
+
+msgid "The system is going to shout down."
+msgstr "Sistemul de operare se va închide"
+
+msgid "Shutting in"
+msgstr "Închidere în"
+
+msgid "Expires in"
+msgstr "Expirare în"
