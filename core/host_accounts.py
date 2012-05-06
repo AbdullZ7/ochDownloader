@@ -1,6 +1,5 @@
 import uuid
 import cookielib
-import urllib
 import os
 import threading
 import pickle #permite escribir diccionarios, listas, etc en archivos, preservando el tipo.
@@ -77,7 +76,7 @@ class _HostAccounts:
         #for retry in range(COOKIE_CONNECTION_RETRY):
         try:
             cookie = cookielib.CookieJar()
-            with URLClose(URLOpen(cookie).open(url, urllib.urlencode(dict_form), headers=headers)) as s: #eg: url= login-url, data = {"login": "1", "redir": "1", "username": user, "password", password}
+            with URLClose(URLOpen(cookie).open(url, dict_form, headers=headers)) as s: #eg: url= login-url, data = {"login": "1", "redir": "1", "username": user, "password", password}
                 opener = s
         except Exception, err: #this only happen on http error, not bad-login, etc.
             logger.warning(err)

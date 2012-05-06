@@ -41,7 +41,6 @@ class PluginsCore:
         #return source code.
         if self.is_running():
             range = (None, None) if close else (self.content_range, None)
-            if form is not None: form = urllib.urlencode(form)
             try:
                 with URLClose(URLOpen(self.cookie).open(link, form, range=range), close) as s:
                     if close:

@@ -36,7 +36,7 @@ class LinkChecker:
             id = link.split("/")[-2]
             file_name = link.split("/")[-1]
             #http://api.rapidshare.com/cgi-bin/rsapi.cgi?sub=subroutine&files=value1&filenames=value2
-            with URLClose(URLOpen().open("http://api.rapidshare.com/cgi-bin/rsapi.cgi",  form=urllib.urlencode({"sub": "checkfiles", "files": id, "filenames": file_name}), time_out=10)) as s:
+            with URLClose(URLOpen().open("http://api.rapidshare.com/cgi-bin/rsapi.cgi",  form={"sub": "checkfiles", "files": id, "filenames": file_name}, time_out=10)) as s:
                 tmp = s.read().split(",")
                 #print tmp
                 name = tmp[FILE_NAME]
