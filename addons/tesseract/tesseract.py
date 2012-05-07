@@ -14,7 +14,7 @@ import GifImagePlugin
 import JpegImagePlugin
 
 import core.cons as cons
-from core.network.connection import URLOpen, URLClose
+from core.network.connection import URLClose, request
 
 IMAGE_SUFFIX = ".tif"
 TEXT_SUFFIX = ".txt"
@@ -33,7 +33,7 @@ def get_solved_captcha(url, cookie, filter=None):
     @params: filter = a function wraping one or more clean_image functions.
     """
     try:
-        with URLClose(URLOpen(cookie).open(url)) as s:
+        with URLClose(request.get(url, cookie=cookie)) as s:
             image_data = s.read()
         t = Tesseract(image_data, filter)
         result = t.get_captcha()

@@ -5,7 +5,7 @@ import socket
 import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
-from core.network.connection import URLOpen, URLClose #leer/abrir urls.
+from core.network.connection import URLClose, request
 from core.misc import html_entities_parser #(html entities and numerics parser)
 
 import core.cons as cons
@@ -36,7 +36,7 @@ class LinkChecker:
             id = link.split("/")[-2]
             file_name = link.split("/")[-1]
             #http://api.rapidshare.com/cgi-bin/rsapi.cgi?sub=subroutine&files=value1&filenames=value2
-            with URLClose(URLOpen().open("http://api.rapidshare.com/cgi-bin/rsapi.cgi",  form={"sub": "checkfiles", "files": id, "filenames": file_name}, time_out=10)) as s:
+            with URLClose(request.post("http://api.rapidshare.com/cgi-bin/rsapi.cgi", data={"sub": "checkfiles", "files": id, "filenames": file_name}, time_out=10)) as s:
                 tmp = s.read().split(",")
                 #print tmp
                 name = tmp[FILE_NAME]

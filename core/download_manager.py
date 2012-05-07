@@ -131,6 +131,7 @@ class DownloadManager(DownloadCore, ThreadManager): #herencia multiple
                 limit_exceeded = self.is_limit_exceeded(download_item.id)
             else:
                 download_item.status = cons.STATUS_ERROR
+                limit_exceeded = False
             status = download_item.status
             result_list.append(download_item)
             if status in (cons.STATUS_STOPPED, cons.STATUS_FINISHED, cons.STATUS_ERROR):

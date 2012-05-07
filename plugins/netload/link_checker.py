@@ -5,7 +5,7 @@ import socket
 import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
-from core.network.connection import URLOpen, URLClose #leer/abrir urls.
+from core.network.connection import URLClose, request
 
 import core.cons as cons
 
@@ -20,7 +20,7 @@ class LinkChecker:
         status_msg = None
         link_status = cons.LINK_ERROR
         try:
-            with URLClose(URLOpen().open(link)) as s:
+            with URLClose(request.get(link)) as s:
                 for line in s:
                     if 'class="dl_first_filename' in line:
                         line = s.next()

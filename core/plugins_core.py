@@ -5,7 +5,7 @@ import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
 import misc
-from network.connection import URLOpen, URLClose
+from network.connection import URLClose, request
 
 try:
     from addons.captcha.recaptcha import Recaptcha
@@ -36,13 +36,13 @@ class PluginsCore:
         self.err_msg = None
         self.source = None
         self.cookie = cookielib.CookieJar()
-    
+
     def get_page(self, link, form=None, default=None, close=True):
         #return source code.
         if self.is_running():
             range = (None, None) if close else (self.content_range, None)
             try:
-                with URLClose(URLOpen(self.cookie).open(link, form, range=range), close) as s:
+                with URLClose(request.url_open(link, self.cookie, form, range), close) as s:
                     if close:
                         return s.read(BUFF_SZ)
                     else:
@@ -77,7 +77,7 @@ class PluginsCore:
         form_list = [("recaptcha_challenge_field", challenge), ("recaptcha_response_field", response)]
         if extra_fields:
             form_list.extend(extra_fields)
-        page = self.get_page(self.next_link, form_list, page)
+        page = self.get_page(self.next_link, form=form_list, default=page)
         m = re.search(pattern, page, re.S)
         return (m, page)
     

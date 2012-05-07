@@ -1,5 +1,6 @@
 import urllib2
 import urllib
+import cookielib
 import socket
 import logging
 logger = logging.getLogger(__name__)
@@ -10,21 +11,30 @@ import core.cons as cons
 
 class Request:
     def __init__(self):
-        self.__proxy = None #system proxy
+        self.proxy = None #system proxy
         #self.__socket = socket.socket
         self.timeout = 20
 
-    def get(self, url, cookie=None, headers=None, timeout=None, range=(None, None)):
-        url_open = URLOpen(cookie, self.__proxy)
-        return url_open.open(url, range=range, headers=headers, time_out=timeout)
+    def get(self, url, data=None, **kwargs):
+        if data: url += '?' + urllib.urlencode(data)
+        return self.url_open(url, **kwargs)
 
-    def post(self, url, form, cookie=None, headers=None, timeout=None):
-        url_open = URLOpen(cookie, self.__proxy)
-        return url_open.open(url, form=form, headers=headers, time_out=timeout)
+    def post(self, url, data=None, **kwargs):
+        data = data or {}
+        return self.url_open(url, data=data, **kwargs)
+
+    def url_open(self, url, cookie=None, data=None, range=(None, None), headers=None, timeout=None):
+        timeout = timeout or self.timeout
+        cookie = cookie or cookielib.CookieJar()
+        opener = self.build_opener(cookie)
+        return opener.open(url, form=data, range=range, headers=headers, timeout=timeout)
+
+    def build_opener(self, cookie):
+        return URLOpen(cookie, self.proxy)
 
     def set_proxy(self, ptype, ip, port):
         if ptype == cons.PROXY_HTTP:
-            self.__proxy = {cons.PROXY_HTTP: ":".join((ip, str(port)))}
+            self.proxy = {cons.PROXY_HTTP: ":".join((ip, str(port)))}
             #socket.socket = self.__socket
         #elif ptype in (cons.PROXY_SOCKS5, socks.PROXY_TYPE_SOCKS4):
             #self.__proxy = None
@@ -32,7 +42,7 @@ class Request:
             #socket.socket = socks.socksocket
 
     def no_proxy(self, system=True):
-        self.__proxy = None if system else {}
+        self.proxy = None if system else {}
         #socket.socket = self.__socket
 
 request = Request()
@@ -45,7 +55,7 @@ class SmartRedirectHandler(urllib2.HTTPRedirectHandler): #subclass
     def http_error_302(self, req, fp, code, msg, headers):
         result = urllib2.HTTPRedirectHandler.http_error_302(self, req, fp, code, msg, headers)
         #new attribute
-        result.status = code #= 302, we now can call (URLOpen.)open.status
+        result.status = code #= 302, now we can call s.status
         return result
 
 
@@ -59,7 +69,7 @@ class URLOpen:
                                             urllib2.HTTPCookieProcessor(cookie),
                                             urllib2.ProxyHandler(proxy))
     
-    def open(self, url, form=None, data=None, headers=None, range=(None, None), referer=None, time_out=20):
+    def open(self, url, form=None, headers=None, range=(None, None), referer=None, timeout=20):
         """"""
         url = urllib.quote_plus(url.strip(), safe="%/:=&?~#+!$,;'@()*[]") #fix url. replace spaces by plus sign and more. Solved on python 2.7+
         headers_ = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:10.0.1) Gecko/20100101 Firefox/10.0.1",
@@ -79,7 +89,7 @@ class URLOpen:
         if form is not None: #may be empty (ex: urllib.urlencode({})).
             headers_["Content-type"] = "application/x-www-form-urlencoded"
             form = urllib.urlencode(form)
-        return self.opener.open(urllib2.Request(url, data, headers_), form, timeout=time_out)
+        return self.opener.open(urllib2.Request(url, None, headers_), form, timeout=timeout)
 
 
 class URLClose:
@@ -105,5 +115,3 @@ class URLClose:
             return False #re-lanzar exception.
         elif self.always_close:
             self.thing.close()
-
-

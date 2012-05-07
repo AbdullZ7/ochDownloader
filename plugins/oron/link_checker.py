@@ -5,7 +5,7 @@ import socket
 import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
-from core.network.connection import URLOpen, URLClose #leer/abrir urls.
+from core.network.connection import URLClose, request
 
 import core.cons as cons
 import core.misc as misc
@@ -22,7 +22,7 @@ class LinkChecker:
         link_status = cons.LINK_ERROR
         #for retry_count in range(RETRIES):
         try:
-            with URLClose(URLOpen().open(link, time_out=10)) as s:
+            with URLClose(request.get(link, time_out=10)) as s:
                 for line in s:
                     if 'class="f_arial f_14px"' in line:
                         name = line.split('"f_arial f_14px">')[-1].split('<')[0].strip()

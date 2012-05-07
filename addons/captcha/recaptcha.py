@@ -4,7 +4,7 @@ logger = logging.getLogger(__name__)
 
 import core.cons as cons
 from core.events import events
-from core.network.connection import URLOpen
+from core.network.connection import request
 
 
 class Recaptcha:
@@ -37,10 +37,10 @@ class Recaptcha:
         image_type = None
         image_data = None
         try:
-            for line in URLOpen().open(self.captcha_link).readlines():
+            for line in request.get(self.captcha_link).readlines():
                 if "challenge : " in line:
                     self.captcha_challenge = line.split("'")[1]
-                    handle = URLOpen().open("http://www.google.com/recaptcha/api/image?c=%s" % self.captcha_challenge)
+                    handle = request.get("http://www.google.com/recaptcha/api/image?c=%s" % self.captcha_challenge)
                     image_data = handle.read()
                     image_type = handle.info()["Content-Type"].split("/")[1]
                     break

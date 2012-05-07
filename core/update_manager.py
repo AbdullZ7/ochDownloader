@@ -3,7 +3,7 @@ import threading
 import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
-from network.connection import URLOpen, URLClose
+from network.connection import URLClose, request
 import cons
 
 
@@ -29,7 +29,7 @@ class UpdateManager(threading.Thread):
                 update_url = cons.UPDATE_URL
             else:
                 update_url = cons.UPDATE_UNIX_URL
-            with URLClose(URLOpen().open(update_url, time_out=10)) as s:
+            with URLClose(request.get(update_url, time_out=10)) as s:
                 for line in s.readlines():
                     line = line.strip()
                     if line.startswith("last:"):

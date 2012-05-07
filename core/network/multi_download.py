@@ -10,7 +10,7 @@ import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
 import core.cons as cons
-from connection import URLOpen, URLClose
+from connection import URLClose, request
 
 from downloader_core import DownloaderCore
 
@@ -110,7 +110,7 @@ class MultiDownload(DownloaderCore):
         
         while True:
             try:
-                with URLClose(URLOpen(self.cookie).open(self.link_file, range=(chunk_range[0] + complete, chunk_range[1]))) as source:
+                with URLClose(request.get(self.link_file, cookie=self.cookie, range=(chunk_range[0] + complete, chunk_range[1]))) as source:
                     
                     #if (chunk_range[0] and chunk_range[1] is not None) and (self.size_file != self.get_content_size(source.info()) or source.info().getheader("Content-Range", None) is None):
                     info = source.info()
@@ -181,60 +181,3 @@ class MultiDownload(DownloaderCore):
                 self.error_flag = True
                 self.status_msg = "Error: {0}".format(err) #operaciones atomicas. No necesita lock.
                 return
-
-
-if __name__ == "__main__":
-    chunks = [(0, 10), (30, None), (30, 30), (10, 30)]
-    print sorted(chunks)
-    chunks_ = [chunks_tuple for chunks_tuple in chunks if chunks_tuple[0] != chunks_tuple[1]]
-    print sorted(chunks_)
-    
-    chunk_size = (self.size_file / MAX_CONN) + (self.size_file % MAX_CONN)
-    chunk_size += (chunk_size % BUFFER_SIZE) #multipo del buffer
-    lock3 = threading.Lock()
-    chunks_control = [(False, True) for _ in self.chunks] #(running, can_run)
-    
-    def thread_download(fh, i, chunks_tuple):
-        complete = 0
-        is_running = False
-        while True:
-            try:
-                with URLOpen(link, range=(chunks_tuple[0], None)) as source:
-                    with lock3:
-                        if chunks_control[i][1]: #can run?
-                            chunks_control[i] = (True, False)
-                            is_running = True
-                        elif not is_running:
-                            return
-                    while True:
-                        while True:
-                            data = source.read(BUFFER_SIZE)
-                            with lock1:
-                                fh.write(data)
-                            with lock2:
-                                self.chunks[i] = (chunk_range[0]+complete, self.chunks[i][1])
-                            complete += len(data)
-                            if not len(data) or complete >= chunks_tuple[1]:
-                                break
-                        with lock3:
-                            i += 1
-                            if i > len(chunks_control) - 1: #no more chunks.
-                                return
-                            if chunks_control[i][1]: #can run?
-                                chunks_control[i] = (True, False)
-                            else:
-                                return
-                        
-                        with self.lock2:
-                            chunk_range = self.chunks[i]
-            except:
-                return
-    
-
-
-
-
-
-
-
-

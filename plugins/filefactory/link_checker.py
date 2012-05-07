@@ -5,7 +5,7 @@ import socket
 import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
-from core.network.connection import URLOpen, URLClose #leer/abrir urls.
+from core.network.connection import URLClose, request
 from core.misc import html_entities_parser #(html entities and numerics parser)
 
 import core.cons as cons
@@ -28,7 +28,7 @@ class LinkChecker:
             tmp = link.split("/file/")[1].split("/")[0]
             link = "%s/file/%s" % (BASE_URL, tmp)
             link_quoted = urllib.quote_plus(link)
-            with URLClose(URLOpen().open("http://www.filefactory.com/tool/links.php?func=links&links=" + link_quoted, time_out=10)) as s:
+            with URLClose(request.get("http://www.filefactory.com/tool/links.php?func=links&links=" + link_quoted, time_out=10)) as s:
                 alive = False
                 for line in s:
                     if 'Available' in line:

@@ -8,7 +8,6 @@ import copy
 import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
-from network.connection import URLOpen, URLClose
 import cons
 import events
 
@@ -60,30 +59,6 @@ class _HostAccounts:
         account_item = AccountItem(host, username, password)
         self.add_account_item(account_item)
         return account_item
-    
-    def get_cookie(self, url, dict_form, headers=None): #DEPRECATED
-        """
-        Uso:
-        if cookie is not None:
-            #connection success
-            if cookie:
-                #login success
-            else:
-                #login fail
-        else:
-            #server down
-        """
-        #for retry in range(COOKIE_CONNECTION_RETRY):
-        try:
-            cookie = cookielib.CookieJar()
-            with URLClose(URLOpen(cookie).open(url, dict_form, headers=headers)) as s: #eg: url= login-url, data = {"login": "1", "redir": "1", "username": user, "password", password}
-                opener = s
-        except Exception, err: #this only happen on http error, not bad-login, etc.
-            logger.warning(err)
-            #host_down = True
-        else:
-            return cookie
-        return None #cant connect.
 
     def load_accounts(self):
         """
