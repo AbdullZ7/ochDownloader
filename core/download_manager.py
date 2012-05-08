@@ -217,14 +217,4 @@ class DownloadManager(DownloadCore, ThreadManager): #herencia multiple
 
 
 if __name__ == "__main__":
-    """
-    queue_downloads = [DownloadItem(None, "a", "", "", ""), DownloadItem(None, "b", "", "", ""), DownloadItem(None, "c", "", "", ""), DownloadItem(None, "d", "", "", "")]
-    for download_item in queue_downloads[:]:
-        print download_item
-        queue_downloads.remove(download_item)
-        print download_item
-    """
-    s_dict = {"some": "sasa", }
-    for some in s_dict:
-        print some
-    print "done"
+    pass

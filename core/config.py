@@ -243,28 +243,5 @@ config_parser = _Config() #make it global.
 
     
 if __name__ == "__main__":
-    #print DEFAULT[SECTION_MAIN][OPTION_VERSION]
-    """
-    def exception_handler(func):
-        def wrapper(*args, **kwargs):
-            try:
-                with _thread_lock:
-                    func(self, *args, **kwargs)
-                    #return ret_args
-            except (NoSectionError, NoOptionError) as err:
-                logger.warning(err)
-            except Exception as err:
-                logger.exception(err)
-            
-        return wrapper
-    
-    @exception_handler
-    def some(a, b):
-        return "some"
-    
-    print some("a", "b")
-    """
-    
-    columns = (1, 2)
-    print "{0}".format(*columns)
+    pass
     

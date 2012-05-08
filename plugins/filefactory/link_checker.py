@@ -28,7 +28,7 @@ class LinkChecker:
             tmp = link.split("/file/")[1].split("/")[0]
             link = "%s/file/%s" % (BASE_URL, tmp)
             link_quoted = urllib.quote_plus(link)
-            with URLClose(request.get("http://www.filefactory.com/tool/links.php?func=links&links=" + link_quoted, time_out=10)) as s:
+            with URLClose(request.get("http://www.filefactory.com/tool/links.php?func=links&links=" + link_quoted, timeout=10)) as s:
                 alive = False
                 for line in s:
                     if 'Available' in line:
@@ -46,7 +46,8 @@ class LinkChecker:
             if link_status != cons.LINK_ALIVE:
                 link_status = cons.LINK_DEAD
         except (urllib2.URLError, httplib.HTTPException, socket.error) as err:
-            pass
+            status_msg = "Error: {0}".format(err)
+            logger.warning(err)
         except Exception as err:
             status_msg = "Error: {0}".format(err)
             logger.exception(err)

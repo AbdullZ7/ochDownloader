@@ -29,7 +29,7 @@ class UpdateManager(threading.Thread):
                 update_url = cons.UPDATE_URL
             else:
                 update_url = cons.UPDATE_UNIX_URL
-            with URLClose(request.get(update_url, time_out=10)) as s:
+            with URLClose(request.get(update_url, timeout=10)) as s:
                 for line in s.readlines():
                     line = line.strip()
                     if line.startswith("last:"):
@@ -57,16 +57,4 @@ class UpdateManager(threading.Thread):
 
 
 if __name__ == "__main__":
-    """
-    th_update_manager = UpdateManager()
-    th_update_manager.start()
-    print "update complete: {0}".format(th_update_manager.update_check_complete)
-    while True:
-        if th_update_manager.update_check_complete:
-            print "update complete: {0}".format(th_update_manager.update_check_complete)
-            break
-        else:
-            time.sleep(2)
-    print "update available: {0}, list: {1}".format(th_update_manager.update_available, th_update_manager.url_update)
-    """
     pass

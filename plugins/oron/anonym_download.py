@@ -111,7 +111,7 @@ class AnonymDownload(PluginsCore):
             err_msg = err
             logger.info(err)
         except Exception as err:
-            err_msg
+            err_msg = err
             logger.exception(err)
         
         return link_file, source, err_msg #puede ser el objeto archivo o None.

@@ -37,7 +37,6 @@ class UnpackerNotInstalled(Exception): pass
 rar_executable_cached = None
 
 def call_unrar(params):
-    "Calls rar/unrar command line executable, returns stdout pipe"
     global rar_executable_cached
     if rar_executable_cached is None:
         for command in ('unrar', 'rar'):

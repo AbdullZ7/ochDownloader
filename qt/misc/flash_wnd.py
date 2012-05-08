@@ -51,7 +51,7 @@ class FLASHWINFO(ctypes.Structure):
                 ("dwTimeout", ctypes.c_uint)
                 ]
 
-def flash_taskbar_icon(window_handle, flag=FLASHW_TIMERNOFG, times=2, rate=0):
+def flash_taskbar_icon(window_handler, flag=FLASHW_TIMERNOFG, times=2, rate=0):
     """
     @param window_handler: GTKWindow.window.handle
     @param flag: 0 = stop flashing, 1 = flash the window, 2 = flash the taskbar button, 
@@ -61,7 +61,7 @@ def flash_taskbar_icon(window_handle, flag=FLASHW_TIMERNOFG, times=2, rate=0):
     """
     try:
         # start flashing the window
-        hWnd = qt_handler_converter(window_handle)
+        hWnd = qt_handler_converter(window_handler)
         finfo = FLASHWINFO(0, hWnd, flag, times, rate)
         finfo.cbSize = ctypes.sizeof(finfo)
         #BOOL WINAPI FlashWindowEx(  __in  PFLASHWINFO pfwi );

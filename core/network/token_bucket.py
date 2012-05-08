@@ -53,8 +53,4 @@ class TokenBucket:
 
 
 if __name__ == '__main__':
-    from time import sleep
-    bucket = TokenBucket(80)
-    print "tokens =", bucket.tokens
-    consumed = bucket.consume(10)
-    sleep(consumed)
+    pass

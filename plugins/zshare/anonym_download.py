@@ -33,9 +33,4 @@ class PluginDownload(PluginsCore):
 
 
 if __name__ == "__main__":
-    #test
-    #name, size, unit = AnonymDownload().check_link("http://rapidshare.com/files/3415371904/WC_0310_HRALinks.info.avi")
-    def wait_func(*args):
-        return False
-    link_file, source, err = AnonymDownload().add("http://www.zshare.net/download/676959526535015c", 0, wait_func)
-    print link_file, err
+    pass

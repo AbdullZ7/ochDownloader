@@ -22,7 +22,7 @@ class LinkChecker:
         link_status = cons.LINK_ERROR
         #for retry_count in range(RETRIES):
         try:
-            with URLClose(request.get(link, time_out=10)) as s:
+            with URLClose(request.get(link, timeout=10)) as s:
                 for line in s:
                     if 'class="f_arial f_14px"' in line:
                         name = line.split('"f_arial f_14px">')[-1].split('<')[0].strip()

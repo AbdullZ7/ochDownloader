@@ -22,9 +22,6 @@ class PluginDownload(PluginsCore):
 
 
 if __name__ == "__main__":
-    def wait_func(some=None):
-        return False
-    
     pass
     
 
