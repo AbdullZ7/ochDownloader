@@ -17,11 +17,11 @@ def keep_system_awake(stop=False):
     """
     #UNTESTED. check if the system go to sleep if the process is terminated
     mode_dict = {"ES_AWAYMODE_REQUIRED": "0x00000040",
-                       "ES_CONTINUOUS": "0x80000000",
-                       "ES_DISPLAY_REQUIRED": "0x00000002",
-                       "ES_SYSTEM_REQUIRED": "0x00000001",
-                       "ES_USER_PRESENT": "0x00000004"
-                       }
+                "ES_CONTINUOUS": "0x80000000",
+                "ES_DISPLAY_REQUIRED": "0x00000002",
+                "ES_SYSTEM_REQUIRED": "0x00000001",
+                "ES_USER_PRESENT": "0x00000004"
+                }
     try:
         if cons.OS_WIN:
             if not stop:
@@ -43,7 +43,9 @@ def get_free_space(folder):
     try:
         if cons.OS_WIN:
             free_bytes = ctypes.c_ulonglong(0)
-            ctypes.windll.kernel32.GetDiskFreeSpaceExw(ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes))
+            retcode = ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes))
+            if retcode == 0:
+                raise OSError("Windows error on get free space")
             return free_bytes.value
         else:
             s = os.statvfs(folder)
@@ -135,12 +137,12 @@ def speed_format(the_speed):
         return "{0:.0f}Bytes/s".format(the_speed)
 
 def get_host(link):
-        """"""
-        #assert link.startswith("http://"), ("'{0}' is not an url".format(link))
-        i = 2 if link.startswith("http://") or link.startswith("https://") else 0
-        host = link.split("/")[i] #get (www.)website.com
-        host = host.split(".")[1] if host.startswith("www") else host.split(".")[0] #get website
-        return host.lower()
+    """"""
+    #assert link.startswith("http://"), ("'{0}' is not an url".format(link))
+    i = 2 if link.startswith("http://") or link.startswith("https://") else 0
+    host = link.split("/")[i] #get (www.)website.com
+    host = host.split(".")[1] if host.startswith("www") else host.split(".")[0] #get website
+    return host.lower()
 
 def tail(fh, lines_limit=20):
     """
@@ -209,6 +211,4 @@ def dict_from_cookiejar(cj):
 
 
 if __name__ == "__main__":
-    print time_format(89000)
-    print time_format(56)
-    print time_format(156)
+    pass

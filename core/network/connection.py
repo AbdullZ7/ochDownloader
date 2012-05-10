@@ -6,6 +6,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Local Libs
+from core.config import config_parser
 import core.cons as cons
 
 
@@ -14,6 +15,7 @@ class Request:
         self.proxy = None #system proxy
         #self.__socket = socket.socket
         self.timeout = 20
+        self.load_proxy()
 
     def get(self, url, data=None, **kwargs):
         if data: url += '?' + urllib.urlencode(data)
@@ -31,6 +33,11 @@ class Request:
 
     def build_opener(self, cookie):
         return URLOpen(cookie, self.proxy)
+
+    def load_proxy(self):
+        if config_parser.get_proxy_active():
+            ip, port, ptype = config_parser.get_proxy()
+            self.set_proxy(ptype, ip, port)
 
     def set_proxy(self, ptype, ip, port):
         if ptype == cons.PROXY_HTTP:

@@ -148,24 +148,24 @@ class _Config(SafeConfigParser):
         return False
 
     @exception_handler
-    def set_proxy(self, proxy_ip, proxy_port, proxy_type):
+    def set_proxy(self, ptype, ip, port):
         """"""
-        self.set(SECTION_NETWORK, OPTION_PROXY_IP, proxy_ip)
-        self.set(SECTION_NETWORK, OPTION_PROXY_PORT, proxy_port)
-        self.set(SECTION_NETWORK, OPTION_PROXY_TYPE, proxy_type)
+        self.set(SECTION_NETWORK, OPTION_PROXY_TYPE, ptype)
+        self.set(SECTION_NETWORK, OPTION_PROXY_IP, ip)
+        self.set(SECTION_NETWORK, OPTION_PROXY_PORT, port)
     
     def get_proxy(self): #proxy_dict
         """"""
         try:
-            proxy_ip = self.get(SECTION_NETWORK, OPTION_PROXY_IP)
-            proxy_port = self.getint(SECTION_NETWORK, OPTION_PROXY_PORT)
-            proxy_type = self.get(SECTION_NETWORK, OPTION_PROXY_TYPE)
-            return proxy_ip, proxy_port, proxy_type
+            ptype = self.get(SECTION_NETWORK, OPTION_PROXY_TYPE)
+            ip = self.get(SECTION_NETWORK, OPTION_PROXY_IP)
+            port = self.getint(SECTION_NETWORK, OPTION_PROXY_PORT)
+            return (ptype, ip, port)
         except (NoSectionError, NoOptionError) as err:
             logger.warning(err)
         except Exception as err:
             logger.exception(err)
-        return "", 0, cons.PROXY_HTTP
+        return None
 
     @exception_handler
     def set_retries_limit(self, limit):
