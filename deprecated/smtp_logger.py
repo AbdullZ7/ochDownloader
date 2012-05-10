@@ -117,7 +117,7 @@ class SMTPLogger(threading.Thread):
                         #if len(lines_buffer) > 4048 and not exct_found:
                             #lines_buffer = ""
                 if exct_found:
-                    smtp = SMTPHandler(("smtp.gmail.com", 587), "bugs@ochdownloader.com", "ochdownloader@gmail.com", "Bug-Found "+cons.APP_VER, ("leonhim5@gmail.com", "soccer29"), ())
+                    smtp = SMTPHandler(("smtp.gmail.com", 587), "bugs@ochdownloader.com", "ochdownloader@gmail.com", "Bug-Found "+cons.APP_VER, ("user@gmail.com", "pass"), ())
                     smtp.emit(logging.LogRecord(None, None, "", 0, lines_buffer, None, None))
                     logger.info("SENDED")
         except Exception, err:

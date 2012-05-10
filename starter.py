@@ -49,7 +49,7 @@ class Starter:
         """"""
         #config logger
         logging.basicConfig(level=logging.DEBUG,
-                                        format="%(levelname)-7s %(name)s: %(message)s")
+                            format="%(levelname)-7s %(name)s: %(message)s")
         
         rotate_mb = 1 #1mb = 1*1024*1024
         rotating = logging.handlers.RotatingFileHandler(cons.LOG_FILE, mode="ab", maxBytes=rotate_mb*1024*1024, backupCount=5)
@@ -71,15 +71,13 @@ class Starter:
         init_gettext() #internacionalization
         try:
             self.logger.info("New app gui instance")
-            
-            #app = QApplication(sys.argv)
-            app = QApplication([''])
+            app = QApplication(['']) #QApplication(sys.argv)
             gui = Gui()
             app.exec_()
         except Exception as err:
             self.logger.exception(err)
             halt() #close gui.
-    
+
     def clean_up(self):
         from core.api import api
         from core.idle_queue import set_events
