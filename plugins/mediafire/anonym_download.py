@@ -17,7 +17,7 @@ class PluginDownload(PluginsCore):
         link = self.link
         c_pattern = 'http://www.google.com/recaptcha/api/challenge\?k=(?P<key>.*?)"'
         page = self.recaptcha(c_pattern, self.get_page(link))
-        s_pattern ='class="download_link".*?href="(?P<link>.*?)"'
+        s_pattern = '.*href=\'(?P<link>.*?)\'.*?class=\'dlFileSize\''
         self.source = self.click(s_pattern, page, False)
 
 

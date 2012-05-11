@@ -48,7 +48,7 @@ class PluginsCore:
                     else:
                         self.dl_link = link
                         return s
-            except (urllib2.URLError, httplib.HTTPException, socket.error) as err:
+            except (urllib2.URLError, httplib.HTTPException, socket.error, ValueError) as err:
                 self.err_msg = err
                 logger.warning(err)
                 logger.debug(link)
