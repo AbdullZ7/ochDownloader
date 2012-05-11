@@ -73,6 +73,7 @@ class Gui(QMainWindow):
         QMainWindow.__init__(self)
         
         self.setWindowTitle(cons.APP_TITLE)
+        self.setWindowIcon(QIcon(os.path.join(cons.MEDIA_PATH, "misc", "ochd.ico")))
         self.resize(600, 300)
         self.center()
         #self.setGeometry(x, y, w, h)

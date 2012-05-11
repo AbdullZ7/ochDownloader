@@ -41,7 +41,7 @@ class AddonsManager:
                 module = importlib.import_module("addons.{module}.addon_gui".format(module=name))
                 self.addons_list.append(module.Addon(*args, **kwargs))
             except Exception as err:
-                logger.warning("{0}: {1}".format(name, err))
+                logger.exception("{0}: {1}".format(name, err))
         #return addons
 
 
