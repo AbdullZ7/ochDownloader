@@ -8,8 +8,6 @@ import threading
 #Libs
 import core.cons as cons
 
-from PySide.QtGui import *
-from PySide.QtCore import *
 
 def installThreadExcepthook():
     """
@@ -64,6 +62,8 @@ class Starter:
     def start_gui(self):
         """"""
         #Gui, create logger first
+        from PySide.QtGui import *
+        from PySide.QtCore import *
         from qt.main import Gui, excepthook, halt, init_gettext
         
         sys.excepthook = excepthook #capturar exceptiones unhandled.
