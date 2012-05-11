@@ -1,8 +1,5 @@
-import pkgutil
-import os
-import HTMLParser
-import logging #registro de errores, van a consola y al fichero de texto.
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+import logging
+logger = logging.getLogger(__name__)
 
 import core.cons as cons
 import core.misc as misc
