@@ -62,8 +62,7 @@ class Starter:
     def start_gui(self):
         """"""
         #Gui, create logger first
-        from PySide.QtGui import *
-        from PySide.QtCore import *
+        from PySide.QtGui import QApplication
         from qt.main import Gui, excepthook, halt, init_gettext
         
         sys.excepthook = excepthook #capturar exceptiones unhandled.
