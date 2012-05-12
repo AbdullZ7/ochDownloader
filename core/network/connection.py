@@ -36,8 +36,10 @@ class Request:
 
     def load_proxy(self):
         if config_parser.get_proxy_active():
-            ip, port, ptype = config_parser.get_proxy()
-            self.set_proxy(ptype, ip, port)
+            proxy_tup = config_parser.get_proxy()
+            if proxy_tup is not None:
+                ptype, ip, port = proxy_tup
+                self.set_proxy(ptype, ip, port)
 
     def set_proxy(self, ptype, ip, port):
         if ptype == cons.PROXY_HTTP:
