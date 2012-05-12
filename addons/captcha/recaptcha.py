@@ -3,6 +3,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 import core.cons as cons
+import core.idle_queue as idle_queue
 from core.events import events
 from core.network.connection import request
 
@@ -25,11 +26,13 @@ class Recaptcha:
     def solve_captcha(self):
         """"""
         self.captcha_challenge = None
-        events.trigger_captcha_dialog(self.wait_func, self.service_name, self.get_captcha, self.set_solution)
-        self.event.wait()
-        self.event.clear() #re-use.
-        if not self.solution:
-            logger.warning("No response for {0} event".format(cons.EVENT_CAPTCHA_DLG))
+        if idle_queue.register_event(self.event):
+            events.trigger_captcha_dialog(self.wait_func, self.service_name, self.get_captcha, self.set_solution)
+            self.event.wait()
+            self.event.clear() #re-use.
+            idle_queue.remove_event(self.event)
+            if not self.solution:
+                logger.warning("No response for {0} event".format(cons.EVENT_CAPTCHA_DLG))
         return self.captcha_challenge, self.solution
 
     def get_captcha(self):

@@ -48,7 +48,7 @@ class Starter:
         #config logger
         logging.basicConfig(level=logging.DEBUG,
                             format="%(levelname)-7s %(name)s: %(message)s")
-        
+
         rotate_mb = 1 #1mb = 1*1024*1024
         rotating = logging.handlers.RotatingFileHandler(cons.LOG_FILE, mode="ab", maxBytes=rotate_mb*1024*1024, backupCount=5)
         rotating.setLevel(logging.INFO)

@@ -107,10 +107,10 @@ class PluginsCore:
                 logger.debug(err)
         return page
     
-    def get_match(self, pattern, page):
+    def get_match(self, pattern, page, warning=True):
         if self.is_running():
             m = re.search(pattern, page, re.S)
-            if m is None:
+            if warning and m is None:
                 logger.warning("Pattern not found: %s" % pattern)
             return m
         return None
@@ -133,7 +133,7 @@ class PluginsCore:
     def validate(self, err_list, page):
         if self.is_running():
             for err in err_list:
-                if self.get_match(err, page) is not None:
+                if self.get_match(err, page, False) is not None:
                     self.err_msg = err
                     logger.warning(err)
 
