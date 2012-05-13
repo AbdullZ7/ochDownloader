@@ -54,7 +54,7 @@ class Starter:
         rotating.setLevel(logging.INFO)
         rotating.setFormatter(logging.Formatter(cons.LOG_FORMAT))
         logging.getLogger("").addHandler(rotating)
-        
+
         #rotating.doRollover() #write on a new log file, rotate the previous one.
         
         #doRotate()

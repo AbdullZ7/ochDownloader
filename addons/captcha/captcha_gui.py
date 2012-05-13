@@ -123,9 +123,9 @@ class CaptchaDlg(QDialog):
     
     def on_cancel(self):
         filter_host = [download_item.host for download_item in api.get_active_downloads().itervalues()
-                            if download_item.time > 0]
+                        if download_item.time > 0]
         filter_id_items = [id_item for id_item, download_item in api.get_queue_downloads().iteritems()
-                                    if download_item.host in filter_host]
+                            if download_item.host in filter_host]
         api.stop_all(filter_host)
         rows_buffer = self.parent.downloads.rows_buffer
         stopped_icon = self.parent.downloads.icons_dict[cons.STATUS_STOPPED]
