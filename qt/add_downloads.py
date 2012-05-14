@@ -186,7 +186,7 @@ class AddDownloads(QVBoxLayout):
         id_items_list = []
         iters = []
         for row in self.items:
-            if row[1] and row[2] != cons.LINK_DEAD and row[4] != cons.UNSUPPORTED:
+            if row[1] and row[4] != cons.UNSUPPORTED: #tmp
                 iters.append(row)
                 id_item = row[0]
                 id_items_list.append(id_item)
@@ -213,6 +213,7 @@ class AddDownloads(QVBoxLayout):
         for download_item in items_list:
             try:
                 row = self.rows_buffer[download_item.id]
+                row[1] = True if download_item.link_status != cons.LINK_DEAD else False
                 row[2] = download_item.link_status
                 row[3] = download_item.name
                 row[4] = download_item.host
