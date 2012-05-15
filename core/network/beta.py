@@ -123,6 +123,7 @@ class MultiDownload(DownloaderCore):
 
     def thread_download_(self, fh, i, chunk):
         #master thread wont retry.
+        is_downloading = False
         buffer_list = []
         len_buffer_data = 0
         complete = 0
@@ -152,7 +153,8 @@ class MultiDownload(DownloaderCore):
                     with self.lock3:
                         if self.chunks_control[i]:
                             self.chunks_control[i] = False
-                        else:
+                            is_downloading = True
+                        elif not is_downloading: #may be retrying
                             raise CanNotRun('Another thread has taken over this chunk.')
 
                     while True:
