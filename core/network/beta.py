@@ -21,9 +21,9 @@ MAX_CONN = 10 #0 a 4 = 5, >>> if MAX_CONN < len(self.dict_position): MAX_CONN ==
 DATA_BUFSIZ = 64 * 1024 #64K.
 
 
-class ChunkComplete(Exception): pass
 class BadSource(Exception): pass
 class CanNotRun(Exception): pass
+class IncompleteChunk(Exception): pass
 
 
 class MultiDownload(DownloaderCore):
@@ -57,12 +57,12 @@ class MultiDownload(DownloaderCore):
 
     # ////////////////////// Beta stuff...
 
-    def spawn_thread(self, fh, i, chunks_tuple):
+    def spawn_thread(self, fh, i, chunk):
         """"""
         #Requested Range Not Satisfiable, bug.
-        if chunks_tuple[1] is None and chunks_tuple[0] > 0:
-            chunks_tuple = (chunks_tuple[0] - 1, None)
-        th = threading.Thread(group=None, target=self.thread_download, name=None, args=(fh, i, chunks_tuple))
+        #if chunk[1] is None and chunk[0] > 0:
+            #chunk = (chunk[0] - 1, None)
+        th = threading.Thread(group=None, target=self.thread_download, name=None, args=(fh, i, chunk))
         th.start()
         return th
 
@@ -96,8 +96,8 @@ class MultiDownload(DownloaderCore):
 
         self.chunks_control = [True for _ in self.chunks] #can_run
 
-        th_list = [self.spawn_thread(fh, i, chunks_tuple) for i, chunks_tuple in enumerate(self.chunks[:])
-                   if chunks_tuple[1] is None or chunks_tuple[0] < chunks_tuple[1]] #range_start may be bigger than range_end at the end by 1 byte (1025, 1024) coz it starts on 0.
+        th_list = [self.spawn_thread(fh, i, chunk) for i, chunk in enumerate(self.chunks[:])]
+                   #if chunk[1] is None or chunk[0] < chunk[1]] #range_start may be bigger than range_end at the end by 1 byte (1025, 1024) coz it starts on 0.
 
         for th in th_list:
             th.join()
@@ -112,6 +112,8 @@ class MultiDownload(DownloaderCore):
             return True
         return False
 
+    def is_chunk_complete(self, chunk, complete):
+        return True
 
     def get_source(self, chunk):
         #if self.is_master():
@@ -168,6 +170,8 @@ class MultiDownload(DownloaderCore):
                             self.size_complete += len_data
 
                         if complete >= chunk[1] - chunk[0]:
+                            #if not self.is_chunk_complete(chunk, complete):
+                                #raise IncompleteChunk('Incomplete chunk')
                             i += 1
                             with self.lock2: #safe.
                                 with self.lock3:
@@ -186,10 +190,13 @@ class MultiDownload(DownloaderCore):
 
 
 
-
+            except IncompleteChunk as err:
+                #master included
+                #propagate
+                return
             except (BadSource, CanNotRun) as err:
                 #not master
-                #propagate
+                #do not propagate
                 return
             except (urllib2.URLError, httplib.HTTPException, socket.error) as err:
                 #if self.is_master():
