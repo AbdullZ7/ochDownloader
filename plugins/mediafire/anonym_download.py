@@ -17,7 +17,7 @@ class PluginDownload(PluginsCore):
         link = self.link
         c_pattern = 'http://www.google.com/recaptcha/api/challenge\?k=(?P<key>.*?)"'
         page = self.recaptcha(c_pattern, self.get_page(link))
-        file_id = self.link.split('/?')[-1]
+        file_id = self.link.split('?')[-1]
         s_pattern = '(?P<link>[^"]+/%s/[^"]+)' % file_id
         self.source = self.click(s_pattern, page, False)
 
