@@ -61,13 +61,11 @@ class PluginsCore:
     def click(self, pattern, page, close=True):
         #find link and return source.
         if self.is_running():
-            m = re.search(pattern, page, re.S)
+            m = self.get_match(pattern, page)
             if m is not None:
                 link = m.group('link')
                 #default = page if close else None
                 return self.get_page(link, close=close)
-            else:
-                logger.warning("Pattern not found: %s" % pattern)
         #not running or pattern not found
         if close:
             return page
@@ -78,7 +76,7 @@ class PluginsCore:
         if extra_fields:
             form_list.extend(extra_fields)
         page = self.get_page(self.next_link, form=form_list, default=page)
-        m = re.search(pattern, page, re.S)
+        m = self.get_match(pattern, page)
         return (m, page)
     
     def recaptcha(self, pattern, page, extra_fields=None):
@@ -86,7 +84,7 @@ class PluginsCore:
         #return source
         if self.is_running():
             try:
-                m = re.search(pattern, page, re.S)
+                m = self.get_match(pattern, page)
                 if m is not None:
                     link = "http://www.google.com/recaptcha/api/challenge?k=%s" % m.group('key')
                     for retry in range(3):
@@ -100,7 +98,6 @@ class PluginsCore:
                               raise CaptchaException("No response from the user")
                     raise CaptchaException("Captcha, max retries reached")
                 else:
-                    logger.warning("Pattern not found: %s" % pattern)
                     return page
             except CaptchaException as err:
                 self.err_msg = err
@@ -108,6 +105,7 @@ class PluginsCore:
         return page
     
     def get_match(self, pattern, page, warning=True):
+        #TODO: re.search does not releases the GIL. Searching line by line is wiser.
         if self.is_running():
             m = re.search(pattern, page, re.S)
             if warning and m is None:
@@ -117,7 +115,7 @@ class PluginsCore:
     
     def countdown(self, pattern, page, limit, default):
         if self.is_running():
-            m = re.search(pattern, page, re.S)
+            m = self.get_match(pattern, page)
             if m is not None:
                 wait = int(m.group('count'))
                 if wait >= limit:
@@ -127,7 +125,6 @@ class PluginsCore:
                 else:
                     self.wait_func(wait)
             else:
-                logger.warning("Pattern not found: %s" % pattern)
                 self.wait_func(default)
 
     def validate(self, err_list, page):
