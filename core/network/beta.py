@@ -7,10 +7,10 @@ import time #usado en get_speed
 import copy
 import threading
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+logger = logging.getLogger(__name__)
 
 import core.cons as cons
-from connection import URLOpen, URLClose
+from connection import URLClose, request
 
 from downloader_core import DownloaderCore
 
@@ -19,6 +19,7 @@ BUFFER_SIZE = 8192 #4096 #Downloader class. 4Kb
 NT_BUFSIZ = 8 * 1024 #8K. Network buffer.
 MAX_CONN = 10 #0 a 4 = 5, >>> if MAX_CONN < len(self.dict_position): MAX_CONN == len(self.dict_position)
 DATA_BUFSIZ = 64 * 1024 #64K.
+START, END = range(2)
 
 
 class BadSource(Exception): pass
@@ -28,8 +29,10 @@ class IncompleteChunk(Exception): pass
 
 class MultiDownload(DownloaderCore):
     """"""
-    def __init__(self, file_name, path_fsaved, link, host, bucket, chunks): #bucket = instancia de algoritmo para limitar la banda. get_source = metodo de plugin_bridge
-        """"""
+    def __init__(self, file_name, path_fsaved, link, host, bucket, chunks):
+        """
+        bucket = instancia de algoritmo para limitar la banda. get_source = metodo de plugin_bridge
+        """
         DownloaderCore.__init__(self, file_name, path_fsaved, link, host, bucket)
 
         #Threading stuff
@@ -38,9 +41,6 @@ class MultiDownload(DownloaderCore):
 
 
         #resume stuff
-        #NO HACER self.dict_position = dict_position porq tendrian la mismas referencias (si uno cambia el otro tmb)
-        #self.dict_chunks = dict_chunks.copy() #{conn_num: [int_start, int_end], } dict.copy() shallow copy es seguro solo para objetos inmutables (string, int) no listas, referencias a clases, etc.
-        #self.dict_chunks = copy.deepcopy(dict_chunks)
         try:
             self.chunks = chunks[:] #shallow copy
         except TypeError:
@@ -72,7 +72,7 @@ class MultiDownload(DownloaderCore):
         chunks = []
         start = 0
         while True:
-            end = start + chunk_size if (start + chunk_size) < self.size_file else None #start + chunk_size - 1 to avoid overlapping
+            end = start + chunk_size if (start + chunk_size) < self.size_file else None
             chunks.append((start, end))
             start += chunk_size
             if end is None:
@@ -83,8 +83,8 @@ class MultiDownload(DownloaderCore):
         complete = 0
         tmp = 0
         for chunk_tup in self.chunks:
-            complete += chunk_tup[0] - tmp
-            tmp = chunk_tup[1]
+            complete += chunk_tup[START] - tmp
+            tmp = chunk_tup[END]
         return complete
 
     def threaded_download_manager(self, fh):
@@ -103,7 +103,7 @@ class MultiDownload(DownloaderCore):
             th.join()
 
     def is_master(self, chunk): #or pass is_master to thread_download
-        master = True if chunk[0] == self.content_range else False
+        master = True if chunk[START] == self.content_range else False
         return master
 
     def is_valid(self, source):
@@ -115,15 +115,16 @@ class MultiDownload(DownloaderCore):
     def is_chunk_complete(self, chunk, complete):
         return True
 
-    def get_source(self, chunk):
-        #if self.is_master():
-            #source = self.source
-        source = self.source
-        return source
+    def get_source(self, chunk, complete):
+        if self.is_master(chunk):
+            return self.source
+        else:
+            return request.get(self.link_file, cookie=self.cookie, range=(chunk[0] + complete, None))
 
-    def thread_download_(self, fh, i, chunk):
+    def thread_download(self, fh, i, chunk):
         #master thread wont retry.
-        is_downloading = False
+        #is_downloading = False
+        is_master = self.is_master(chunk)
         buffer_list = []
         len_buffer_data = 0
         complete = 0
@@ -131,212 +132,104 @@ class MultiDownload(DownloaderCore):
             buf_data = ''.join(buffer_list)
             try:
                 with self.lock1:
-                    fh.seek(chunk[0] + complete - len_buffer_data)
+                    #flush buffer
+                    fh.seek(chunk[START] + complete - len_buffer_data)
                     fh.write(buf_data)
                 with self.lock2:
-                    start = chunk[0] + complete
-                    self.chunks[i] = (start, self.chunks[i][1])
+                    self.chunks[i] = (chunk[START] + complete, self.chunks[i][END])
                 del buffer_list[:]
-                len_buffer_data = 0
             except EnvironmentError as err:
                 logger.exception(err)
                 self.error_flag = True
                 self.status_msg = "Error: {0}".format(err)
 
-        for retry in range(3):
-            try:
+        #for retry in range(3):
+        try:
 
-                with URLClose(self.get_source(chunk)) as s:
-                    if not self.is_master(chunk) and not self.is_valid(s):
-                        raise BadSource('Link expired, or cant download the requested range.')
+            with URLClose(self.get_source(chunk, complete)) as s:
+                if not self.is_master(chunk) and not self.is_valid(s):
+                    raise BadSource('Link expired, or cant download the requested range.')
 
-                    with self.lock3:
-                        if self.chunks_control[i]:
-                            self.chunks_control[i] = False
-                            is_downloading = True
-                        elif not is_downloading: #may be retrying
-                            raise CanNotRun('Another thread has taken over this chunk.')
+                with self.lock3:
+                    if self.chunks_control[i]:
+                        self.chunks_control[i] = False
+                        #is_downloading = True
+                    else: #elif not is_downloading: #may be retrying
+                        raise CanNotRun('Another thread has taken over this chunk.')
 
-                    while True:
-                        data = s.read(NT_BUFSIZ)
-                        len_data = len(data)
+                while True:
+                    data = s.read(NT_BUFSIZ)
+                    len_data = len(data)
 
-                        buffer_list.append(data)
-                        len_buffer_data += len_data
-                        complete += len_data
+                    buffer_list.append(data)
+                    len_buffer_data += len_data
+                    complete += len_data
 
-                        if len_buffer_data >= DATA_BUFSIZ:
-                            flush_buffer()
+                    if len_buffer_data >= DATA_BUFSIZ:
+                        flush_buffer()
+                        len_buffer_data = 0
 
-                        with self.lock2:
-                            self.size_complete += len_data
+                    with self.lock2:
+                        self.size_complete += len_data
 
-                        if complete >= chunk[1] - chunk[0]:
-                            #if not self.is_chunk_complete(chunk, complete):
-                                #raise IncompleteChunk('Incomplete chunk')
-                            i += 1
-                            with self.lock2: #safe.
-                                with self.lock3:
-                                    try:
-                                        if self.chunks_control[i] and chunk[1] == self.chunks[i][0]: #on resume, end from the current segment must be equal to start from the next one.
-                                            chunk = self.chunks[i]
-                                            self.chunks_control[i] = False
-                                        #elif self.chunks_control[i]:
-                                            #raise CantResume('cant resume next chunk')
-                                        else:
-                                            return
-                                    except IndexError:
-                                        return
-                            complete = 0
-                            len_buffer_data = 0
+                    if self.stop_flag or self.error_flag:
+                        return
 
-
-
-            except IncompleteChunk as err:
-                #master included
-                #propagate
-                return
-            except (BadSource, CanNotRun) as err:
-                #not master
-                #do not propagate
-                return
-            except (urllib2.URLError, httplib.HTTPException, socket.error) as err:
-                #if self.is_master():
-                    #propagate
-                #else:
-                    #retry
-                return
-            except EnvironmentError as err:
-                #propagate
-                return
-            finally:
-                flush_buffer()
-
-
-    def thread_download(self, fh, i, chunk_range):
-        print "beta"
-        complete = 0
-        running_flag = False
-        while True:
-            try:
-                #if not is_resuming: self.content_range = 0
-                if chunk_range[0] == self.content_range and not running_flag:
-                    s = self.source
-                    running_flag = True
-                else:
-                    with URLClose(URLOpen(self.cookie).open(self.link_file, range=(chunk_range[0] + complete, None)), always_close=False) as source:
-                        s = source
-                with URLClose(s) as source:
-                    info = source.info()
-                    if self.size_file != self.get_content_size(info): #and content-len != self.size_file
-                        if running_flag:
-                            raise EnvironmentError("Link expired, or cant download the requested range.")
-                            #print "Link expired, or cant download the requested range."
-                        else:
-                            return
-
-                    with self.lock3:
-                        if self.chunks_control[i]: #can run?
-                            self.chunks_control[i] = False
-                            running_flag = True
-                        elif not running_flag:
-                            return
-
-                    while True:
-                        while True:
-                            data = source.read(BUFFER_SIZE)
-                            with self.lock1:
-                                fh.seek(chunk_range[0] + complete)
-                                fh.write(data)
-                            with self.lock2:
-                                self.size_complete += len(data)
-                                self.chunks[i] = (chunk_range[0] + complete + len(data), self.chunks[i][1])
-                            complete += len(data)
-                            if self.stop_flag or self.error_flag: #len(data) == 0
-                                return
-                            if not len(data) or (chunk_range[1] and complete >= (chunk_range[1] - chunk_range[0])): #should be equal.
-                                logger.debug("{0}, {1}".format(complete, chunk_range[1] - chunk_range[0] if chunk_range[1] else self.size_file - chunk_range[0]))
-                                break
-
-                                #buffer_size = global_buffer_size
-                                #if complete >= (chunk_range[1] - chunk_range[0] + buffer_size):
-                                #buffer_size = lo q resta.
-
-                                #content_len = 0
-                                #if chunk_range[1] is not None:
-                                #content_len = chunk_range[1] - chunk_range[0] # + 1
-                                #print content_len, complete #error
-                                #elif self.size_file and self.size_file > chunk_range[0]:
-                                #content_len = self.size_file - chunk_range[0]
-                                #print content_len, complete #error
-                                #if content_len and content_len > complete:
-                                #print content_len, complete #error
-                                #raise EnvironmentError("Incomplete chunk")
-
-                        i += 1
+                    if not len_data or (chunk[END] is not None and complete >= chunk[END] - chunk[START]):
+                    #if not self.is_chunk_complete(chunk, complete):
+                    #raise IncompleteChunk('Incomplete chunk')
                         with self.lock2: #safe.
                             with self.lock3:
                                 try:
-                                    if self.chunks_control[i] and self.chunks[i][0] == chunk_range[1] : #on resume, end from the current segment must be equal to start from the next one.
-                                        self.chunks_control[i] = False
+                                    i_ = i + 1
+                                    if self.chunks_control[i_] and chunk[END] == self.chunks[i_][START]: #on resume, end from the current segment must be equal to start from the next one.
+                                        chunk = (chunk[START], self.chunks[i_][END]) #in case chunk[START] > self.chunks[i_][START] ?
+                                        self.chunks_control[i_] = False
+                                    elif not self.chunks_control[i_]:
+                                        raise CanNotRun('Can not resume next chunk')
                                     else:
                                         return
                                 except IndexError:
                                     return
-                            chunk_range = self.chunks[i]
-                        complete = 0
+                                else:
+                                    i += 1
 
-            except Exception as err: #excepciones en Threads no pueden ser delegadas.
-                logger.exception(err)
+        except IncompleteChunk as err:
+            #master included
+            #propagate
+            logger.exception(err)
+            self.error_flag = True
+            self.status_msg = "Error: {0}".format(err)
+            return
+        except (BadSource, CanNotRun) as err:
+            #not master
+            #do not propagate
+            logger.debug(err)
+            return
+        except (urllib2.URLError, httplib.HTTPException, socket.error) as err:
+            if is_master:
+                #propagate
+                logger.warning(err)
                 self.error_flag = True
-                self.status_msg = "Error: {0}".format(err) #operaciones atomicas. No necesita lock.
-                return
+                self.status_msg = "Error: {0}".format(err)
             else:
-                return
+                logger.debug(err)
+                #retry
+            return
+        except EnvironmentError as err:
+            #propagate
+            logger.exception(err)
+            self.error_flag = True
+            self.status_msg = "Error: {0}".format(err)
+            return
+        finally:
+            flush_buffer()
+
 
 if __name__ == "__main__":
-    chunks = [(0, 10), (30, None), (30, 30), (10, 30)]
-    print sorted(chunks)
-    chunks_ = [chunks_tuple for chunks_tuple in chunks if chunks_tuple[0] != chunks_tuple[1]]
-    print sorted(chunks_)
-
-    chunk_size = (self.size_file / MAX_CONN) + (self.size_file % MAX_CONN)
-    chunk_size += (chunk_size % BUFFER_SIZE) #multipo del buffer
-    lock3 = threading.Lock()
-    chunks_control = [(False, True) for _ in self.chunks] #(running, can_run)
-
-    def thread_download(fh, i, chunks_tuple):
-        complete = 0
-        is_running = False
-        while True:
-            try:
-                with URLOpen(link, range=(chunks_tuple[0], None)) as source:
-                    with lock3:
-                        if chunks_control[i][1]: #can run?
-                            chunks_control[i] = (True, False)
-                            is_running = True
-                        elif not is_running:
-                            return
-                    while True:
-                        while True:
-                            data = source.read(BUFFER_SIZE)
-                            with lock1:
-                                fh.write(data)
-                            with lock2:
-                                self.chunks[i] = (chunk_range[0]+complete, self.chunks[i][1])
-                            complete += len(data)
-                            if not len(data) or complete >= chunks_tuple[1]:
-                                break
-                        with lock3:
-                            i += 1
-                            if i > len(chunks_control) - 1: #no more chunks.
-                                return
-                            if chunks_control[i][1]: #can run?
-                                chunks_control[i] = (True, False)
-                            else:
-                                return
-
-                        with self.lock2:
-                            chunk_range = self.chunks[i]
-            except:
-                return
+    my_local = 1
+    def some():
+        global my_local
+        my_local = 2
+    some()
+    print my_local
