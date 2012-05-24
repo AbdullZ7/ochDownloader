@@ -25,6 +25,7 @@ START, END = range(2)
 class BadSource(Exception): pass
 class CanNotRun(Exception): pass
 class IncompleteChunk(Exception): pass
+class CanNotResume(Exception): pass
 
 
 class MultiDownload(DownloaderCore):
@@ -121,39 +122,60 @@ class MultiDownload(DownloaderCore):
         else:
             return request.get(self.link_file, cookie=self.cookie, range=(chunk[0] + complete, None))
 
+    def dl_next_chunk(self, chunk, i):
+        with self.lock2: #safe.
+            with self.lock3:
+                try:
+                    if self.chunks_control[i] and chunk[END] == self.chunks[i][START]: #on resume, end from the current segment must be equal to start from the next one.
+                        self.chunks_control[i] = False
+                        chunk = (chunk[START], self.chunks[i][END]) #in case chunk[START] > self.chunks[i_][START] ?
+                    elif not self.chunks_control[i]:
+                        raise CanNotRun('Next chunk is downloading')
+                    else:
+                        raise CanNotResume('Can not resume next chunk')
+                except IndexError:
+                    return False, chunk
+        return True, chunk
+
+    def set_err(self, err):
+        logger.exception(err)
+        self.error_flag = True
+        self.status_msg = "Error: {0}".format(err)
+
+    def flush_buffer(self, fh, i, chunk, complete, buf_list, len_buf):
+        buf_data = ''.join(buf_list)
+        try:
+            with self.lock1:
+                #flush buffer
+                fh.seek(chunk[START] + complete - len_buf)
+                fh.write(buf_data)
+            with self.lock2:
+                self.chunks[i] = (chunk[START] + complete, self.chunks[i][END])
+            del buf_list[:]
+        except EnvironmentError as err:
+            self.set_err(err)
+
     def thread_download(self, fh, i, chunk):
         #master thread wont retry.
-        #is_downloading = False
+        #downloading wont retry.
+        #not downloading and not master will retry.
+        is_downloading = False
         is_master = self.is_master(chunk)
-        buffer_list = []
-        len_buffer_data = 0
+        buf_list = []
+        len_buf = 0
         complete = 0
-        def flush_buffer():
-            buf_data = ''.join(buffer_list)
-            try:
-                with self.lock1:
-                    #flush buffer
-                    fh.seek(chunk[START] + complete - len_buffer_data)
-                    fh.write(buf_data)
-                with self.lock2:
-                    self.chunks[i] = (chunk[START] + complete, self.chunks[i][END])
-                del buffer_list[:]
-            except EnvironmentError as err:
-                logger.exception(err)
-                self.error_flag = True
-                self.status_msg = "Error: {0}".format(err)
 
         #for retry in range(3):
         try:
 
             with URLClose(self.get_source(chunk, complete)) as s:
-                if not self.is_master(chunk) and not self.is_valid(s):
+                if not is_master and not self.is_valid(s):
                     raise BadSource('Link expired, or cant download the requested range.')
 
                 with self.lock3:
                     if self.chunks_control[i]:
                         self.chunks_control[i] = False
-                        #is_downloading = True
+                        is_downloading = True
                     else: #elif not is_downloading: #may be retrying
                         raise CanNotRun('Another thread has taken over this chunk.')
 
@@ -161,13 +183,13 @@ class MultiDownload(DownloaderCore):
                     data = s.read(NT_BUFSIZ)
                     len_data = len(data)
 
-                    buffer_list.append(data)
-                    len_buffer_data += len_data
+                    buf_list.append(data)
+                    len_buf += len_data
                     complete += len_data
 
-                    if len_buffer_data >= DATA_BUFSIZ:
-                        flush_buffer()
-                        len_buffer_data = 0
+                    if len_buf >= DATA_BUFSIZ:
+                        self.flush_buffer(fh, i, chunk, complete, buf_list, len_buf)
+                        len_buf = 0
 
                     with self.lock2:
                         self.size_complete += len_data
@@ -176,54 +198,38 @@ class MultiDownload(DownloaderCore):
                         return
 
                     if not len_data or (chunk[END] is not None and complete >= chunk[END] - chunk[START]):
-                    #if not self.is_chunk_complete(chunk, complete):
-                    #raise IncompleteChunk('Incomplete chunk')
-                        with self.lock2: #safe.
-                            with self.lock3:
-                                try:
-                                    i_ = i + 1
-                                    if self.chunks_control[i_] and chunk[END] == self.chunks[i_][START]: #on resume, end from the current segment must be equal to start from the next one.
-                                        chunk = (chunk[START], self.chunks[i_][END]) #in case chunk[START] > self.chunks[i_][START] ?
-                                        self.chunks_control[i_] = False
-                                    elif not self.chunks_control[i_]:
-                                        raise CanNotRun('Can not resume next chunk')
-                                    else:
-                                        return
-                                except IndexError:
-                                    return
-                                else:
-                                    i += 1
+                        #if not self.is_chunk_complete(chunk, complete):
+                            #raise IncompleteChunk('Incomplete chunk')
+                        can_download, chunk = self.dl_next_chunk(chunk, i + 1)
+                        if can_download:
+                            i += 1
+                        else:
+                            return
 
-        except IncompleteChunk as err:
+        except (IncompleteChunk, CanNotResume) as err:
             #master included
             #propagate
-            logger.exception(err)
-            self.error_flag = True
-            self.status_msg = "Error: {0}".format(err)
+            self.set_err(err)
             return
         except (BadSource, CanNotRun) as err:
-            #not master
+            #not master (CanNotRun does not matter)
             #do not propagate
             logger.debug(err)
             return
         except (urllib2.URLError, httplib.HTTPException, socket.error) as err:
-            if is_master:
+            if is_master or is_downloading:
                 #propagate
-                logger.warning(err)
-                self.error_flag = True
-                self.status_msg = "Error: {0}".format(err)
+                self.set_err(err)
             else:
                 logger.debug(err)
                 #retry
             return
         except EnvironmentError as err:
             #propagate
-            logger.exception(err)
-            self.error_flag = True
-            self.status_msg = "Error: {0}".format(err)
+            self.set_err(err)
             return
         finally:
-            flush_buffer()
+            self.flush_buffer(fh, i, chunk, complete, buf_list, len_buf)
 
 
 if __name__ == "__main__":
