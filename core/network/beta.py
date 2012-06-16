@@ -17,7 +17,7 @@ from downloader_core import DownloaderCore
 
 BUFFER_SIZE = 8192 #4096 #Downloader class. 4Kb
 NT_BUFSIZ = 8 * 1024 #8K. Network buffer.
-MAX_CONN = 10 #0 a 4 = 5, >>> if MAX_CONN < len(self.dict_position): MAX_CONN == len(self.dict_position)
+MAX_CONN = 5 #0 a 4 = 5, >>> if MAX_CONN < len(self.dict_position): MAX_CONN == len(self.dict_position)
 DATA_BUFSIZ = 64 * 1024 #64K.
 START, END = range(2)
 
@@ -134,8 +134,8 @@ class MultiDownload(DownloaderCore):
                     else:
                         raise CanNotResume('Can not resume next chunk')
                 except IndexError:
-                    return False, chunk
-        return True, chunk
+                    raise CanNotRun('No more chunks left')
+        return chunk
 
     def set_err(self, err):
         logger.exception(err)
@@ -176,7 +176,7 @@ class MultiDownload(DownloaderCore):
                     if self.chunks_control[i]:
                         self.chunks_control[i] = False
                         is_downloading = True
-                    else: #elif not is_downloading: #may be retrying
+                    elif not is_downloading: #may be retrying
                         raise CanNotRun('Another thread has taken over this chunk.')
 
                 while True:
@@ -200,11 +200,10 @@ class MultiDownload(DownloaderCore):
                     if not len_data or (chunk[END] is not None and complete >= chunk[END] - chunk[START]):
                         #if not self.is_chunk_complete(chunk, complete):
                             #raise IncompleteChunk('Incomplete chunk')
-                        can_download, chunk = self.dl_next_chunk(chunk, i + 1)
-                        if can_download:
-                            i += 1
-                        else:
-                            return
+                        chunk = self.dl_next_chunk(chunk, i + 1)
+                        i += 1
+                        print "keep dl {0} {1}".format(chunk[START], chunk[END])
+                print "complete {0} {1}".format(chunk[START], chunk[END])
 
         except (IncompleteChunk, CanNotResume) as err:
             #master included
