@@ -114,6 +114,17 @@ class MultiDownload(DownloaderCore):
         return False
 
     def is_chunk_complete(self, chunk, complete):
+        content_len = 0
+        if chunk[END] is not None:
+            content_len = chunk[END] - chunk[START] + 1
+            print content_len, complete #error
+        elif self.size_file and self.size_file > chunk[START]:
+            content_len = self.size_file - chunk[START]
+            print content_len, complete #error
+
+        if content_len and complete < content_len:
+            #print content_len, complete #error
+            return False
         return True
 
     def get_source(self, chunk, complete):
@@ -167,7 +178,6 @@ class MultiDownload(DownloaderCore):
 
         #for retry in range(3):
         try:
-
             with URLClose(self.get_source(chunk, complete)) as s:
                 if not is_master and not self.is_valid(s):
                     raise BadSource('Link expired, or cant download the requested range.')
@@ -198,12 +208,12 @@ class MultiDownload(DownloaderCore):
                         return
 
                     if not len_data or (chunk[END] is not None and complete >= chunk[END] - chunk[START]):
-                        #if not self.is_chunk_complete(chunk, complete):
-                            #raise IncompleteChunk('Incomplete chunk')
+                        if not self.is_chunk_complete(chunk, complete):
+                            raise IncompleteChunk('Incomplete chunk')
+                        print "complete {0} {1}".format(chunk[START], chunk[END])
                         chunk = self.dl_next_chunk(chunk, i + 1)
                         i += 1
                         print "keep dl {0} {1}".format(chunk[START], chunk[END])
-                print "complete {0} {1}".format(chunk[START], chunk[END])
 
         except (IncompleteChunk, CanNotResume) as err:
             #master included

@@ -1,10 +1,10 @@
 import os
 import sys
 import urllib
-import threading #este modulo se ejecutara en varios hilos. Un hilo distinto cada vez q se llame.
-import time #usado en get_speed
+import threading
+import time
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+logger = logging.getLogger(__name__)
 
 #Local Libs
 import core.cons as cons
@@ -12,27 +12,23 @@ import core.misc as misc #html entities and numerics parser, etc
 from core.plugins_bridge import PluginBridge
 
 #diamond pattern
-from single_download import SingleDownload
-from multi_download import MultiDownload
+from beta import MultiDownload #from multi_download import MultiDownload
 
 
 class StatusError(Exception): pass
 class StatusStopped(Exception): pass
 
 
-class Downloader(threading.Thread, SingleDownload, MultiDownload):
+class Downloader(threading.Thread, MultiDownload):
     """"""
-    def __init__(self, file_name, path_fsaved, link, host, bucket, chunks): #bucket = instancia de algoritmo para limitar la banda. get_source = metodo de plugin_bridge
-        """
-        Diamond Pattern
-        """
+    def __init__(self, file_name, path_fsaved, link, host, bucket, chunks):
+        """"""
         threading.Thread.__init__(self) #iniciar threading.Thread
-        SingleDownload.__init__(self, file_name, path_fsaved, link, host, bucket)
         MultiDownload.__init__(self, file_name, path_fsaved, link, host, bucket, chunks)
         
         self.limit_exceeded = False
 
-    def run(self): #sobreescribir el metodo de la clase heredada threading.Thread
+    def run(self):
         """"""
         try:
             self.__file_existence_check()
@@ -56,16 +52,13 @@ class Downloader(threading.Thread, SingleDownload, MultiDownload):
     def __file_existence_check(self):
         """"""
         try:
-            if not os.path.exists(self.path_fsaved): #si no existe el directorio, crearlo
+            if not os.path.exists(self.path_fsaved):
                 os.makedirs(self.path_fsaved)
             elif os.path.isfile(self.path_file):
                 self.file_exists = True
                 if self.chunks:
                     self.content_range = min([chunks_tuple[0] for chunks_tuple in self.chunks
-                                            if chunks_tuple[0] <= chunks_tuple[1]]) #{conn_num: [int_start, int_end], }
-                                            #if chunks_tuple[0] < chunks_tuple[1]]) #beta downloader
-                else:
-                    self.content_range = os.path.getsize(self.path_file)
+                                            if chunks_tuple[0] < chunks_tuple[1]])
         except EnvironmentError as err:
             logger.exception(err)
             raise StatusError(err)
@@ -78,7 +71,8 @@ class Downloader(threading.Thread, SingleDownload, MultiDownload):
         if self.stop_flag:
             raise StatusStopped("Stopped")
         elif self.source:
-            self.link_file, self.is_premium, self.cookie = pb.dl_link, pb.premium, pb.cookie
+            self.link_file = pb.dl_link
+            self.cookie = pb.cookie
             info = self.source.info()
             #print info.headers
             old_file_name = self.file_name
@@ -87,10 +81,6 @@ class Downloader(threading.Thread, SingleDownload, MultiDownload):
             if self.file_exists and old_file_name != self.file_name:
                 #do not rename the file.
                 raise StatusError("Cant resume, file name has change. Please retry.")
-            #self.size_file = int(info.getheader("Content-Length", 0)) #tamanio a bajar restante.
-            #if info.getheader("Content-Range", None): #resumir?
-                #self.size_file += self.content_range
-                #self.can_resume = True
             self.size_file = self.get_content_size(info) #downloader_core
         else:
             self.limit_exceeded = pb.limit_exceeded
@@ -145,24 +135,10 @@ class Downloader(threading.Thread, SingleDownload, MultiDownload):
             with open(self.path_file, mode, cons.FILE_BUFSIZE) as fh: #archivo en donde se escribira lo que se va leyendo del archivo mientras se descarga.
                 self.start_time = time.time()
                 self.status_msg = "Running"
-                #premium and anonym download.
-                if self.is_premium and self.can_resume:
-                    logger.info("Threaded_download started")
-                    if self.source:
-                        self.source.close()
-                    self.threaded_download_manager(fh)
-                else:
-                    logger.info("Single_download started")
-                    #if self.can_resume and self.file_exists:
-                    if self.resuming and self.file_exists:
-                        self.size_complete = self.content_range
-                        fh.seek(self.content_range)
-                    self.single_download(fh)
-                #ensures data is write to disk.
-                fh.flush()
+                self.threaded_download_manager(fh)
+                fh.flush() #ensures data is write to disk.
                 os.fsync(fh.fileno())
-                #set status
-                if self.stop_flag:
+                if self.stop_flag: #set status
                     raise StatusStopped("Stopped")
                 elif self.error_flag:
                     self.status = cons.STATUS_ERROR #raise StatusError()
@@ -175,10 +151,10 @@ class Downloader(threading.Thread, SingleDownload, MultiDownload):
     def get_remain(self):
         """"""
         try:
-            remain_time =  ((time.time() - self.start_time) / self.size_complete) * (self.size_file - self.size_complete)
+            remain_time = ((time.time() - self.start_time) / self.size_complete) * (self.size_file - self.size_complete)
         except ZeroDivisionError:
             return 0
-        if remain_time < 0:  #si por alguna razon la descarga continua al cumplir el tiempo.
+        if remain_time < 0:
             return 0
         else:
             return remain_time
@@ -211,12 +187,8 @@ class Downloader(threading.Thread, SingleDownload, MultiDownload):
             speed = float(size) / elapsed_time #floated speed.
             self.sp_time = time.time()
             self.sp_size = size_complete
-        #if self.bucket.fill_rate != self.old_rate:
-            #self.sp_deque.clear() #collections.deque
-            #self.old_rate = self.bucket.fill_rate
         self.sp_deque.append(speed)
         deque_speeds = [last_speed for last_speed in self.sp_deque if int(last_speed) > 0]
-        #speed = (speed + sum(deque_speeds)) / (1 + len(deque_speeds))
         try:
             speed = sum(deque_speeds) / len(deque_speeds)
         except ZeroDivisionError:
@@ -227,8 +199,7 @@ class Downloader(threading.Thread, SingleDownload, MultiDownload):
 
 
 if __name__ == "__main__":
-    flo_some = sum((1, 2))
-    print float(flo_some) / 2
+    pass
     
     
     

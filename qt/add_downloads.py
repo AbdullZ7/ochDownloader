@@ -186,7 +186,7 @@ class AddDownloads(QVBoxLayout):
         id_items_list = []
         iters = []
         for row in self.items:
-            if row[1] and row[4] != cons.UNSUPPORTED: #tmp
+            if row[1]: # and row[4] != cons.UNSUPPORTED: #tmp
                 iters.append(row)
                 id_item = row[0]
                 id_items_list.append(id_item)

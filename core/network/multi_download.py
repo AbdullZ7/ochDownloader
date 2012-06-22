@@ -43,10 +43,6 @@ class MultiDownload(DownloaderCore):
             self.chunks = chunks[:] #shallow copy
         except TypeError:
             self.chunks = []
-        
-        #beta stuff...
-        self.chunks_control = []
-        self.lock3 = threading.Lock()
 
     def get_chunk_n_size(self):
         """"""

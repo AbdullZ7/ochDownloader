@@ -18,10 +18,9 @@ OPTION_CAPTCHA_REQUIRED = "captcha_required"
 
 
 DEFAULT = {SECTION_MAIN: {OPTION_SLOTS_LIMIT: "1",
-                                              OPTION_PREMIUM: "False",
-                                              OPTION_CAPTCHA_REQUIRED: "False"},
-                    
-                    }
+                          OPTION_PREMIUM: "False",
+                          OPTION_CAPTCHA_REQUIRED: "False"},
+                        }
 
 
 class _PluginsParser:
