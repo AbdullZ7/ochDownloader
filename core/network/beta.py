@@ -116,7 +116,7 @@ class MultiDownload(DownloaderCore):
     def is_chunk_complete(self, chunk, complete):
         content_len = 0
         if chunk[END] is not None:
-            content_len = chunk[END] - chunk[START] + 1
+            content_len = chunk[END] - chunk[START]
             print content_len, complete #error
         elif self.size_file and self.size_file > chunk[START]:
             content_len = self.size_file - chunk[START]

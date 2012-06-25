@@ -59,7 +59,7 @@ class Downloader(threading.Thread, MultiDownload):
                 if self.chunks:
                     self.content_range = min([chunks_tuple[0] for chunks_tuple in self.chunks
                                             if chunks_tuple[0] < chunks_tuple[1]])
-        except EnvironmentError as err:
+        except (EnvironmentError, ValueError) as err:
             logger.exception(err)
             raise StatusError(err)
     
