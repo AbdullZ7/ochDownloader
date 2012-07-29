@@ -31,8 +31,6 @@ class PluginBridge:
             self.premium = True
         else:
             plugin_download = "anonym_download"
-            if self.host in ("mediafire",): #tmp
-                self.premium = True
         logger.info(plugin_download)
         self.set_data(plugin_download, account_item)
     
