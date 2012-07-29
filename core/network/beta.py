@@ -15,9 +15,8 @@ from connection import URLClose, request
 from downloader_core import DownloaderCore
 
 
-BUFFER_SIZE = 8192 #4096 #Downloader class. 4Kb
 NT_BUFSIZ = 8 * 1024 #8K. Network buffer.
-MAX_CONN = 5 #0 a 4 = 5, >>> if MAX_CONN < len(self.dict_position): MAX_CONN == len(self.dict_position)
+MAX_CONN = 5 #0 to 4
 DATA_BUFSIZ = 64 * 1024 #64K.
 START, END = range(2)
 
@@ -31,52 +30,36 @@ class CanNotResume(Exception): pass
 class MultiDownload(DownloaderCore):
     """"""
     def __init__(self, file_name, path_fsaved, link, host, bucket, chunks):
-        """
-        bucket = instancia de algoritmo para limitar la banda. get_source = metodo de plugin_bridge
-        """
+        """"""
         DownloaderCore.__init__(self, file_name, path_fsaved, link, host, bucket)
 
         #Threading stuff
         self.lock1 = threading.Lock() #lock to write file and modify size_complete attibute.
         self.lock2 = threading.Lock()
-
-
-        #resume stuff
-        try:
-            self.chunks = chunks[:] #shallow copy
-        except TypeError:
-            self.chunks = []
-
-        #beta stuff...
-        self.chunks_control = []
         self.lock3 = threading.Lock()
 
+        self.chunks = chunks[:] if chunks is not None else [] #shallow copy
+        self.chunks_control = []
+
     def get_chunk_n_size(self):
-        """"""
         with self.lock2:
             return self.chunks[:], self.size_complete
 
-    # ////////////////////// Beta stuff...
-
     def spawn_thread(self, fh, i, chunk):
-        """"""
-        #Requested Range Not Satisfiable, bug.
-        #if chunk[1] is None and chunk[0] > 0:
-            #chunk = (chunk[0] - 1, None)
         th = threading.Thread(group=None, target=self.thread_download, name=None, args=(fh, i, chunk))
         th.start()
         return th
 
     def create_chunks(self):
         chunk_size = (self.size_file / MAX_CONN) + (self.size_file % MAX_CONN)
-        chunk_size = ((chunk_size / BUFFER_SIZE) + 1) * BUFFER_SIZE #proximo numero al tamanio del chunk que sea multiplo del buffer
+        chunk_size = ((chunk_size / NT_BUFSIZ) + 1) * NT_BUFSIZ #proximo numero al tamanio del chunk que sea multiplo del buffer
         chunks = []
         start = 0
         while True:
-            end = start + chunk_size if (start + chunk_size) < self.size_file else None
+            end = start + chunk_size if (start + chunk_size) < self.size_file else self.size_file
             chunks.append((start, end))
             start += chunk_size
-            if end is None:
+            if end == self.size_file:
                 break
         return chunks
 
@@ -89,16 +72,15 @@ class MultiDownload(DownloaderCore):
         return complete
 
     def threaded_download_manager(self, fh):
-        """"""
-        if not self.chunks or not self.file_exists:
+        if not self.chunks:
             self.chunks = self.create_chunks()
         else: #resume
             self.size_complete = self.__get_chunks_size_complete()
 
         self.chunks_control = [True for _ in self.chunks] #can_run
 
-        th_list = [self.spawn_thread(fh, i, chunk) for i, chunk in enumerate(self.chunks[:])]
-                   #if chunk[1] is None or chunk[0] < chunk[1]] #range_start may be bigger than range_end at the end by 1 byte (1025, 1024) coz it starts on 0.
+        th_list = [self.spawn_thread(fh, i, chunk) for i, chunk in enumerate(self.chunks[:])
+                   if not chunk[1] or chunk[0] < chunk[1]]
 
         for th in th_list:
             th.join()
@@ -115,15 +97,12 @@ class MultiDownload(DownloaderCore):
 
     def is_chunk_complete(self, chunk, complete):
         content_len = 0
-        if chunk[END] is not None:
+        if self.size_file and self.size_file > chunk[START]:
             content_len = chunk[END] - chunk[START]
-            print content_len, complete #error
-        elif self.size_file and self.size_file > chunk[START]:
-            content_len = self.size_file - chunk[START]
+            print 'is chunk complete'
             print content_len, complete #error
 
         if content_len and complete < content_len:
-            #print content_len, complete #error
             return False
         return True
 
@@ -207,7 +186,7 @@ class MultiDownload(DownloaderCore):
                     if self.stop_flag or self.error_flag:
                         return
 
-                    if not len_data or (chunk[END] is not None and complete >= chunk[END] - chunk[START]):
+                    if not len_data or complete >= (chunk[END] - chunk[START]):
                         if not self.is_chunk_complete(chunk, complete):
                             raise IncompleteChunk('Incomplete chunk')
                         print "complete {0} {1}".format(chunk[START], chunk[END])
@@ -242,9 +221,4 @@ class MultiDownload(DownloaderCore):
 
 
 if __name__ == "__main__":
-    my_local = 1
-    def some():
-        global my_local
-        my_local = 2
-    some()
-    print my_local
+    pass

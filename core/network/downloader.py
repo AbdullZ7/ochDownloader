@@ -25,8 +25,6 @@ class Downloader(threading.Thread, MultiDownload):
         """"""
         threading.Thread.__init__(self) #iniciar threading.Thread
         MultiDownload.__init__(self, file_name, path_fsaved, link, host, bucket, chunks)
-        
-        self.limit_exceeded = False
 
     def run(self):
         """"""
@@ -56,9 +54,10 @@ class Downloader(threading.Thread, MultiDownload):
                 os.makedirs(self.path_fsaved)
             elif os.path.isfile(self.path_file):
                 self.file_exists = True
-                if self.chunks:
-                    self.content_range = min([chunks_tuple[0] for chunks_tuple in self.chunks
-                                            if chunks_tuple[0] < chunks_tuple[1]])
+                start_chunks = [chunks_tuple[0] for chunks_tuple in self.chunks
+                                if chunks_tuple[0] < chunks_tuple[1]]
+                if start_chunks:
+                    self.content_range = min(start_chunks)
         except (EnvironmentError, ValueError) as err:
             logger.exception(err)
             raise StatusError(err)
@@ -125,7 +124,7 @@ class Downloader(threading.Thread, MultiDownload):
     
     def __download(self):
         """"""
-        if self.can_resume and self.file_exists:
+        if self.resuming and self.file_exists and self.content_range > 0:
             mode = "r+b" #leer y escribir en la posicion deseada con seek.
         else:
             mode = "wb"
@@ -141,7 +140,7 @@ class Downloader(threading.Thread, MultiDownload):
                 if self.stop_flag: #set status
                     raise StatusStopped("Stopped")
                 elif self.error_flag:
-                    self.status = cons.STATUS_ERROR #raise StatusError()
+                    raise StatusError(self.status_msg)
                 else:
                     self.status, self.status_msg = cons.STATUS_FINISHED, "Finished"
         except EnvironmentError as err: #EnvironmentError incluye urllib2.URLError

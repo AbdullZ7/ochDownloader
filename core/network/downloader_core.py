@@ -23,6 +23,7 @@ class DownloaderCore:
         self.size_complete = 0
         self.start_time = 0
         self.file_exists = False
+        self.limit_exceeded = False
         
         #get_speed stuff
         self.sp_size = 0
