@@ -1,6 +1,6 @@
 Requirements and Dependencies:
 Python 2.7.3
-PySide 1.1.0
+PySide 1.1.1
 PIL 1.1.7 (tesseract addon)
 PyCrypto (to import .och files)
 ____________________________________________________________________________
