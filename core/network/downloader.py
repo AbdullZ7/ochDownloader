@@ -11,8 +11,7 @@ import core.cons as cons
 import core.misc as misc #html entities and numerics parser, etc
 from core.plugins_bridge import PluginBridge
 
-#diamond pattern
-from beta import MultiDownload #from multi_download import MultiDownload
+from multi_download import MultiDownload
 
 
 class StatusError(Exception): pass
