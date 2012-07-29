@@ -144,6 +144,12 @@ def get_host(link):
     host = host.split(".")[1] if host.startswith("www") else host.split(".")[0] #get website
     return host.lower()
 
+def get_filename_from_url(url, default=None):
+    ext = os.path.splitext(url)[-1]
+    if ext: #may be empty
+        return os.path.split(url)[-1].strip()
+    return default
+
 def tail(fh, lines_limit=20):
     """
     Read file from bottom to top (on reverse)
@@ -155,7 +161,7 @@ def tail(fh, lines_limit=20):
     block = -1
     data = []
     while size > 0 and bytes > 0:
-        if (bytes - BUFSIZ > 0):
+        if (bytes - BUFSIZ) > 0:
             # Seek back one whole BUFSIZ
             fh.seek(block*BUFSIZ, 2)
             # read BUFFER
