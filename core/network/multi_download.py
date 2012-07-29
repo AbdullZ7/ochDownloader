@@ -16,7 +16,7 @@ from downloader_core import DownloaderCore
 
 
 NT_BUFSIZ = 8 * 1024 #8K. Network buffer.
-MAX_CONN = 5 #0 to 4
+MAX_CONN = 10 #0 to 9
 DATA_BUFSIZ = 64 * 1024 #64K.
 START, END = range(2)
 

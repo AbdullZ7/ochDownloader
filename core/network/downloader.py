@@ -142,7 +142,7 @@ class Downloader(threading.Thread, MultiDownload):
                     raise StatusError(self.status_msg)
                 else:
                     self.status, self.status_msg = cons.STATUS_FINISHED, "Finished"
-        except EnvironmentError as err: #EnvironmentError incluye urllib2.URLError
+        except EnvironmentError as err:
             logger.exception(err)
             raise StatusError(err)
 
