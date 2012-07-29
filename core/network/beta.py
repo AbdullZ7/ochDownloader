@@ -41,13 +41,16 @@ class MultiDownload(DownloaderCore):
         self.chunks = chunks[:] if chunks is not None else [] #shallow copy
         self.chunks_control = []
 
+        self.first_flag = True
+
     def get_chunk_n_size(self):
         with self.lock2:
             return self.chunks[:], self.size_complete
 
     def spawn_thread(self, fh, i, chunk):
-        th = threading.Thread(group=None, target=self.thread_download, name=None, args=(fh, i, chunk))
+        th = threading.Thread(group=None, target=self.thread_download, name=None, args=(fh, i, chunk, self.first_flag))
         th.start()
+        self.first_flag = False
         return th
 
     def create_chunks(self):
@@ -85,10 +88,6 @@ class MultiDownload(DownloaderCore):
         for th in th_list:
             th.join()
 
-    def is_master(self, chunk): #or pass is_master to thread_download
-        master = True if chunk[START] == self.content_range else False
-        return master
-
     def is_valid(self, source):
         info = source.info()
         if self.size_file == self.get_content_size(info):
@@ -99,15 +98,14 @@ class MultiDownload(DownloaderCore):
         content_len = 0
         if self.size_file and self.size_file > chunk[START]:
             content_len = chunk[END] - chunk[START]
-            print 'is chunk complete'
-            print content_len, complete #error
+            logger.debug("downloaded {0} of {1}".format(content_len, complete))
 
         if content_len and complete < content_len:
             return False
         return True
 
-    def get_source(self, chunk, complete):
-        if self.is_master(chunk):
+    def get_source(self, chunk, complete, is_first):
+        if is_first:
             return self.source
         else:
             return request.get(self.link_file, cookie=self.cookie, range=(chunk[0] + complete, None))
@@ -145,20 +143,19 @@ class MultiDownload(DownloaderCore):
         except EnvironmentError as err:
             self.set_err(err)
 
-    def thread_download(self, fh, i, chunk):
-        #master thread wont retry.
-        #downloading wont retry.
-        #not downloading and not master will retry.
+    def thread_download(self, fh, i, chunk, is_first):
+        #first thread wont retry.
+        #downloading chunk wont retry.
+        #not downloading and not first should retry.
         is_downloading = False
-        is_master = self.is_master(chunk)
         buf_list = []
         len_buf = 0
         complete = 0
 
         #for retry in range(3):
         try:
-            with URLClose(self.get_source(chunk, complete)) as s:
-                if not is_master and not self.is_valid(s):
+            with URLClose(self.get_source(chunk, complete, is_first)) as s:
+                if not is_first and not self.is_valid(s):
                     raise BadSource('Link expired, or cant download the requested range.')
 
                 with self.lock3:
@@ -189,28 +186,28 @@ class MultiDownload(DownloaderCore):
                     if not len_data or complete >= (chunk[END] - chunk[START]):
                         if not self.is_chunk_complete(chunk, complete):
                             raise IncompleteChunk('Incomplete chunk')
-                        print "complete {0} {1}".format(chunk[START], chunk[END])
+                        logger.debug("complete {0} {1}".format(chunk[START], chunk[END]))
                         chunk = self.dl_next_chunk(chunk, i + 1)
                         i += 1
-                        print "keep dl {0} {1}".format(chunk[START], chunk[END])
+                        logger.debug("keep dl {0} {1}".format(chunk[START], chunk[END]))
 
         except (IncompleteChunk, CanNotResume) as err:
-            #master included
+            #first included
             #propagate
             self.set_err(err)
             return
         except (BadSource, CanNotRun) as err:
-            #not master (CanNotRun does not matter)
+            #not first (CanNotRun does not matter)
             #do not propagate
             logger.debug(err)
             return
         except (urllib2.URLError, httplib.HTTPException, socket.error) as err:
-            if is_master or is_downloading:
+            if is_first or is_downloading:
                 #propagate
                 self.set_err(err)
             else:
                 logger.debug(err)
-                #retry
+                #retry?
             return
         except EnvironmentError as err:
             #propagate
