@@ -22,7 +22,7 @@ class Slots:
         """"""
         try:
             self.__limit = int(limit)
-        except Exception, err:
+        except Exception as err:
             logger.exception(err)
             pass
     

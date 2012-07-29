@@ -120,5 +120,5 @@ class SMTPLogger(threading.Thread):
                     smtp = SMTPHandler(("smtp.gmail.com", 587), "bugs@ochdownloader.com", "ochdownloader@gmail.com", "Bug-Found "+cons.APP_VER, ("user@gmail.com", "pass"), ())
                     smtp.emit(logging.LogRecord(None, None, "", 0, lines_buffer, None, None))
                     logger.info("SENDED")
-        except Exception, err:
+        except Exception as err:
             logger.exception(err)

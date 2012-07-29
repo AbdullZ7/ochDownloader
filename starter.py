@@ -97,7 +97,7 @@ if __name__ == "__main__":
         starter.clean_up()
     except KeyboardInterrupt:
         starter.exit("KeyboardInterrupt.")
-    except Exception, err:
+    except Exception as err:
         starter.logger.exception(err) #Unhandled error.
         starter.exit("Unhandled Exception!!")
     else:

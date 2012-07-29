@@ -45,6 +45,6 @@ class LinkChecker:
                     link_status = cons.LINK_DEAD
         except (urllib2.URLError, httplib.HTTPException, socket.error) as err:
             status_msg = "Error: {0}".format(err)
-        except Exception, err:
+        except Exception as err:
             logger.exception(err)
         return link_status, name, size, status_msg
