@@ -150,6 +150,12 @@ def get_filename_from_url(url, default=None):
         return os.path.split(url)[-1].strip()
     return default
 
+def strip(input, to_strip=None):
+    #strip: a string/list of chars you want to strip
+    for x in to_strip or []:
+        input = input.replace(x, '')
+    return input
+
 def tail(fh, lines_limit=20):
     """
     Read file from bottom to top (on reverse)

@@ -86,7 +86,6 @@ class Downloader(threading.Thread, MultiDownload):
     
     def __get_filename_from_source(self, info):
         """"""
-        #TODO: validate file name (remove forbidden characters)
         file_name = None
         if info.getheader("Content-Disposition", None): #Content-Disposition: Attachment; filename=name.ext
             disposition = misc.html_entities_parser(info.getheader("Content-Disposition")) #get file name
@@ -100,7 +99,11 @@ class Downloader(threading.Thread, MultiDownload):
                 file_name = disposition.split("'")[-1]
         if not file_name: #may be an empty string or None
             file_name = misc.html_entities_parser(self.source.url.split("/")[-1])
-        return misc.smartdecode(urllib.unquote_plus(file_name)) #in case its given quoted. smartdecode return utf-8 string
+        file_name = urllib.unquote_plus(file_name)
+        file_name = misc.smartdecode(file_name)
+        file_name = misc.strip(file_name, to_strip='/\\:*?"<>|')
+        file_name = file_name.strip('.')
+        return file_name
     
     def wait_func(self, wait=0):
         """
