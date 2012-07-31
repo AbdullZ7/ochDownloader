@@ -1,17 +1,11 @@
-import os
 import urllib2
-import urllib
-import httplib #para excepciones. httplib.HTTPException
+import httplib #httplib.HTTPException
 import socket
-import time #usado en get_speed
-import copy
 import threading
 import logging
 logger = logging.getLogger(__name__)
 
-import core.cons as cons
 from connection import URLClose, request
-
 from downloader_core import DownloaderCore
 
 
@@ -42,10 +36,15 @@ class MultiDownload(DownloaderCore):
         self.chunks_control = []
 
         self.first_flag = True
+        self.conn_count = 0
 
     def get_chunk_n_size(self):
         with self.lock2:
             return self.chunks[:], self.size_complete
+
+    def get_conn_count(self):
+        with self.lock3:
+            return self.conn_count
 
     def spawn_thread(self, fh, i, chunk):
         th = threading.Thread(group=None, target=self.thread_download, name=None, args=(fh, i, chunk, self.first_flag))
@@ -161,6 +160,7 @@ class MultiDownload(DownloaderCore):
                 with self.lock3:
                     if self.chunks_control[i]:
                         self.chunks_control[i] = False
+                        self.conn_count += 1
                         is_downloading = True
                     elif not is_downloading: #may be retrying
                         raise CanNotRun('Another thread has taken over this chunk.')
