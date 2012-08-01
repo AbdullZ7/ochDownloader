@@ -16,7 +16,7 @@ class PluginDownload(PluginsCore):
     def parse(self):
         link = self.link
         page = self.get_page(link)
-        m_pattern = 'var ajaxdl.*?"(?P<ajaxid>.*?)"'
+        m_pattern = 'var ajaxdl.*?"(?P<ajaxid>[^"]+)'
         m = self.get_match(m_pattern, page)
         if m is not None:
             ajax_url = BASE_URL + "/files-ajax/" + m.group('ajaxid') + "/request.html"
@@ -26,7 +26,7 @@ class PluginDownload(PluginsCore):
             self.countdown('file:(?P<count>.*?):', page_, 120, WAITING)
             #
             #this can be skipped
-            c_pattern = 'challenge\?k=(?P<key>.*?)"'
+            c_pattern = 'challenge\?k=(?P<key>[^"]+)'
             extra_fields = [("request", "validateCaptcha"), ("ajaxid", m.group('ajaxid'))]
             self.next_link = ajax_url
             page_ = self.recaptcha(c_pattern, page, extra_fields)
