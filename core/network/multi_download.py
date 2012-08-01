@@ -82,7 +82,7 @@ class MultiDownload(DownloaderCore):
         self.chunks_control = [True for _ in self.chunks] #can_run
 
         th_list = [self.spawn_thread(fh, i, chunk) for i, chunk in enumerate(self.chunks[:])
-                   if not chunk[1] or chunk[0] < chunk[1]]
+                   if not chunk[END] or chunk[START] < chunk[END]]
 
         for th in th_list:
             th.join()
@@ -101,7 +101,7 @@ class MultiDownload(DownloaderCore):
         if is_first:
             return self.source
         else:
-            return request.get(self.link_file, cookie=self.cookie, range=(chunk[0] + complete, None))
+            return request.get(self.link_file, cookie=self.cookie, range=(chunk[START] + complete, None))
 
     def dl_next_chunk(self, chunk, i):
         with self.lock2: #safe.

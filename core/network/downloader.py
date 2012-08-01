@@ -1,5 +1,4 @@
 import os
-import sys
 import urllib
 import threading
 import time
@@ -8,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 #Local Libs
 import core.cons as cons
-import core.misc as misc #html entities and numerics parser, etc
+import core.misc as misc
 from core.plugins_bridge import PluginBridge
 
 from multi_download import MultiDownload
@@ -144,7 +143,7 @@ class Downloader(threading.Thread, MultiDownload):
             del self.chunks[:]
         
         try:
-            with open(os.path.join(self.path_to_save, self.file_name), mode, cons.FILE_BUFSIZE) as fh: #archivo en donde se escribira lo que se va leyendo del archivo mientras se descarga.
+            with open(os.path.join(self.path_to_save, self.file_name), mode, cons.FILE_BUFSIZE) as fh:
                 self.start_time = time.time()
                 self.status_msg = "Running"
                 self.threaded_download_manager(fh)

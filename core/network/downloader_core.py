@@ -1,12 +1,11 @@
-import os
-import collections #usado en get_speed con deque. http://docs.python.org/library/collections.html
+import collections #http://docs.python.org/library/collections.html
 
 import core.cons as cons
 
 
 class DownloaderCore:
     """"""
-    def __init__(self, file_name, path_to_save, link, host, bucket): #bucket = instancia de algoritmo para limitar la banda. get_source = metodo de plugin_bridge
+    def __init__(self, file_name, path_to_save, link, host, bucket):
         """"""
         self.stop_flag = False
         self.error_flag = False
@@ -61,7 +60,6 @@ class DownloaderCore:
             return True
         elif info.getheader("Content-Range", None) and self.size_file == self.get_content_size(info):
             try:
-                print info["Content-Range"]
                 range = int(info["Content-Range"].split("/")[0].strip().split(" ")[-1].split("-")[0])
                 if range == start_range:
                     return True
