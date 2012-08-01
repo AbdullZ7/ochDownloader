@@ -104,19 +104,7 @@ class DownloadCore:
 
 
 if __name__ == "__main__":
-    dict_a = OrderedDict()
-    dict_b = OrderedDict()
-    dict_a["some1"] = "asas1"
-    dict_a["some2"] = "asas2"
-    dict_a["some3"] = "asas3"
-    print dict_a
-    dict_b["some2"] = "asas2"
-    dict_b["some1"] = "asas12"
-    dict_b["some3"] = "asas3"
-    print dict_b
-    dict_a.clear()
-    dict_a.update(dict_b) #order in place.
-    print dict_a
+    pass
     
     
     

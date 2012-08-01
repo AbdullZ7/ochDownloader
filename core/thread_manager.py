@@ -1,5 +1,3 @@
-import threading
-import time
 import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
@@ -27,10 +25,9 @@ class ThreadManager:
             logger.exception(err)
             return None
     
-    def add_thread(self, id_item, file_name, save_to_path, link, host, chunks): #get_source es un metodo de plugin_bridge.
-        """
-        """
-        th = Downloader(file_name, save_to_path, link, host, self.bucket, chunks) #atributos: file_name, path_fsaved, size_file, size_saved, progress, etc
+    def add_thread(self, id_item, file_name, save_to_path, link, host, chunks):
+        """"""
+        th = Downloader(file_name, save_to_path, link, host, self.bucket, chunks)
         self.thread_downloads[id_item] = th #crear un nuevo item (clave: valor) en el dict thread, con nombre de archivo (clave) e instancia correspondiente (valor)
         th.start()
         
