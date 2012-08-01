@@ -24,17 +24,3 @@ class PluginDownload(PluginsCore):
 
 if __name__ == "__main__":
     pass
-    import re
-    page = '"http://some" kNO = "http://205.196.123.44/27girlme3cxg/asdasdasdasd/some.rar";'
-    pattern = '([^"]+/asdasdasdasd/[^"]+)'
-    m = re.search(pattern, page, re.S)
-    if m is not None:
-        print m.groups()
-    else:
-        print 'not found'
-    
-
-
-
-
-
