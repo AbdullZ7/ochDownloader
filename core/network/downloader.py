@@ -20,10 +20,10 @@ class StatusStopped(Exception): pass
 
 class Downloader(threading.Thread, MultiDownload):
     """"""
-    def __init__(self, file_name, path_fsaved, link, host, bucket, chunks):
+    def __init__(self, file_name, path_to_save, link, host, bucket, chunks):
         """"""
         threading.Thread.__init__(self) #iniciar threading.Thread
-        MultiDownload.__init__(self, file_name, path_fsaved, link, host, bucket, chunks)
+        MultiDownload.__init__(self, file_name, path_to_save, link, host, bucket, chunks)
 
     def run(self):
         """"""
@@ -31,6 +31,8 @@ class Downloader(threading.Thread, MultiDownload):
             self.__file_existence_check()
             self.__source()
             self.__validate_source()
+            self.__set_filename_n_size()
+            self.__set_can_resume()
             self.__download()
         except (StatusError, StatusStopped) as err:
             if isinstance(err, StatusError):
@@ -49,9 +51,9 @@ class Downloader(threading.Thread, MultiDownload):
     def __file_existence_check(self):
         """"""
         try:
-            if not os.path.exists(self.path_fsaved):
-                os.makedirs(self.path_fsaved)
-            elif os.path.isfile(self.path_file):
+            if not os.path.exists(self.path_to_save):
+                os.makedirs(self.path_to_save)
+            elif os.path.isfile(os.path.join(self.path_to_save, self.file_name)):
                 self.file_exists = True
                 start_chunks = [chunks_tuple[0] for chunks_tuple in self.chunks
                                 if chunks_tuple[0] < chunks_tuple[1]]
@@ -71,18 +73,18 @@ class Downloader(threading.Thread, MultiDownload):
         elif self.source:
             self.link_file = pb.dl_link
             self.cookie = pb.cookie
-            info = self.source.info()
-            #print info.headers
-            old_file_name = self.file_name
-            self.file_name = self.__get_filename_from_source(info)
-            self.path_file = os.path.join(self.path_fsaved, self.file_name)
-            if self.file_exists and old_file_name != self.file_name:
-                #do not rename the file.
-                raise StatusError("Cant resume, file name has change. Please retry.")
-            self.size_file = self.get_content_size(info) #downloader_core
         else:
             self.limit_exceeded = pb.limit_exceeded
             raise StatusError(pb.err_msg)
+
+    def __set_filename_n_size(self):
+        info = self.source.info()
+        old_file_name = self.file_name
+        self.file_name = self.__get_filename_from_source(info)
+        if self.file_exists and old_file_name != self.file_name:
+            #do not rename the file.
+            raise StatusError("Cant resume, file name has change. Please retry.")
+        self.size_file = self.get_content_size(info) #downloader_core
     
     def __get_filename_from_source(self, info):
         """"""
@@ -104,6 +106,14 @@ class Downloader(threading.Thread, MultiDownload):
         file_name = misc.strip(file_name, to_strip='/\\:*?"<>|')
         file_name = file_name.strip('.')
         return file_name
+
+    def __set_can_resume(self):
+        info = self.source.info()
+        if info.getheader("Content-Range", None):
+            self.can_resume = True
+        elif info.getheader("Accept-Ranges", None):
+            if info["Accept-Ranges"].lower() == "bytes":
+                self.can_resume = True
     
     def wait_func(self, wait=0):
         """
@@ -122,18 +132,19 @@ class Downloader(threading.Thread, MultiDownload):
     def __validate_source(self):
         """"""
         #TODO: check if it is trying to download a html file.
+        #Content-Type: text/html; charset=ISO-8859-4
         pass
     
     def __download(self):
         """"""
-        if self.resuming and self.file_exists and self.content_range > 0:
+        if self.can_resume and self.file_exists and self.is_valid_range(self.source, self.content_range):
             mode = "r+b" #leer y escribir en la posicion deseada con seek.
         else:
             mode = "wb"
             del self.chunks[:]
         
         try:
-            with open(self.path_file, mode, cons.FILE_BUFSIZE) as fh: #archivo en donde se escribira lo que se va leyendo del archivo mientras se descarga.
+            with open(os.path.join(self.path_to_save, self.file_name), mode, cons.FILE_BUFSIZE) as fh: #archivo en donde se escribira lo que se va leyendo del archivo mientras se descarga.
                 self.start_time = time.time()
                 self.status_msg = "Running"
                 self.threaded_download_manager(fh)

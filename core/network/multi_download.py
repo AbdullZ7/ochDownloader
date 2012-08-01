@@ -23,9 +23,9 @@ class CanNotResume(Exception): pass
 
 class MultiDownload(DownloaderCore):
     """"""
-    def __init__(self, file_name, path_fsaved, link, host, bucket, chunks):
+    def __init__(self, file_name, path_to_save, link, host, bucket, chunks):
         """"""
-        DownloaderCore.__init__(self, file_name, path_fsaved, link, host, bucket)
+        DownloaderCore.__init__(self, file_name,  path_to_save, link, host, bucket)
 
         #Threading stuff
         self.lock1 = threading.Lock() #lock to write file and modify size_complete attibute.
@@ -87,17 +87,11 @@ class MultiDownload(DownloaderCore):
         for th in th_list:
             th.join()
 
-    def is_valid(self, source):
-        info = source.info()
-        if self.size_file == self.get_content_size(info):
-            return True
-        return False
-
     def is_chunk_complete(self, chunk, complete):
         content_len = 0
         if self.size_file and self.size_file > chunk[START]:
             content_len = chunk[END] - chunk[START]
-            logger.debug("downloaded {0} of {1}".format(content_len, complete))
+            logger.debug("downloaded {0} of {1}".format(complete, content_len))
 
         if content_len and complete < content_len:
             return False
@@ -154,7 +148,7 @@ class MultiDownload(DownloaderCore):
         #for retry in range(3):
         try:
             with URLClose(self.get_source(chunk, complete, is_first)) as s:
-                if not is_first and not self.is_valid(s):
+                if not is_first and not self.is_valid_range(s, chunk[START]):
                     raise BadSource('Link expired, or cant download the requested range.')
 
                 with self.lock3:
