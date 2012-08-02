@@ -141,17 +141,4 @@ class PluginsCore:
     
 
 if __name__ == "__main__":
-    def foo(*args, **kwargs):
-        plugins_core = PluginsCore(*args, **kwargs)
-        print vars(plugins_core)
-    
-    #foo("link", 0, username="user", wait_func="wait_func")
-    page = 'hola como estas "hey" estas "haaay"'
-    pattern = 'hola.*?estas "(.*?)"'
-    m = re.search(pattern, page, re.S)
-    if m is not None:
-        print m.groups()
-    else:
-        print 'not found'
-    
-    
+    pass
