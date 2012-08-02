@@ -130,9 +130,11 @@ class Downloader(threading.Thread, MultiDownload):
     
     def __validate_source(self):
         """"""
-        #TODO: check if it is trying to download a html file.
-        #Content-Type: text/html; charset=ISO-8859-4
-        pass
+        #TODO: add a config option to disable this validation.
+        info = self.source.info()
+        if info.getheader("Content-Type", None): #Content-Type: text/html; charset=ISO-8859-4
+            if "text/html" in info['Content-Type']:
+                raise StatusError("HTML detected.")
     
     def __download(self):
         """"""
