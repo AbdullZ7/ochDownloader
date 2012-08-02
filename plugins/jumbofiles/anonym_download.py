@@ -18,6 +18,8 @@ class PluginDownload(PluginsCore):
         form = [("op", "download3"), ('id', file_id), ('rand', '')]
         page = self.get_page(link, form=form)
         self.source = self.click('METHOD="LINK" ACTION="(?P<link>[^"]+)', page, False)
+        if not self.source:
+            self.err_msg = "File not found."
 
         #m = self.get_match('name="rand" value="(?P<rand>[^"]+)', page)
         #if m is not None:
