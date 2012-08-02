@@ -22,15 +22,15 @@ class PluginDownload(PluginsCore):
             file_id = self.link.split("netload.in/datei")[-1].split("/")[0].split(".")[0]
         link = self.link
         page = self.get_page(link)
-        m_pattern = 'Free_dl.*?href="(?P<link>.*?)"'
+        m_pattern = 'Free_dl"><a href="(?P<link>[^"]+)'
         m = self.get_match(m_pattern, page)
         if m is not None:
             link = BASE_URL + "/" + m.group('link').replace("&amp;", "&")
             page = self.get_page(link)
-            cn_pattern = '>countdown\((?P<count>.*?),'
+            cn_pattern = '>countdown\((?P<count>[^,]+)'
             self.countdown(cn_pattern, page, 600, 30)
             #this pattern may not work
-            m_pattern = 'src="(?P<link>.*?)".*?Sicherheitsbild' #captcha
+            m_pattern = 'src="(?P<link>[^"]+)"[^"]+"Sicherheitsbild' #captcha
             m = self.get_match(m_pattern, page)
             if m is not None:
                 link = BASE_URL + "/" + m.group('link')
@@ -40,7 +40,7 @@ class PluginDownload(PluginsCore):
                 captcha_form_url = BASE_URL + "/" + "index.php?id=10"
                 page = self.get_page(captcha_form_url, form=form)
                 self.countdown(cn_pattern, page, 600, 30)
-                s_pattern = 'class="Orange_Link.*?href="(?P<link>.*?)"'
+                s_pattern = 'class="Orange_Link" href="(?P<link>[^"]+)'
                 self.source = self.click(s_pattern, page, False)
             else: #captcha not found
                 pass

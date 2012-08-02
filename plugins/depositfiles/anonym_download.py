@@ -23,7 +23,7 @@ class PluginDownload(PluginsCore):
             self.fid = m.group('fid')
             cn_pattern = 'download_waiter_remain">(?P<count>[^<]+)'
             self.countdown(cn_pattern, page, 320, WAITING)
-            c_pattern = 'Recaptcha\.create\(\'(?P<key>.*?)\''
+            c_pattern = 'Recaptcha\.create\(\'(?P<key>[^\']+)'
             page = self.recaptcha(c_pattern, page)
             s_pattern = 'form action="(?P<link>.*?)"'
             self.source = self.click(s_pattern, page, False)

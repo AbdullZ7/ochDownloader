@@ -19,10 +19,10 @@ class PluginDownload(PluginsCore):
         page = self.get_page(link)
         err_list = ('All free download slots are in use.', )
         self.validate(err_list, page)
-        m_pattern = 'check:.*?\'(?P<check>.*?)\''
+        m_pattern = 'check:[^\']+\'(?P<check>[^\']+)'
         m = self.get_match(m_pattern, page)
         if m is not None:
-            c_pattern = 'Recaptcha\.create.*?"(?P<key>.*?)"'
+            c_pattern = 'Recaptcha\.create[^"]+"(?P<key>[^"]+)'
             extra_fields = [("check", m.group('check')), ]
             self.next_link = "%s/file/checkCaptcha.php" % BASE_URL
             page = self.recaptcha(c_pattern, page, extra_fields)
@@ -33,10 +33,12 @@ class PluginDownload(PluginsCore):
                 link2 = "%s%s" % (BASE_URL, m.group('path').replace("\\", ""))
                 page = self.get_page(link2)
                 #"all slots are taken" may appear here.
-                cn_pattern = 'countdown">(?P<count>.*?)<'
+                cn_pattern = 'countdown">(?P<count>[^<]+)'
                 self.countdown(cn_pattern, page, 320, WAITING)
                 #
-                s_pattern = 'id="downloadLinkTarget.*?<a href="(?P<link>.*?)"'
+                file_id = self.link.split("/file/")[-1].split("/")[0]
+                s_pattern = '<a href="(?P<link>[^"]+/%s/[^"]+)' % file_id
+                #s_pattern = 'id="downloadLinkTarget[^<]+<a href="(?P<link>[^"]+)'
                 self.source = self.click(s_pattern, page, False)
                 print self.source.url
             else: #no path

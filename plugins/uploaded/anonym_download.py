@@ -22,15 +22,15 @@ class PluginDownload(PluginsCore):
         m = self.get_match('(succ:true)', page)
         if m is not None:
             page = self.get_page(link)
-            self.countdown('class="free.*?<span>.*?<span>(?P<count>.*?)</span>', page, 320, WAITING)
+            self.countdown('period: <span>(?P<count>[^<]+)</span>', page, 320, WAITING)
             js_url = BASE_URL + "/js/download.js"
             page = self.get_page(js_url)
-            c_pattern = 'Recaptcha\.create\(.*?"(?P<key>.*?)"'
+            c_pattern = 'Recaptcha\.create\(.*?"(?P<key>[^"]+)'
             self.next_link = BASE_URL + "/io/ticket/captcha/" + file_id
             page = self.recaptcha(c_pattern, page)
             #resume fix
             self.content_range = None
-            self.source = self.click('url:\'(?P<link>.*?)\'', page, False)
+            self.source = self.click('url:\'(?P<link>[^\']+)', page, False)
         else: #link not found
             pass
 
