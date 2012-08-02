@@ -16,7 +16,7 @@ class PluginDownload(PluginsCore):
     def parse(self):
         link = self.link
         page = self.get_page(link)
-        m_pattern = 'var ajaxdl.*?"(?P<ajaxid>[^"]+)'
+        m_pattern = 'var ajaxdl[^"]+"(?P<ajaxid>[^"]+)'
         m = self.get_match(m_pattern, page)
         if m is not None:
             ajax_url = BASE_URL + "/files-ajax/" + m.group('ajaxid') + "/request.html"

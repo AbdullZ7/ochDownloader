@@ -18,10 +18,10 @@ class PluginDownload(PluginsCore):
         link = self.link
         form = [("gateway_result", "1"), ]
         page = self.get_page(link, form=form)
-        m = self.get_match('var fid.*?\'(?P<fid>.*?)\'', page)
+        m = self.get_match('var fid[^\']+\'(?P<fid>[^\']+)', page)
         if m is not None:
             self.fid = m.group('fid')
-            cn_pattern = 'download_waiter_remain">(?P<count>.*?)<'
+            cn_pattern = 'download_waiter_remain">(?P<count>[^<]+)'
             self.countdown(cn_pattern, page, 320, WAITING)
             c_pattern = 'Recaptcha\.create\(\'(?P<key>.*?)\''
             page = self.recaptcha(c_pattern, page)
