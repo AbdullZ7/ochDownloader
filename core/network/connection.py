@@ -27,7 +27,7 @@ class Request:
 
     def url_open(self, url, cookie=None, data=None, range=(None, None), headers=None, timeout=None):
         timeout = timeout or self.timeout
-        cookie = cookie or cookielib.CookieJar()
+        if cookie is None: cookie = cookielib.CookieJar()
         opener = self.build_opener(cookie)
         return opener.open(url, form=data, range=range, headers=headers, timeout=timeout)
 
