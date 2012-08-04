@@ -1,6 +1,7 @@
 import urllib2
 import httplib #httplib.HTTPException
 import socket
+import time
 import threading
 import logging
 logger = logging.getLogger(__name__)
@@ -173,6 +174,9 @@ class MultiDownload(DownloaderCore):
 
                     with self.lock2:
                         self.size_complete += len_data
+
+                    if self.bucket.fill_rate: #self.bucket.fill_rate != 0
+                        time.sleep(self.bucket.consume(len_data))
 
                     if self.stop_flag or self.error_flag:
                         return
