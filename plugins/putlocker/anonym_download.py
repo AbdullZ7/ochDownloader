@@ -14,7 +14,6 @@ class PluginDownload(PluginsCore):
         PluginsCore.__init__(self, *args, **kwargs)
 
     def parse(self):
-        link = self.link
         page = self.get_page(self.link)
         self.countdown('var countdownNum = (?P<count>[^;]+)', page, 320, WAITING)
         #value="da5444ca5740eab1" name="hash"
@@ -26,10 +25,9 @@ class PluginDownload(PluginsCore):
             m = self.get_match(s_pattern, page)
             if m is not None:
                 http_link = BASE_URL + m.group('link')
-                print http_link
                 self.source = self.get_page(http_link, close=False)
-                print misc.dict_from_cookiejar(self.cookie)
-                #print self.source.info().headers
+            else:
+                self.err_msg = 'Link not found.'
         else:
             self.err_msg = 'Link not found.'
 
