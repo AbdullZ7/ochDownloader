@@ -82,7 +82,7 @@ class Downloads(QTreeView):
         
         #update list
         parent.idle_timeout(1000, self.update)
-    
+
     def remove_row(self, id_item):
         item = self.rows_buffer.pop(id_item)
         self.__model.remove(self.items.index(item))
@@ -244,7 +244,7 @@ class Downloads(QTreeView):
             
             self.__model.append(item)
             self.rows_buffer[item[0]] = item
-    
+
     def update(self):
         downloads_list = api.get_status()
         for download_item in downloads_list:
@@ -305,8 +305,8 @@ class ImageDelegate(QStyledItemDelegate):
     def __init__(self, parent):
         QStyledItemDelegate.__init__(self, parent)
     
-    #def sizeHint(self, option, index):
-        #return QSize(16, 16)
+    def sizeHint(self, option, index):
+        return QSize(-1, 16)
     
     def paint(self, painter, option, index):
         
@@ -343,6 +343,9 @@ class ImageDelegate(QStyledItemDelegate):
 class ProgressBarDelegate(QStyledItemDelegate):
     def __init__(self, parent):
         QStyledItemDelegate.__init__(self, parent=parent)
+
+    #def sizeHint(self, option, index):
+        #return QSize(-1, 26)
     
     def paint(self, painter, option, index):
         
