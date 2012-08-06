@@ -175,8 +175,9 @@ class AddDownloads(QVBoxLayout):
         current_path = self.cb.currentText()
         self.cb_remove(current_path)
         self.cb.insertItem(0, current_path)
-        if current_path not in self.paths_list:
-            self.paths_list.append(current_path)
+        if current_path in self.paths_list:
+            self.paths_list.remove(current_path)
+        self.paths_list.append(current_path)
         if len(self.paths_list) > 5:
             self.paths_list.pop(0)
             self.cb.removeItem(5)
