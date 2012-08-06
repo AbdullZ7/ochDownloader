@@ -143,7 +143,7 @@ class Gui(QMainWindow):
         self.downloads.selectionModel().selectionChanged.connect(self.on_selected)
         
         #add core's event loop
-        self.idle_timeout(1000, self.queue_loop)
+        self.idle_timeout(500, self.queue_loop)
         
         #quit event
         events.connect(cons.EVENT_QUIT, self.close)
