@@ -4,7 +4,7 @@ import sys
 
 #app constants
 APP_NAME = "ochDownloader"
-APP_VER = "0.8.6"
+APP_VER = "0.8.7"
 APP_TITLE = " ".join((APP_NAME, APP_VER, "Beta"))
 
 #app path constants
