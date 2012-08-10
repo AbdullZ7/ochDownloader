@@ -5,6 +5,7 @@ import time
 import threading
 import logging
 logger = logging.getLogger(__name__)
+from cStringIO import StringIO
 
 from connection import URLClose, request
 from downloader_core import DownloaderCore
@@ -124,16 +125,16 @@ class MultiDownload(DownloaderCore):
         self.error_flag = True
         self.status_msg = "Error: {0}".format(err)
 
-    def flush_buffer(self, fh, i, chunk, complete, buf_list, len_buf):
-        buf_data = ''.join(buf_list)
+    def flush_buffer(self, fh, i, chunk, complete, buf, len_buf):
         try:
             with self.lock1:
-                #flush buffer
                 fh.seek(chunk[START] + complete - len_buf)
-                fh.write(buf_data)
+                fh.write(buf.getvalue())
             with self.lock2:
                 self.chunks[i] = (chunk[START] + complete, self.chunks[i][END])
-            del buf_list[:]
+            buf.close()
+        except ValueError as err:
+            logger.warning(err)
         except EnvironmentError as err:
             self.set_err(err)
 
@@ -142,7 +143,7 @@ class MultiDownload(DownloaderCore):
         #downloading chunk wont retry.
         #not downloading and not first should retry.
         is_downloading = False
-        buf_list = []
+        buf = StringIO()
         len_buf = 0
         complete = 0
 
@@ -164,12 +165,13 @@ class MultiDownload(DownloaderCore):
                     data = s.read(NT_BUFSIZ)
                     len_data = len(data)
 
-                    buf_list.append(data)
+                    buf.write(data)
                     len_buf += len_data
                     complete += len_data
 
                     if len_buf >= DATA_BUFSIZ:
-                        self.flush_buffer(fh, i, chunk, complete, buf_list, len_buf)
+                        self.flush_buffer(fh, i, chunk, complete, buf, len_buf)
+                        buf = StringIO()
                         len_buf = 0
 
                     with self.lock2:
@@ -212,7 +214,7 @@ class MultiDownload(DownloaderCore):
             self.set_err(err)
             return
         finally:
-            self.flush_buffer(fh, i, chunk, complete, buf_list, len_buf)
+            self.flush_buffer(fh, i, chunk, complete, buf, len_buf)
 
 
 if __name__ == "__main__":
