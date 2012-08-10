@@ -6,30 +6,40 @@ logger = logging.getLogger(__name__)
 from PySide.QtGui import *
 from PySide.QtCore import *
 
-import media
 import core.cons as cons
 
 
 class Tray:
     def __init__(self, parent):
+        self.parent = parent
         if QSystemTrayIcon.isSystemTrayAvailable():
             self.available = True
             self.tray_icon = QSystemTrayIcon(parent)
             self.tray_icon.setIcon(QIcon(os.path.join(cons.MEDIA_PATH, "misc", "ochd.ico")))
-            self.context_menu(parent)
+            self.tray_icon.setToolTip(cons.APP_TITLE)
+            self.tray_icon.activated.connect(self.restore)
+            self.context_menu()
             #QApplication.setQuitOnLastWindowClosed(False)
             self.tray_icon.show()
         else:
             self.available = False
 
-    def context_menu(self, parent):
+    def restore(self, reason):
+        if reason == QSystemTrayIcon.DoubleClick:
+            self.parent.showNormal()
+
+    def show_or_hide(self):
+        if self.parent.isVisible():
+            self.parent.hide()
+        else:
+            self.parent.showNormal()
+
+    def context_menu(self):
         self.menu = QMenu()
 
-        items = [('Minimize', parent.hide),
-                ('Maximize', parent.showMaximized),
-                ('Restore', parent.showNormal),
+        items = [('Show/Hide', self.show_or_hide),
                 (None, None),
-                ('Quit', parent.close)]
+                ('Quit', self.parent.event_close)]
 
         [self.menu.addAction(title, callback) if title is not None else self.menu.addSeparator()
          for title, callback in items]

@@ -148,9 +148,12 @@ class Gui(QMainWindow):
 
         #add core's event loop
         self.idle_timeout(500, self.queue_loop)
-        
+
+        #if conf.get_tray_available():
+        self.can_close = False
+
         #quit event
-        events.connect(cons.EVENT_QUIT, self.close)
+        events.connect(cons.EVENT_QUIT, self.event_close)
         
         self.show()
 
@@ -304,24 +307,26 @@ class Gui(QMainWindow):
             callback()
         except Queue.Empty:
             pass
-    
+
+    def event_close(self):
+        self.can_close = True
+        self.close()
+
     def closeEvent(self, event): #overloaded method
         """
         also useful for any QWidget
         """
-        #if self.canExit():
-            #event.accept()
-        #else:
-            #event.ignore()
-        x, y, w, h = self.geometry().getRect()
-        try:
+        if self.can_close: #if self.canExit():
+            x, y, w, h = self.geometry().getRect()
             self.hide()
             self.save_session()
             self.addons_save()
             conf.set_window_settings(x, y, w, h)
             conf.save_config()
-        except Exception as err:
-            logger.exception(err)
+            event.accept()
+        else: #hide only
+            self.hide()
+            event.ignore()
 
 
 class Toolbar(QToolBar):
