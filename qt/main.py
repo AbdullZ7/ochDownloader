@@ -138,11 +138,11 @@ class Gui(QMainWindow):
         #self.menu.addAction('Preferences', self.on_preferences)
 
         #system tray icon
+        self.can_close = True
         if conf.get_tray_available():
-            self.can_close = False
             self.tray = Tray(self)
-        else:
-            self.can_close = True
+            if self.tray.available:
+                self.can_close = False
 
         #on select button state
         self.downloads.selectionModel().selectionChanged.connect(self.on_selected)
