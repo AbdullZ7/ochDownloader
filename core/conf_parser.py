@@ -35,6 +35,7 @@ SECTION_GUI = "gui"
 OPTION_WINDOW_SETTINGS = "windows_settings"
 OPTION_COLUMNS_WIDTH = "columns_width"
 OPTION_SAVE_DL_PATHS = "save_dl_paths"
+OPTION_TRAY_ICON = "tray_icon"
 
 #addons section
 SECTION_ADDONS = "addons"
@@ -42,7 +43,7 @@ SECTION_ADDONS = "addons"
 
 DEFAULT = {SECTION_MAIN: {OPTION_VERSION: cons.APP_VER, OPTION_CLIPBOARD_ACTIVE: "True"},
                     SECTION_NETWORK: {OPTION_PROXY_TYPE: cons.PROXY_HTTP, OPTION_PROXY_IP: "", OPTION_PROXY_PORT: "0", OPTION_PROXY_ACTIVE: "False", OPTION_RETRIES_LIMIT: "99", OPTION_HTML_DL: "False"},
-                    SECTION_GUI: {OPTION_WINDOW_SETTINGS: "-1,-1,-1,-1", OPTION_SAVE_DL_PATHS: pickle.dumps([]), OPTION_COLUMNS_WIDTH: "-1, -1, -1, -1, -1, -1, -1"}, 
+                    SECTION_GUI: {OPTION_WINDOW_SETTINGS: "-1,-1,-1,-1", OPTION_SAVE_DL_PATHS: pickle.dumps([]), OPTION_COLUMNS_WIDTH: "-1, -1, -1, -1, -1, -1, -1", OPTION_TRAY_ICON: "False"},
                     SECTION_ADDONS: {}
                     }
 
@@ -254,6 +255,23 @@ class _Config(SafeConfigParser):
         except Exception as err:
             logger.exception(err)
         return []
+
+    @exception_handler
+    def set_tray_available(self, allow):
+        """"""
+        allow = "True" if allow else "False"
+        self.set(SECTION_GUI, OPTION_TRAY_ICON, allow)
+
+    def get_tray_available(self):
+        """"""
+        try:
+            allow = self.getboolean(SECTION_GUI, OPTION_TRAY_ICON)
+            return allow
+        except (NoSectionError, NoOptionError) as err:
+            logger.warning(err)
+        except Exception as err:
+            logger.exception(err)
+        return False
 
 
 #modules are singletons in python :)

@@ -138,7 +138,11 @@ class Gui(QMainWindow):
         #self.menu.addAction('Preferences', self.on_preferences)
 
         #system tray icon
-        self.tray = Tray(self)
+        if conf.get_tray_available():
+            self.can_close = False
+            self.tray = Tray(self)
+        else:
+            self.can_close = True
 
         #on select button state
         self.downloads.selectionModel().selectionChanged.connect(self.on_selected)
@@ -148,9 +152,6 @@ class Gui(QMainWindow):
 
         #add core's event loop
         self.idle_timeout(500, self.queue_loop)
-
-        #if conf.get_tray_available():
-        self.can_close = False
 
         #quit event
         events.connect(cons.EVENT_QUIT, self.event_close)
