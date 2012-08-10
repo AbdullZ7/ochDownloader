@@ -27,6 +27,7 @@ from accounts import ConfigAccounts
 from about import About
 from preferences.preferences import Preferences
 from addons import AddonsManager
+from tray import Tray
 
 
 MIN_WIDTH = 550
@@ -135,13 +136,16 @@ class Gui(QMainWindow):
         [addon.set_menu_item() for addon in self.addons_list]
         #self.menu.addSeparator()
         #self.menu.addAction('Preferences', self.on_preferences)
-        
-        #load session.
-        self.load_session()
-        
+
+        #system tray icon
+        self.tray = Tray(self)
+
         #on select button state
         self.downloads.selectionModel().selectionChanged.connect(self.on_selected)
-        
+
+        #load session.
+        self.load_session()
+
         #add core's event loop
         self.idle_timeout(500, self.queue_loop)
         
