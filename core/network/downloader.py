@@ -134,7 +134,6 @@ class Downloader(threading.Thread, MultiDownload):
         #TODO: add a config option to disable this validation.
         info = self.source.info()
         if not config_parser.get_html_dl() and info.getheader("Content-Type", None): #Content-Type: text/html; charset=ISO-8859-4
-            print "validate"
             if "text/html" in info['Content-Type']:
                 raise StatusError("HTML detected.")
     
