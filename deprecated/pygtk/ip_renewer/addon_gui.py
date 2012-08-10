@@ -7,7 +7,7 @@ import gobject
 
 import core.cons as cons
 from core.events import events
-from core.config import config_parser
+from core.conf_parser import conf
 
 from gui.addons_gui import AddonCore
 
@@ -41,17 +41,17 @@ class Addon(AddonCore):
         """"""
         WIDGET, TITLE, CALLBACK, SENSITIVE = range(4)
         config_change_ip = (gtk.CheckMenuItem(), self.name, self.on_change_ip) #can toggle
-        if config_parser.get_addon_option(OPTION_IP_RENEW_ACTIVE, default=False, is_bool=True):
+        if conf.get_addon_option(OPTION_IP_RENEW_ACTIVE, default=False, is_bool=True):
             config_change_ip[WIDGET].set_active(True)
             self.connect()
         return config_change_ip
 
     def on_change_ip(self, widget):
         if widget.get_active(): #se activo
-            config_parser.set_addon_option(OPTION_IP_RENEW_ACTIVE, "True")
+            conf.set_addon_option(OPTION_IP_RENEW_ACTIVE, "True")
             self.connect()
         else:
-            config_parser.set_addon_option(OPTION_IP_RENEW_ACTIVE, "False")
+            conf.set_addon_option(OPTION_IP_RENEW_ACTIVE, "False")
             events.disconnect(cons.EVENT_LIMIT_EXCEEDED, self.event_id)
     
     def connect(self):

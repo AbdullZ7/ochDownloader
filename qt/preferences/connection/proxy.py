@@ -1,5 +1,5 @@
 import core.cons as cons
-from core.config import config_parser
+from core.conf_parser import conf
 from core.network.connection import request
 
 from PySide.QtGui import *
@@ -47,23 +47,23 @@ class Proxy(QGroupBox):
             [widget.setEnabled(False) for widget in self.proxy_widgets_tuple]
 
     def load(self):
-        proxy = config_parser.get_proxy()
+        proxy = conf.get_proxy()
         if proxy is not None:
             ptype, ip, port = proxy
             self.port_box.setValue(port)
             self.entry_proxy_ip.setText(ip)
-            if config_parser.get_proxy_active():
+            if conf.get_proxy_active():
                 self.radio_manual.setChecked(True) #emit toggled.
             else:
                 self.radio_without.setChecked(True)
 
     def save(self):
         ptype, ip, port = cons.PROXY_HTTP, self.entry_proxy_ip.text(), str(self.port_box.value())
-        config_parser.set_proxy(ptype, ip, port)
+        conf.set_proxy(ptype, ip, port)
 
         if self.radio_manual.isChecked():
-            config_parser.set_proxy_active("True")
+            conf.set_proxy_active("True")
             request.set_proxy(ptype, ip, port)
         else:
-            config_parser.set_proxy_active("False")
+            conf.set_proxy_active("False")
             request.no_proxy()

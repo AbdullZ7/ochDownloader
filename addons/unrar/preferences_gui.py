@@ -3,7 +3,7 @@ import os
 import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
-from core.config import config_parser
+from core.conf_parser import conf
 import core.cons as cons
 
 from passwords_handler import passwords_handler

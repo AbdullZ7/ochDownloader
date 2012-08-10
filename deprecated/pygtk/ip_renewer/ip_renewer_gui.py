@@ -7,7 +7,7 @@ import gobject
 
 import core.cons as cons
 from core.api import api
-from core.config import config_parser
+from core.conf_parser import conf
 from core.plugins_parser import plugins_parser
 
 
@@ -32,8 +32,8 @@ class IPRenewerGUI:
             self.stop_all()
             self.pending_events()
             self.change_ip_th = ip_renewer_cls
-            if config_parser.get_addon_option(OPTION_RENEW_SCRIPT_ACTIVE, default=False, is_bool=True):
-                self.change_ip_th.start(config_parser.get_addon_option(OPTION_IP_RENEW_SCRIPT_PATH, default=""))
+            if conf.get_addon_option(OPTION_RENEW_SCRIPT_ACTIVE, default=False, is_bool=True):
+                self.change_ip_th.start(conf.get_addon_option(OPTION_IP_RENEW_SCRIPT_PATH, default=""))
             else:
                 self.change_ip_th.start()
             gobject.timeout_add(1000, self.update_status, parent)

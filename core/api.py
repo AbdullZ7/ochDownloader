@@ -3,7 +3,7 @@ logger = logging.getLogger(__name__)
 
 #Libs
 import cons
-from config import config_parser #initialize config.
+from conf_parser import conf #initialize config.
 from events import events #initialize events.
 from plugins_parser import plugins_parser #initialize plugins_parser
 from host_accounts import host_accounts #initialize accounts.

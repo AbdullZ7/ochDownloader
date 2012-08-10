@@ -1,4 +1,4 @@
-from core.config import config_parser
+from core.conf_parser import conf
 
 from PySide.QtGui import *
 from PySide.QtCore import *
@@ -34,13 +34,13 @@ class General(QGroupBox):
         grid_general.setColumnStretch(2, 1)
 
     def load(self):
-        retries_limit = config_parser.get_retries_limit()
+        retries_limit = conf.get_retries_limit()
         self.retries_box.setValue(retries_limit)
-        if config_parser.get_html_dl():
+        if conf.get_html_dl():
             self.html_box.toggle()
 
     def save(self):
         limit = str(self.retries_box.value())
-        config_parser.set_retries_limit(limit)
+        conf.set_retries_limit(limit)
         html = self.html_box.isChecked()
-        config_parser.set_html_dl(html)
+        conf.set_html_dl(html)

@@ -3,7 +3,7 @@ logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.get
 
 import core.cons as cons
 from core.events import events
-from core.config import config_parser
+from core.conf_parser import conf
 
 from qt.addons import AddonCore
 
@@ -37,16 +37,16 @@ class Addon(AddonCore):
         """"""
         self.action = self.parent.menu.addAction(self.name, self.on_toggle) #can toggle
         self.action.setCheckable(True)
-        if config_parser.get_addon_option(OPTION_IP_RENEW_ACTIVE, default=False, is_bool=True):
+        if conf.get_addon_option(OPTION_IP_RENEW_ACTIVE, default=False, is_bool=True):
             self.action.setChecked(True)
             self.connect()
 
     def on_toggle(self):
         if self.action.isChecked(): #se activo
-            config_parser.set_addon_option(OPTION_IP_RENEW_ACTIVE, "True")
+            conf.set_addon_option(OPTION_IP_RENEW_ACTIVE, "True")
             self.connect()
         else:
-            config_parser.set_addon_option(OPTION_IP_RENEW_ACTIVE, "False")
+            conf.set_addon_option(OPTION_IP_RENEW_ACTIVE, "False")
             events.disconnect(cons.EVENT_LIMIT_EXCEEDED, self.event_id)
     
     def connect(self):

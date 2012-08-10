@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.get
 import core.cons as cons
 import core.misc as misc
 from core.api import api
-from core.config import config_parser
+from core.conf_parser import conf
 from core.Container_Extractor import Container
 
 from PySide.QtGui import *
@@ -63,7 +63,7 @@ class AddDownloads(QVBoxLayout):
         cb_view = self.cb.view()
         cb_view.setAlternatingRowColors(True)
         #
-        self.paths_list = config_parser.get_save_dl_paths()
+        self.paths_list = conf.get_save_dl_paths()
         if not self.paths_list:
             self.cb.addItem(cons.DLFOLDER_PATH)
         else:
@@ -182,7 +182,7 @@ class AddDownloads(QVBoxLayout):
             self.paths_list.pop(0)
             self.cb.removeItem(5)
         self.cb.setCurrentIndex(0)
-        config_parser.set_save_dl_paths(self.paths_list)
+        conf.set_save_dl_paths(self.paths_list)
         
         id_items_list = []
         iters = []

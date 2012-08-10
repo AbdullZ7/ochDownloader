@@ -1,7 +1,7 @@
 import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
-from core.config import config_parser
+from core.conf_parser import conf
 from core.events import events
 import core.cons as cons
 
@@ -20,7 +20,7 @@ class Addon(AddonCore):
         AddonCore.__init__(self)
         self.event_id = None
         self.parent = parent
-        self.config = config_parser
+        self.config = conf
         self.old_retries_count = self.config.get_retries_limit()
         if self.old_retries_count == RETRIES_LIMIT:
             self.config.set_retries_limit(str(99))

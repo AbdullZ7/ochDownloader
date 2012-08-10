@@ -4,7 +4,7 @@ import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
 import core.cons as cons
-from core.config import config_parser
+from core.conf_parser import conf
 from core.api import api
 
 from unrar import UnRAR

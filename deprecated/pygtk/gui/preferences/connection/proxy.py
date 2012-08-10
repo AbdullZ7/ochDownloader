@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.get
 
 #Libs
 import core.cons as cons
-from core.config import config_parser
+from core.conf_parser import conf
 
 
 class Proxy(gtk.Frame):  #gtk.VBox):
@@ -33,7 +33,7 @@ class Proxy(gtk.Frame):  #gtk.VBox):
         #proxy ip field
         label_http_proxy = gtk.Label(_("HTTP Proxy:"))
         hbox_proxy.pack_start(label_http_proxy, False, False)
-        proxy_ip, proxy_port, proxy_type = config_parser.get_proxy()
+        proxy_ip, proxy_port, proxy_type = conf.get_proxy()
         self.entry_proxy_ip = gtk.Entry()
         self.entry_proxy_ip.add_events(gtk.gdk.KEY_RELEASE_MASK)
         self.entry_proxy_ip.set_width_chars(25) #entry width
@@ -60,7 +60,7 @@ class Proxy(gtk.Frame):  #gtk.VBox):
 
     def proxy_active_choice(self, hbox_proxy):
         """"""
-        if config_parser.get_proxy_active():
+        if conf.get_proxy_active():
             self.proxy_http.set_active(True)
             hbox_proxy.set_sensitive(True)
         else:
@@ -83,11 +83,11 @@ class Proxy(gtk.Frame):  #gtk.VBox):
     def save(self): #for polymorphism
         """"""
         if self.proxy_http.get_active():
-            config_parser.set_proxy_active("True")
+            conf.set_proxy_active("True")
         else:
-            config_parser.set_proxy_active("False")
+            conf.set_proxy_active("False")
         proxy_ip, port, proxy_type = self.entry_proxy_ip.get_text(), str(self.spin_proxy_port.get_value_as_int()), cons.PROXY_HTTP
-        config_parser.set_proxy(proxy_ip, port, proxy_type)
+        conf.set_proxy(proxy_ip, port, proxy_type)
 
 
 

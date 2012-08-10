@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.get
 import core.cons as cons
 import core.misc as misc
 from core.api import api
-from core.config import config_parser
+from core.conf_parser import conf
 from core.events import events
 
 from PySide.QtGui import *

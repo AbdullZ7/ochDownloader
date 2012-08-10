@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.get
 
 #Libs
 import core.cons as cons
-from core.config import config_parser
+from core.conf_parser import conf
 
 
 class General(gtk.Frame):
@@ -27,7 +27,7 @@ class General(gtk.Frame):
         self.spin_retries.set_range(0, 100000)
         self.spin_retries.set_increments(1, 1)
         self.spin_retries.set_numeric(True)
-        self.spin_retries.set_value(config_parser.get_retries_limit())
+        self.spin_retries.set_value(conf.get_retries_limit())
         hbox_retries.pack_start(self.spin_retries, False, False)
         
         vbox_general.pack_start(hbox_retries, False, False)
@@ -41,6 +41,6 @@ class General(gtk.Frame):
     def save(self):
         """"""
         limit = str(self.spin_retries.get_value_as_int())
-        config_parser.set_retries_limit(limit)
+        conf.set_retries_limit(limit)
 
 

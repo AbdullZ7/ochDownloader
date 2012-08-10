@@ -6,7 +6,7 @@ import pygtk
 import gtk
 import gobject
 
-from core.config import config_parser
+from core.conf_parser import conf
 import core.cons as cons
 
 from gui.dialog_base import FileChooserDialog
@@ -41,7 +41,7 @@ class Preferences(gtk.VBox):
         self.entry_renew_script.add_events(gtk.gdk.KEY_RELEASE_MASK)
         self.entry_renew_script.set_width_chars(25) #entry width
         #
-        self.entry_renew_script.set_text(config_parser.get_addon_option(OPTION_IP_RENEW_SCRIPT_PATH, default=""))
+        self.entry_renew_script.set_text(conf.get_addon_option(OPTION_IP_RENEW_SCRIPT_PATH, default=""))
         hbox_script.pack_start(self.entry_renew_script)
         button = gtk.Button(_("Examine..."))
         button.set_size_request(80, 35)
@@ -55,7 +55,7 @@ class Preferences(gtk.VBox):
     
     def renew_active_choice(self, hbox_script):
         """"""
-        if config_parser.get_addon_option(OPTION_RENEW_SCRIPT_ACTIVE, default=False, is_bool=True):
+        if conf.get_addon_option(OPTION_RENEW_SCRIPT_ACTIVE, default=False, is_bool=True):
             self.renew_script.set_active(True)
             hbox_script.set_sensitive(True)
         else:
@@ -88,8 +88,8 @@ class Preferences(gtk.VBox):
     def save(self):
         """"""
         if self.renew_script.get_active():
-            config_parser.set_addon_option(OPTION_RENEW_SCRIPT_ACTIVE, "True")
+            conf.set_addon_option(OPTION_RENEW_SCRIPT_ACTIVE, "True")
         else:
-            config_parser.set_addon_option(OPTION_RENEW_SCRIPT_ACTIVE, "False")
+            conf.set_addon_option(OPTION_RENEW_SCRIPT_ACTIVE, "False")
         ip_renew_script_path = self.entry_renew_script.get_text()
-        config_parser.set_addon_option(OPTION_IP_RENEW_SCRIPT_PATH, ip_renew_script_path)
+        conf.set_addon_option(OPTION_IP_RENEW_SCRIPT_PATH, ip_renew_script_path)

@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 #Local Libs
 import core.cons as cons
 import core.misc as misc
-from core.config import config_parser
+from core.conf_parser import conf
 from core.plugins_bridge import PluginBridge
 
 from multi_download import MultiDownload
@@ -133,7 +133,7 @@ class Downloader(threading.Thread, MultiDownload):
         """"""
         #TODO: add a config option to disable this validation.
         info = self.source.info()
-        if not config_parser.get_html_dl() and info.getheader("Content-Type", None): #Content-Type: text/html; charset=ISO-8859-4
+        if not conf.get_html_dl() and info.getheader("Content-Type", None): #Content-Type: text/html; charset=ISO-8859-4
             if "text/html" in info['Content-Type']:
                 raise StatusError("HTML detected.")
     

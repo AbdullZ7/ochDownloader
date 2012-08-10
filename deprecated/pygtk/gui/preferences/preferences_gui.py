@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.get
 
 #Libs
 import core.cons as cons
-from core.config import config_parser
+from core.conf_parser import conf
 
 from gui.notebook_gui import Notebook
 
@@ -20,7 +20,7 @@ class Preferences(gtk.VBox):
         """"""
         gtk.VBox.__init__(self)
         
-        self.config = config_parser
+        self.config = conf
         self.settings_list = [] #a list with the settings instances called. Used for polymorphism
         
         #containers-separators.

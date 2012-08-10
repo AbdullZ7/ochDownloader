@@ -9,7 +9,7 @@ import gobject
 
 import core.cons as cons
 from core.events import events
-from core.config import config_parser
+from core.conf_parser import conf
 from core.idle_queue import register_event, remove_event
 
 from gui.addons_gui import AddonCore
@@ -48,17 +48,17 @@ class Addon(AddonCore):
         """"""
         WIDGET, TITLE, CALLBACK, SENSITIVE = range(4)
         config_unrar = (gtk.CheckMenuItem(), self.name, self.on_unrar) #can toggle
-        if config_parser.get_addon_option(OPTION_UNRAR_ACTIVE, default=False, is_bool=True):
+        if conf.get_addon_option(OPTION_UNRAR_ACTIVE, default=False, is_bool=True):
             config_unrar[WIDGET].set_active(True)
             self.connect()
         return config_unrar
 
     def on_unrar(self, widget):
         if widget.get_active(): #se activo
-            config_parser.set_addon_option(OPTION_UNRAR_ACTIVE, "True")
+            conf.set_addon_option(OPTION_UNRAR_ACTIVE, "True")
             self.connect()
         else:
-            config_parser.set_addon_option(OPTION_UNRAR_ACTIVE, "False")
+            conf.set_addon_option(OPTION_UNRAR_ACTIVE, "False")
             events.disconnect(cons.EVENT_DL_COMPLETE, self.event_id)
     
     def connect(self):

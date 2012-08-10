@@ -7,7 +7,7 @@ import pygtk
 import gtk
 import gobject
 
-from core.config import config_parser
+from core.conf_parser import conf
 import core.cons as cons
 
 from passwords_handler import passwords_handler

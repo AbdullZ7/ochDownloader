@@ -6,7 +6,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Local Libs
-from core.config import config_parser
+from core.conf_parser import conf
 import core.cons as cons
 
 
@@ -35,8 +35,8 @@ class Request:
         return URLOpen(cookie, self.proxy)
 
     def load_proxy(self):
-        if config_parser.get_proxy_active():
-            proxy_tup = config_parser.get_proxy()
+        if conf.get_proxy_active():
+            proxy_tup = conf.get_proxy()
             if proxy_tup is not None:
                 ptype, ip, port = proxy_tup
                 self.set_proxy(ptype, ip, port)

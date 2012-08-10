@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.get
 import core.cons as cons
 import core.misc as misc
 from core.api import api
-from core.config import config_parser
+from core.conf_parser import conf
 from core.Container_Extractor import Container
 
 import media_gui as media
@@ -100,7 +100,7 @@ class AddDownloads(gtk.VBox):
         self.entry.add_events(gtk.gdk.KEY_RELEASE_MASK)
         self.entry.set_width_chars(35) #entry width
         
-        self.paths_list = config_parser.get_save_dl_paths()
+        self.paths_list = conf.get_save_dl_paths()
         self.load_save_paths()
         
         if not self.paths_list:
@@ -334,7 +334,7 @@ class AddDownloads(gtk.VBox):
         self.paths_list.append(save_to_path)
         self.paths_liststore.clear()
         self.load_save_paths()
-        config_parser.set_save_dl_paths(self.paths_list)
+        conf.set_save_dl_paths(self.paths_list)
         
         #remover items no seleccionados de pending_downloads.
         model = self.treeView.get_model()

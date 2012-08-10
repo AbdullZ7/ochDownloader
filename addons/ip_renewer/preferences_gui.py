@@ -2,7 +2,7 @@ import sys
 import logging
 logger = logging.getLogger(__name__)
 
-from core.config import config_parser
+from core.conf_parser import conf
 import core.cons as cons
 
 from PySide.QtGui import *
@@ -59,19 +59,19 @@ class Preferences(QVBoxLayout):
             self.entry_script_path.setText(file_name)
     
     def load(self):
-        if config_parser.get_addon_option(OPTION_RENEW_SCRIPT_ACTIVE, default=False, is_bool=True):
+        if conf.get_addon_option(OPTION_RENEW_SCRIPT_ACTIVE, default=False, is_bool=True):
             self.radio_script.setChecked(True) #emits toggle.
         else:
             self.radio_renew.setChecked(True)
-        path = config_parser.get_addon_option(OPTION_IP_RENEW_SCRIPT_PATH, default="")
+        path = conf.get_addon_option(OPTION_IP_RENEW_SCRIPT_PATH, default="")
         self.entry_script_path.setText(path)
     
     def save(self):
         if self.radio_script.isChecked():
-            config_parser.set_addon_option(OPTION_RENEW_SCRIPT_ACTIVE, "True")
+            conf.set_addon_option(OPTION_RENEW_SCRIPT_ACTIVE, "True")
         else:
-            config_parser.set_addon_option(OPTION_RENEW_SCRIPT_ACTIVE, "False")
+            conf.set_addon_option(OPTION_RENEW_SCRIPT_ACTIVE, "False")
         path = self.entry_script_path.text()
-        config_parser.set_addon_option(OPTION_IP_RENEW_SCRIPT_PATH, path)
+        conf.set_addon_option(OPTION_IP_RENEW_SCRIPT_PATH, path)
 
 

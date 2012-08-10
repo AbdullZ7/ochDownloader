@@ -257,9 +257,9 @@ class _Config(SafeConfigParser):
 
 
 #modules are singletons in python :)
-config_parser = _Config() #make it global.
+conf = _Config() #make it global.
 
-    
+
 if __name__ == "__main__":
     pass
     

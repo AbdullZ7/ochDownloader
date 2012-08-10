@@ -2,7 +2,7 @@ import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
 from core.api import api
-from core.config import config_parser
+from core.conf_parser import conf
 from core.events import events
 import core.cons as cons
 
@@ -20,7 +20,7 @@ class Addon(AddonCore):
         self.name = _("History")
         self.event_id = events.connect(cons.EVENT_DL_COMPLETE, self.trigger)
         self.parent = parent
-        self.config = config_parser
+        self.config = conf
         self.history = History()
         self.history_tab = HistoryTab(self.history)
     

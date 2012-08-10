@@ -8,7 +8,7 @@ import gtk
 import gobject
 
 import core.cons as cons
-from core.config import config_parser
+from core.conf_parser import conf
 from core.api import api
 
 from unrar import UnRAR

@@ -5,7 +5,7 @@ logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.get
 
 import core.cons as cons
 from core.events import events
-from core.config import config_parser
+from core.conf_parser import conf
 from core.idle_queue import register_event, remove_event, idle_add
 
 from qt.addons import AddonCore
@@ -42,16 +42,16 @@ class Addon(AddonCore):
     def set_menu_item(self):
         self.action = self.parent.menu.addAction(self.name, self.on_toggle) #can toggle
         self.action.setCheckable(True)
-        if config_parser.get_addon_option(OPTION_UNRAR_ACTIVE, default=False, is_bool=True):
+        if conf.get_addon_option(OPTION_UNRAR_ACTIVE, default=False, is_bool=True):
             self.action.setChecked(True)
             self.connect()
 
     def on_toggle(self):
         if self.action.isChecked(): #se activo
-            config_parser.set_addon_option(OPTION_UNRAR_ACTIVE, "True")
+            conf.set_addon_option(OPTION_UNRAR_ACTIVE, "True")
             self.connect()
         else:
-            config_parser.set_addon_option(OPTION_UNRAR_ACTIVE, "False")
+            conf.set_addon_option(OPTION_UNRAR_ACTIVE, "False")
             events.disconnect(cons.EVENT_DL_COMPLETE, self.event_id)
     
     def connect(self):

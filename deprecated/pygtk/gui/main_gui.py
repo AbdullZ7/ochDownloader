@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.get
 
 #Libs
 #from core.Container_Extractor import Container
-from core.config import config_parser
+from core.conf_parser import conf
 from core.events import events
 from core.api import api
 import core.cons as cons
@@ -87,7 +87,7 @@ class Gui(gtk.Window):
         self.set_position(gtk.WIN_POS_CENTER)
         self.resize(600, 300)
         
-        self.config = config_parser #config.py
+        self.config = conf #config.py
         
         #app window position and size
         x, y, w, h = self.config.get_window_settings()

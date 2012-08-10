@@ -11,7 +11,7 @@ from thread_manager import ThreadManager
 from add_downloads_manager import AddDownloadsManager
 from slots import Slots
 from host_accounts import host_accounts
-from config import config_parser
+from conf_parser import conf
 from plugins_parser import plugins_parser
 from events import events
 
@@ -140,7 +140,7 @@ class DownloadManager(DownloadCore, ThreadManager): #herencia multiple
                 elif status == cons.STATUS_ERROR:
                     logger.warning("status error: {0}".format(download_item.host))
                     download_item.fail_count += 1
-                    if download_item.fail_count > config_parser.get_retries_limit():
+                    if download_item.fail_count > conf.get_retries_limit():
                         download_item.status = cons.STATUS_STOPPED
                         self.stopped_downloads[id_item] = download_item
                     else:

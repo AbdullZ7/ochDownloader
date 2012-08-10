@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.get
 #Libs
 #from core.Container_Extractor import Container
 from core.idle_queue import idle_loop
-from core.config import config_parser
+from core.conf_parser import conf
 from core.events import events
 from core.api import api
 import core.cons as cons
@@ -158,7 +158,7 @@ class Gui(QMainWindow):
     
     def restore_wnd_geometry(self):
         wx, wy, ww, wh = QDesktopWidget().availableGeometry().getRect()
-        x, y, w, h = config_parser.get_window_settings()
+        x, y, w, h = conf.get_window_settings()
         if ww <= w or wh <= h:
             self.showMaximized()
         elif w > MIN_WIDTH or h > MIN_HEIGHT:
@@ -314,8 +314,8 @@ class Gui(QMainWindow):
             self.hide()
             self.save_session()
             self.addons_save()
-            config_parser.set_window_settings(x, y, w, h)
-            config_parser.save_config()
+            conf.set_window_settings(x, y, w, h)
+            conf.save_config()
         except Exception as err:
             logger.exception(err)
 

@@ -3,7 +3,7 @@ logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.get
 
 import core.cons as cons
 from core.api import api
-from core.config import config_parser
+from core.conf_parser import conf
 from core.plugins_parser import plugins_parser
 
 
@@ -27,8 +27,8 @@ class IPRenewerGUI:
         if self.can_change_ip():
             self.id_list = [download_item.id for download_item in api.get_active_downloads().values() + api.get_queue_downloads().values()]
             self.stop_all()
-            if config_parser.get_addon_option(OPTION_RENEW_SCRIPT_ACTIVE, default=False, is_bool=True):
-                self.change_ip_th.start(config_parser.get_addon_option(OPTION_IP_RENEW_SCRIPT_PATH, default=""))
+            if conf.get_addon_option(OPTION_RENEW_SCRIPT_ACTIVE, default=False, is_bool=True):
+                self.change_ip_th.start(conf.get_addon_option(OPTION_IP_RENEW_SCRIPT_PATH, default=""))
             else:
                 self.change_ip_th.start()
             

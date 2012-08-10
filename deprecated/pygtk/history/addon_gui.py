@@ -6,7 +6,7 @@ import gtk
 import gobject
 
 from core.api import api
-from core.config import config_parser
+from core.conf_parser import conf
 from core.events import events
 import core.cons as cons
 
@@ -24,7 +24,7 @@ class Addon(AddonCore):
         self.name = _("History")
         self.event_id = events.connect(cons.EVENT_DL_COMPLETE, self.trigger)
         self.parent = parent
-        self.config = config_parser
+        self.config = conf
         self.history = History()
         self.history_tab = HistoryContainer(self.history, self.parent)
     
