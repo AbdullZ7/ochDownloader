@@ -5,7 +5,11 @@ import time
 import threading
 import logging
 logger = logging.getLogger(__name__)
-from cStringIO import StringIO
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
 
 from connection import URLClose, request
 from downloader_core import DownloaderCore
