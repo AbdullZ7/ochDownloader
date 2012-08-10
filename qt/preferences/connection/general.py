@@ -22,12 +22,25 @@ class General(QGroupBox):
 
         grid_general.addWidget(label_retries, 1, 0)
         grid_general.addWidget(self.retries_box, 1, 1)
+
+        label_html = QLabel('HTML download:')
+
+        self.html_box = QCheckBox()
+
+        grid_general.addWidget(label_html, 2, 0)
+        grid_general.addWidget(self.html_box, 2, 1)
+
+        #
         grid_general.setColumnStretch(2, 1)
 
     def load(self):
         retries_limit = config_parser.get_retries_limit()
         self.retries_box.setValue(retries_limit)
+        if config_parser.get_html_dl():
+            self.html_box.toggle()
 
     def save(self):
         limit = str(self.retries_box.value())
         config_parser.set_retries_limit(limit)
+        html = self.html_box.isChecked()
+        config_parser.set_html_dl(html)

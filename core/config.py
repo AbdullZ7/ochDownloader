@@ -26,6 +26,7 @@ OPTION_PROXY_IP = "proxy_ip"
 OPTION_PROXY_PORT = "proxy_port"
 OPTION_PROXY_TYPE = "proxy_type"
 OPTION_RETRIES_LIMIT = "retries_limit"
+OPTION_HTML_DL = "html_download"
 
 #gui section
 SECTION_GUI = "gui"
@@ -40,7 +41,7 @@ SECTION_ADDONS = "addons"
 
 
 DEFAULT = {SECTION_MAIN: {OPTION_VERSION: cons.APP_VER, OPTION_CLIPBOARD_ACTIVE: "True"},
-                    SECTION_NETWORK: {OPTION_PROXY_TYPE: cons.PROXY_HTTP, OPTION_PROXY_IP: "", OPTION_PROXY_PORT: "0", OPTION_PROXY_ACTIVE: "False", OPTION_RETRIES_LIMIT: "99"},
+                    SECTION_NETWORK: {OPTION_PROXY_TYPE: cons.PROXY_HTTP, OPTION_PROXY_IP: "", OPTION_PROXY_PORT: "0", OPTION_PROXY_ACTIVE: "False", OPTION_RETRIES_LIMIT: "99", OPTION_HTML_DL: "False"},
                     SECTION_GUI: {OPTION_WINDOW_SETTINGS: "-1,-1,-1,-1", OPTION_SAVE_DL_PATHS: pickle.dumps([]), OPTION_COLUMNS_WIDTH: "-1, -1, -1, -1, -1, -1, -1"}, 
                     SECTION_ADDONS: {}
                     }
@@ -182,6 +183,23 @@ class _Config(SafeConfigParser):
         except Exception as err:
             logger.exception(err)
         return 99
+
+    @exception_handler
+    def set_html_dl(self, allow):
+        """"""
+        allow = "True" if allow else "False"
+        self.set(SECTION_NETWORK, OPTION_HTML_DL, allow)
+
+    def get_html_dl(self):
+        """"""
+        try:
+            allow = self.getboolean(SECTION_NETWORK, OPTION_HTML_DL)
+            return allow
+        except (NoSectionError, NoOptionError) as err:
+            logger.warning(err)
+        except Exception as err:
+            logger.exception(err)
+        return False
 
     
     #//////////////////////// [GUI] ////////////////////////
