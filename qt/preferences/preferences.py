@@ -5,6 +5,7 @@ from PySide.QtGui import *
 from PySide.QtCore import *
 
 from connection.connection_tab import Connection
+from gui.gui_tab import GUI
 from addons_tab import AddonsTab
 
 
@@ -27,6 +28,10 @@ class Preferences(QTabWidget):
         #self.tab_connection.setLayout(self.connection)
         self.addTab(self.addons_tab, 'Addons')
         self.tab_widgets.append(self.addons_tab)
+
+        self.gui = GUI()
+        self.addTab(self.gui, 'GUI')
+        self.tab_widgets.append(self.gui)
 
         self.on_load()
 
