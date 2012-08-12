@@ -65,6 +65,7 @@ def halt():
     """
     for window in QApplication.topLevelWidgets():
         if isinstance(window, Gui):
+            window.can_close = True
             window.close()
         #window.hide()
 
@@ -88,8 +89,8 @@ class Gui(QMainWindow):
         about = (QToolButton(), media.get_icon(media.ABOUT, media.MEDIUM), _('About'), self.on_about, True)
         
         self.menu = QMenu()
-        preferences[0].setPopupMode(QToolButton.MenuButtonPopup)
-        preferences[0].setMenu(self.menu)
+        preferences[BTN].setPopupMode(QToolButton.MenuButtonPopup)
+        preferences[BTN].setMenu(self.menu)
         
         toolbar = Toolbar(self, [self.start, self.stop, None, accounts, preferences, None, about])
 
