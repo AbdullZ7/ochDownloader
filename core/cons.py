@@ -4,8 +4,8 @@ import sys
 
 #app constants
 APP_NAME = "ochDownloader"
-APP_VER = "0.8.7"
-APP_TITLE = " ".join((APP_NAME, APP_VER, "Beta"))
+APP_VER = "0.8.8"
+APP_TITLE = " ".join((APP_NAME, APP_VER, ""))
 
 #app path constants
 APP_PATH = os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "") #.decode("utf-8") #os.path.dirname(sys.argv[0]) = .../root, os.path.join = .../root/
