@@ -84,6 +84,7 @@ class MultiDownload(DownloaderCore):
             self.chunks = self.create_chunks()
         else: #resume
             self.size_complete = self.__get_chunks_size_complete()
+            self.size_tmp = self.size_complete
 
         self.chunks_control = [True for _ in self.chunks] #can_run
 

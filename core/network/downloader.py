@@ -165,7 +165,7 @@ class Downloader(threading.Thread, MultiDownload):
     def get_remain(self):
         """"""
         try:
-            remain_time = ((time.time() - self.start_time) / self.size_complete) * (self.size_file - self.size_complete)
+            remain_time = ((time.time() - self.start_time) / (self.size_complete - self.size_tmp)) * (self.size_file - self.size_complete)
         except ZeroDivisionError:
             return 0
         if remain_time < 0:
