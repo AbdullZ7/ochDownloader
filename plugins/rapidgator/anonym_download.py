@@ -24,14 +24,14 @@ class PluginDownload(PluginsCore):
             self.limit_exceeded = True
             return
 
-        self.countdown('var secs = (?P<count>[^;]+)', page, 320, WAITING)
-
         file_id = self.link.split("/file/")[-1].split("/")[0]
         ajax_link = BASE_URL + '/download/AjaxStartTimer'
         data = (('fid', file_id), )
         json_response = self.get_ajax(ajax_link, data=data)
 
         if json_response.get('state', '') == 'started':
+            self.countdown('var secs = (?P<count>[^;]+)', page, 320, WAITING)
+
             ajax_link = BASE_URL + '/download/AjaxGetDownloadLink'
             data = (('sid', json_response['sid']), )
             json_response = self.get_ajax(ajax_link, data=data)
