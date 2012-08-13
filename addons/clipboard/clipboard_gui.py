@@ -3,10 +3,16 @@ logger = logging.getLogger(__name__)
 
 import core.cons as cons
 import core.misc as misc
+from core.conf_parser import conf
 from core.plugins_parser import plugins_parser
 
 from PySide.QtGui import *
 from PySide.QtCore import *
+
+#Config parser
+OPTION_CLIPBOARD_EXTS = "clipboard_exts"
+OPTION_CLIPBOARD_ACTIVE = "clipboard_exts_active"
+EXTS = ".exe;.rar;.zip;.avi;.mkv;.mp4"
 
 
 class Clipboard:
@@ -51,10 +57,16 @@ class Clipboard:
 
     def check_supported(self, urls):
         """"""
+        exts_active = conf.get_addon_option(OPTION_CLIPBOARD_ACTIVE, default=True, is_bool=True)
+        exts = conf.get_addon_option(OPTION_CLIPBOARD_EXTS) or EXTS #may be an empty str
+        exts = tuple(exts.split(";"))
         links = []
         for url in urls:
-            for name in self.services:
-                if url.find(name) > 0:
-                    links.append(url)
-                    break
+            if exts_active and exts and url.endswith(exts):
+                links.append(url)
+            else:
+                for name in self.services:
+                    if name in url:
+                        links.append(url)
+                        break
         return links

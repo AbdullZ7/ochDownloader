@@ -6,6 +6,7 @@ from core.conf_parser import conf
 
 from qt.addons import AddonCore
 from clipboard_gui import Clipboard
+from preferences_gui import Preferences
 
 
 class Addon(AddonCore):
@@ -13,6 +14,7 @@ class Addon(AddonCore):
     def __init__(self, parent, *args, **kwargs):
         """"""
         AddonCore.__init__(self)
+        self.name = _("Clipboard")
         self.event_id = None
         self.clipboard_monitor = Clipboard(parent)
         self.parent = parent
@@ -24,6 +26,10 @@ class Addon(AddonCore):
         if self.config.get_clipboard_active():
             self.action.setChecked(True)
             self.clipboard_monitor.enable()
+
+    def get_preferences(self):
+        """"""
+        return Preferences()
     
     def on_toggle(self):
         if self.action.isChecked(): #se activo
