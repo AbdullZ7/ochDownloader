@@ -30,6 +30,7 @@ class PluginDownload(PluginsCore):
         json_response = self.get_ajax(ajax_link, data=data)
 
         if json_response.get('state', '') == 'started':
+            print "check 1"
             self.countdown('var secs = (?P<count>[^;]+)', page, 320, WAITING)
 
             ajax_link = BASE_URL + '/download/AjaxGetDownloadLink'
@@ -37,6 +38,7 @@ class PluginDownload(PluginsCore):
             json_response = self.get_ajax(ajax_link, data=data)
 
             if json_response.get('state', '') == 'done':
+                print "check 2"
                 link = BASE_URL + '/download/captcha'
                 page = self.get_page(link)
                 #TODO: continue

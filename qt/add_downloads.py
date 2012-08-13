@@ -126,10 +126,10 @@ class AddDownloads(QVBoxLayout):
 
         #menu.addSeparator()
         
-        generic_items = [('Download Selected', self.on_download_selected),
+        generic_items = [(_('Download Selected'), self.on_download_selected),
                         (None, None),
-                        ('Re-check', self.on_recheck),
-                        ('Clear list', self.on_clear_list)]
+                        (_('Re-check'), self.on_recheck),
+                        (_('Clear list'), self.on_clear_list)]
         
         [menu.addAction(title, callback) if title is not None else menu.addSeparator()
         for title, callback in generic_items]

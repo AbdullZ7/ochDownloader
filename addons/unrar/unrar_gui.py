@@ -39,7 +39,7 @@ class UnRARGUI:
     def add_tab(self):
         if self.parent.tab.indexOf(self.tab_widget) < 0:
             index_page = 2
-            self.parent.tab.insertTab(index_page, self.tab_widget, 'Extracting')
+            self.parent.tab.insertTab(index_page, self.tab_widget, _('Extracting'))
             btn_close = QPushButton(self.parent)
             #btn_close.setIcon(QIcon('stop.png'))
             #btn_close.setIconSize(QSize(10, 10))

@@ -38,9 +38,9 @@ class Tray:
     def context_menu(self):
         self.menu = QMenu()
 
-        items = [('Show/Hide', self.show_or_hide),
+        items = [(_('Show/Hide'), self.show_or_hide),
                 (None, None),
-                ('Quit', self.parent.event_close)]
+                (_('Quit'), self.parent.event_close)]
 
         [self.menu.addAction(title, callback) if title is not None else self.menu.addSeparator()
          for title, callback in items]

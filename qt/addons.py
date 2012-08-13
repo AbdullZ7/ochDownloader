@@ -46,8 +46,5 @@ class AddonsManager:
 
 
 if __name__ == "__main__":
-    for module_loader, name, ispkg in pkgutil.walk_packages(path=["/home/estecb/Proyecto/addons", ]):
-        print name
-    #print AddonMount().get_menu_item()
-    #print [name for module_loader, name, ispkg in pkgutil.iter_modules(path=[cons.APP_PATH])]
+    pass
     

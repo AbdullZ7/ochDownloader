@@ -24,7 +24,7 @@ class Preferences(QVBoxLayout):
 
         hbox_exts = QHBoxLayout()
 
-        label_extensions = QLabel('Activate:')
+        label_extensions = QLabel(_('Activate:'))
         self.exts_box = QCheckBox()
         self.exts_box.toggled.connect(self.on_toggled)
 

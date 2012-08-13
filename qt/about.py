@@ -9,7 +9,7 @@ from PySide.QtCore import *
 class About(QMessageBox):
     def __init__(self, parent=None):
         QMessageBox.__init__(self, parent)
-        self.setWindowTitle('About')
+        self.setWindowTitle(_('About'))
         
         self.setIconPixmap(QPixmap(os.path.join(cons.MEDIA_PATH, "misc", "ochdownload.png")))
         
