@@ -2,8 +2,7 @@ import sqlite3
 import os
 import datetime
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
-
+logger = logging.getLogger(__name__)
 
 import core.cons as cons
 
@@ -12,28 +11,48 @@ class History:
     """"""
     def __init__(self):
         """"""
+        self.create_path()
+        self.conn = self.create_conn()
+        self.create_db()
+
+    def create_path(self):
         try:
             if not os.path.exists(cons.DB_PATH):
                 os.makedirs(cons.DB_PATH)
         except EnvironmentError as err:
             logger.exception(err)
-        
-        self.conn = sqlite3.connect(cons.DB_FILE, detect_types=sqlite3.PARSE_DECLTYPES)
-        self.create_db()
-    
+
+    def create_conn(self):
+        try:
+            return self.connect()
+        except Exception as err:
+            logger.exception(err)
+            return self.__reset_db()
+
+    def __reset_db(self):
+        try:
+            os.remove(cons.DB_FILE)
+            return self.connect()
+        except EnvironmentError as err:
+            logger.warning(err)
+            #create StringIO database?
+
+    def connect(self):
+        return sqlite3.connect(cons.DB_FILE, detect_types=sqlite3.PARSE_DECLTYPES)
+
     def create_db(self):
         """"""
         try:
             with self.conn:
                 self.conn.execute("""create table history (
-                                                id integer primary key,
-                                                file_name varchar(255) not null,
-                                                link varchar(255),
-                                                size integer not null,
-                                                complete integer not null,
-                                                path varchar(255) not null,
-                                                insert_date timestamp not null
-                                                )""")
+                                        id integer primary key,
+                                        file_name varchar(255) not null,
+                                        link varchar(255),
+                                        size integer not null,
+                                        complete integer not null,
+                                        path varchar(255) not null,
+                                        insert_date timestamp not null
+                                        )""")
         except sqlite3.OperationalError as err:
             logger.debug(err)
     
@@ -57,29 +76,29 @@ class History:
     def _get_data_query(self, cur, offset, limit):
         """"""
         cur.execute("""SELECT * FROM history
-                            ORDER BY id DESC
-                            LIMIT :limit
-                            OFFSET :offset""",
-                            {"limit": limit, "offset": offset}
-                            )
+                        ORDER BY id DESC
+                        LIMIT :limit
+                        OFFSET :offset""",
+                        {"limit": limit, "offset": offset}
+                    )
     
     def _get_match_data_query(self, cur, offset, limit, match_term):
         """"""
         match_term = '%' + match_term.replace(" ", '%') + '%' #% = wildcares, (such as *)
         cur.execute("""SELECT * FROM history
-                            WHERE file_name LIKE LOWER(:match_term)
-                            ORDER BY id DESC
-                            LIMIT :limit
-                            OFFSET :offset""",
-                            {"limit": limit, "offset": offset, "match_term": match_term}
-                            )
+                        WHERE file_name LIKE LOWER(:match_term)
+                        ORDER BY id DESC
+                        LIMIT :limit
+                        OFFSET :offset""",
+                        {"limit": limit, "offset": offset, "match_term": match_term}
+                    )
     
     def set_values(self, name, link, size, complete, path):
         """"""
         try:
             with self.conn:
                 self.conn.execute("INSERT INTO history(file_name, link, size, complete, path, insert_date) VALUES (:name, :link, :size, :complete, :path, :date)",
-                                            {"name": name, "link": link, "size": size, "complete": complete, "path": path, "date": datetime.datetime.now()})
+                                    {"name": name, "link": link, "size": size, "complete": complete, "path": path, "date": datetime.datetime.now()})
         except sqlite3.OperationalError as err:
             logger.debug(err)
 
