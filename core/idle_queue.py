@@ -3,8 +3,6 @@ import Queue
 import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
-import core.cons as cons
-
 
 #thread safety
 _thread_lock = threading.RLock()
@@ -26,14 +24,11 @@ def idle_add_and_wait(func, *args, **kwargs):
             return False
         finally:
             event.set()
-    with _thread_lock:
-        _event_list.append(event)
-    if not _block:
+    if register_event(event):
         #gobject.idle_add(idle)
         idle_loop.put(idle)
         event.wait() #wait for set().
-    with _thread_lock:
-        _event_list.remove(event)
+    remove_event(event)
 
 def set_events(): #execute at exit.
     logger.debug("Setting pending events.")
