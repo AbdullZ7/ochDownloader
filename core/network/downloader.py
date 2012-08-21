@@ -100,7 +100,7 @@ class Downloader(threading.Thread, MultiDownload):
             elif 'filename*=' in disposition:
                 file_name = disposition.split("'")[-1]
         if not file_name: #may be an empty string or None
-            file_name = misc.html_entities_parser(self.source.url.split("/")[-1])
+            file_name = misc.html_entities_parser(self.source.url.split("/")[-1].split("?")[0])
         file_name = urllib.unquote_plus(file_name)
         file_name = misc.smartdecode(file_name)
         file_name = misc.strip(file_name, to_strip='/\\:*?"<>|')
@@ -131,7 +131,6 @@ class Downloader(threading.Thread, MultiDownload):
     
     def __validate_source(self):
         """"""
-        #TODO: add a config option to disable this validation.
         info = self.source.info()
         if not conf.get_html_dl() and info.getheader("Content-Type", None): #Content-Type: text/html; charset=ISO-8859-4
             if "text/html" in info['Content-Type']:
@@ -148,7 +147,7 @@ class Downloader(threading.Thread, MultiDownload):
         try:
             with open(os.path.join(self.path_to_save, self.file_name), mode, cons.FILE_BUFSIZE) as fh:
                 self.start_time = time.time()
-                self.status_msg = "Running"
+                self.status_msg = cons.STATUS_RUNNING
                 self.threaded_download_manager(fh)
                 fh.flush() #ensures data is write to disk.
                 os.fsync(fh.fileno())

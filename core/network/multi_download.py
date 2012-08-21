@@ -34,7 +34,7 @@ class MultiDownload(DownloaderCore):
         DownloaderCore.__init__(self, file_name,  path_to_save, link, host, bucket)
 
         #Threading stuff
-        self.lock1 = threading.Lock() #lock to write file and modify size_complete attibute.
+        self.lock1 = threading.Lock() #lock to write file.
         self.lock2 = threading.Lock()
         self.lock3 = threading.Lock()
 
@@ -89,7 +89,7 @@ class MultiDownload(DownloaderCore):
         self.chunks_control = [True for _ in self.chunks] #can_run
 
         th_list = [self.spawn_thread(fh, i, chunk) for i, chunk in enumerate(self.chunks[:])
-                   if not chunk[END] or chunk[START] < chunk[END]]
+                   if not chunk[END] or chunk[START] < chunk[END]] #end may be 0
 
         for th in th_list:
             th.join()
@@ -188,7 +188,7 @@ class MultiDownload(DownloaderCore):
                     if self.stop_flag or self.error_flag:
                         return
 
-                    if not len_data or complete >= (chunk[END] - chunk[START]):
+                    if not len_data or (complete >= (chunk[END] - chunk[START]) and chunk[END]): #end may be 0
                         if not self.is_chunk_complete(chunk, complete):
                             raise IncompleteChunk('Incomplete chunk')
                         logger.debug("complete {0} {1}".format(chunk[START], chunk[END]))
