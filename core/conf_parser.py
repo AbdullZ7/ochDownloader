@@ -52,16 +52,11 @@ DEFAULT = {SECTION_MAIN: {OPTION_VERSION: cons.APP_VER, OPTION_CLIPBOARD_ACTIVE:
 _thread_lock = threading.RLock()
 
 #decorator
-def exception_handler(func):
+def lock_handler(func):
     #@functools.wraps(func) #accurate debugging
     def wrapper(*args, **kwargs):
-        try:
-            with _thread_lock:
-                func(*args, **kwargs)
-        except (NoSectionError, NoOptionError) as err:
-            logger.warning(err)
-        except Exception as err:
-            logger.exception(err)
+        with _thread_lock:
+            func(*args, **kwargs)
     return wrapper
 
 
@@ -99,11 +94,16 @@ class _Config(SafeConfigParser):
         except Exception as  err:
             logger.exception(err)
     
-    @exception_handler
+    @lock_handler
     def set_addon_option(self, option, value):
         """"""
-        self.set(SECTION_ADDONS, option, value)
-    
+        try:
+            self.set(SECTION_ADDONS, option, value)
+        except (NoSectionError, NoOptionError) as err:
+            logger.debug(err)
+        except Exception as err:
+            logger.exception(err)
+
     def get_addon_option(self, option, default=None, is_bool=False):
         """"""
         try:
@@ -117,75 +117,48 @@ class _Config(SafeConfigParser):
             logger.exception(err)
         return default
 
-    @exception_handler
+    @lock_handler
     def set_clipboard_active(self, clipboard_active="True"):
         """"""
         self.set(SECTION_MAIN, OPTION_CLIPBOARD_ACTIVE, clipboard_active)
 
     def get_clipboard_active(self):
         """"""
-        try:
-            clipboard_active = self.getboolean(SECTION_MAIN, OPTION_CLIPBOARD_ACTIVE)
-            return clipboard_active
-        except (NoSectionError, NoOptionError) as err:
-            logger.warning(err)
-        except Exception as err:
-            logger.exception(err)
-        return True
+        return self.getboolean(SECTION_MAIN, OPTION_CLIPBOARD_ACTIVE)
 
-    @exception_handler
+    @lock_handler
     def set_proxy_active(self, proxy_active="False"):
         """"""
         self.set(SECTION_NETWORK, OPTION_PROXY_ACTIVE, proxy_active)
 
     def get_proxy_active(self):
         """"""
-        try:
-            proxy_active = self.getboolean(SECTION_NETWORK, OPTION_PROXY_ACTIVE)
-            return proxy_active
-        except (NoSectionError, NoOptionError) as err:
-            logger.warning(err)
-        except Exception as err:
-            logger.exception(err)
-        return False
+        return self.getboolean(SECTION_NETWORK, OPTION_PROXY_ACTIVE)
 
-    @exception_handler
+    @lock_handler
     def set_proxy(self, ptype, ip, port):
         """"""
         self.set(SECTION_NETWORK, OPTION_PROXY_TYPE, ptype)
         self.set(SECTION_NETWORK, OPTION_PROXY_IP, ip)
         self.set(SECTION_NETWORK, OPTION_PROXY_PORT, port)
-    
+
     def get_proxy(self): #proxy_dict
         """"""
-        try:
-            ptype = self.get(SECTION_NETWORK, OPTION_PROXY_TYPE)
-            ip = self.get(SECTION_NETWORK, OPTION_PROXY_IP)
-            port = self.getint(SECTION_NETWORK, OPTION_PROXY_PORT)
-            return (ptype, ip, port)
-        except (NoSectionError, NoOptionError) as err:
-            logger.warning(err)
-        except Exception as err:
-            logger.exception(err)
-        return None
+        ptype = self.get(SECTION_NETWORK, OPTION_PROXY_TYPE)
+        ip = self.get(SECTION_NETWORK, OPTION_PROXY_IP)
+        port = self.getint(SECTION_NETWORK, OPTION_PROXY_PORT)
+        return ptype, ip, port
 
-    @exception_handler
+    @lock_handler
     def set_retries_limit(self, limit):
         """"""
         self.set(SECTION_NETWORK, OPTION_RETRIES_LIMIT, limit)
-    
+
     def get_retries_limit(self):
         """"""
-        try:
-            limit = self.getint(SECTION_NETWORK, OPTION_RETRIES_LIMIT)
-            return limit
-        except (NoSectionError, NoOptionError) as err:
-            logger.warning(err)
-        except Exception as err:
-            logger.exception(err)
-        return 99
+        return self.getint(SECTION_NETWORK, OPTION_RETRIES_LIMIT)
 
-    @exception_handler
+    @lock_handler
     def set_html_dl(self, allow):
         """"""
         allow = "True" if allow else "False"
@@ -193,70 +166,44 @@ class _Config(SafeConfigParser):
 
     def get_html_dl(self):
         """"""
-        try:
-            allow = self.getboolean(SECTION_NETWORK, OPTION_HTML_DL)
-            return allow
-        except (NoSectionError, NoOptionError) as err:
-            logger.warning(err)
-        except Exception as err:
-            logger.exception(err)
-        return False
+        return self.getboolean(SECTION_NETWORK, OPTION_HTML_DL)
 
     
     #//////////////////////// [GUI] ////////////////////////
-    
-    @exception_handler
+
+    @lock_handler
     def set_window_settings(self, x, y, w, h):
         """"""
         self.set(SECTION_GUI, OPTION_WINDOW_SETTINGS, "{0},{1},{2},{3}".format(x, y, w, h))
 
     def get_window_settings(self):
         """"""
-        try:
-            tmp = self.get(SECTION_GUI, OPTION_WINDOW_SETTINGS)
-            x, y, w, h = tmp.split(",")
-            x, y, w, h = int(x), int(y), int(w), int(h)
-            return x, y, w, h
-        except (NoSectionError, NoOptionError) as err:
-            logger.warning(err)
-        except Exception as err:
-            logger.exception(err)
-        return -1, -1, -1, -1
-    
-    @exception_handler
+        tmp = self.get(SECTION_GUI, OPTION_WINDOW_SETTINGS)
+        x, y, w, h = tmp.split(",")
+        x, y, w, h = int(x), int(y), int(w), int(h)
+        return x, y, w, h
+
+    @lock_handler
     def set_columns_width(self, columns):
         """"""
         self.set(SECTION_GUI, OPTION_COLUMNS_WIDTH, "{0},{1},{2},{3},{4},{5},{6}".format(*columns))
-    
+
     def get_columns_width(self):
         """"""
-        try:
-            tmp = self.get(SECTION_GUI, OPTION_COLUMNS_WIDTH)
-            columns = tuple([int(width) for width in tmp.split(",")])
-            return columns
-        except (NoSectionError, NoOptionError) as err:
-            logger.warning(err)
-        except Exception as err:
-            logger.exception(err)
-        return None
-    
-    @exception_handler
+        tmp = self.get(SECTION_GUI, OPTION_COLUMNS_WIDTH)
+        columns = tuple([int(width) for width in tmp.split(",")])
+        return columns
+
+    @lock_handler
     def set_save_dl_paths(self, paths_list):
         """"""
         self.set(SECTION_GUI, OPTION_SAVE_DL_PATHS, pickle.dumps(paths_list))
-    
+
     def get_save_dl_paths(self):
         """"""
-        try:
-            paths_list = pickle.loads(self.get(SECTION_GUI, OPTION_SAVE_DL_PATHS))
-            return paths_list
-        except (NoSectionError, NoOptionError) as err:
-            logger.warning(err)
-        except Exception as err:
-            logger.exception(err)
-        return []
+        return pickle.loads(self.get(SECTION_GUI, OPTION_SAVE_DL_PATHS))
 
-    @exception_handler
+    @lock_handler
     def set_tray_available(self, allow):
         """"""
         allow = "True" if allow else "False"
@@ -264,14 +211,7 @@ class _Config(SafeConfigParser):
 
     def get_tray_available(self):
         """"""
-        try:
-            allow = self.getboolean(SECTION_GUI, OPTION_TRAY_ICON)
-            return allow
-        except (NoSectionError, NoOptionError) as err:
-            logger.warning(err)
-        except Exception as err:
-            logger.exception(err)
-        return False
+        return self.getboolean(SECTION_GUI, OPTION_TRAY_ICON)
 
 
 #modules are singletons in python :)
@@ -280,4 +220,4 @@ conf = _Config() #make it global.
 
 if __name__ == "__main__":
     pass
-    
+
