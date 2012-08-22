@@ -52,12 +52,18 @@ DEFAULT = {SECTION_MAIN: {OPTION_VERSION: cons.APP_VER, OPTION_CLIPBOARD_ACTIVE:
 _thread_lock = threading.RLock()
 
 #decorator
-def lock_handler(func):
-    #@functools.wraps(func) #accurate debugging
-    def wrapper(*args, **kwargs):
-        with _thread_lock:
-            func(*args, **kwargs)
-    return wrapper
+def exception_handler(default=None):
+    def decorator(func):
+        #@functools.wraps(func) #accurate debugging
+        def wrapper(*args, **kwargs):
+            try:
+                with _thread_lock:
+                    return func(*args, **kwargs)
+            except Exception as err:
+                logger.exception(err)
+                return default
+        return wrapper
+    return decorator
 
 
 class _Config(SafeConfigParser):
@@ -67,6 +73,7 @@ class _Config(SafeConfigParser):
     """
     def __init__(self):
         """"""
+        #TODO: all getters should have the lock decorator.
         SafeConfigParser.__init__(self)
         try:
             self.read(cons.CONFIG_FILE) #read config file
@@ -94,16 +101,12 @@ class _Config(SafeConfigParser):
         except Exception as  err:
             logger.exception(err)
     
-    @lock_handler
+    @exception_handler()
     def set_addon_option(self, option, value):
         """"""
-        try:
-            self.set(SECTION_ADDONS, option, value)
-        except (NoSectionError, NoOptionError) as err:
-            logger.debug(err)
-        except Exception as err:
-            logger.exception(err)
+        self.set(SECTION_ADDONS, option, value)
 
+    #@exception_handler(default=...)
     def get_addon_option(self, option, default=None, is_bool=False):
         """"""
         try:
@@ -117,31 +120,34 @@ class _Config(SafeConfigParser):
             logger.exception(err)
         return default
 
-    @lock_handler
+    @exception_handler()
     def set_clipboard_active(self, clipboard_active="True"):
         """"""
         self.set(SECTION_MAIN, OPTION_CLIPBOARD_ACTIVE, clipboard_active)
 
+    @exception_handler(default=True)
     def get_clipboard_active(self):
         """"""
         return self.getboolean(SECTION_MAIN, OPTION_CLIPBOARD_ACTIVE)
 
-    @lock_handler
+    @exception_handler()
     def set_proxy_active(self, proxy_active="False"):
         """"""
         self.set(SECTION_NETWORK, OPTION_PROXY_ACTIVE, proxy_active)
 
+    @exception_handler(default=False)
     def get_proxy_active(self):
         """"""
         return self.getboolean(SECTION_NETWORK, OPTION_PROXY_ACTIVE)
 
-    @lock_handler
+    @exception_handler()
     def set_proxy(self, ptype, ip, port):
         """"""
         self.set(SECTION_NETWORK, OPTION_PROXY_TYPE, ptype)
         self.set(SECTION_NETWORK, OPTION_PROXY_IP, ip)
         self.set(SECTION_NETWORK, OPTION_PROXY_PORT, port)
 
+    @exception_handler(default=None)
     def get_proxy(self): #proxy_dict
         """"""
         ptype = self.get(SECTION_NETWORK, OPTION_PROXY_TYPE)
@@ -149,21 +155,23 @@ class _Config(SafeConfigParser):
         port = self.getint(SECTION_NETWORK, OPTION_PROXY_PORT)
         return ptype, ip, port
 
-    @lock_handler
+    @exception_handler()
     def set_retries_limit(self, limit):
         """"""
         self.set(SECTION_NETWORK, OPTION_RETRIES_LIMIT, limit)
 
+    @exception_handler(default=99)
     def get_retries_limit(self):
         """"""
         return self.getint(SECTION_NETWORK, OPTION_RETRIES_LIMIT)
 
-    @lock_handler
+    @exception_handler()
     def set_html_dl(self, allow):
         """"""
         allow = "True" if allow else "False"
         self.set(SECTION_NETWORK, OPTION_HTML_DL, allow)
 
+    @exception_handler(default=False)
     def get_html_dl(self):
         """"""
         return self.getboolean(SECTION_NETWORK, OPTION_HTML_DL)
@@ -171,11 +179,12 @@ class _Config(SafeConfigParser):
     
     #//////////////////////// [GUI] ////////////////////////
 
-    @lock_handler
+    @exception_handler()
     def set_window_settings(self, x, y, w, h):
         """"""
         self.set(SECTION_GUI, OPTION_WINDOW_SETTINGS, "{0},{1},{2},{3}".format(x, y, w, h))
 
+    @exception_handler(default=(-1, -1, -1, -1))
     def get_window_settings(self):
         """"""
         tmp = self.get(SECTION_GUI, OPTION_WINDOW_SETTINGS)
@@ -183,32 +192,35 @@ class _Config(SafeConfigParser):
         x, y, w, h = int(x), int(y), int(w), int(h)
         return x, y, w, h
 
-    @lock_handler
+    @exception_handler()
     def set_columns_width(self, columns):
         """"""
         self.set(SECTION_GUI, OPTION_COLUMNS_WIDTH, "{0},{1},{2},{3},{4},{5},{6}".format(*columns))
 
+    @exception_handler(default=None)
     def get_columns_width(self):
         """"""
         tmp = self.get(SECTION_GUI, OPTION_COLUMNS_WIDTH)
         columns = tuple([int(width) for width in tmp.split(",")])
         return columns
 
-    @lock_handler
+    @exception_handler()
     def set_save_dl_paths(self, paths_list):
         """"""
         self.set(SECTION_GUI, OPTION_SAVE_DL_PATHS, pickle.dumps(paths_list))
 
+    @exception_handler(default=[])
     def get_save_dl_paths(self):
         """"""
         return pickle.loads(self.get(SECTION_GUI, OPTION_SAVE_DL_PATHS))
 
-    @lock_handler
+    @exception_handler()
     def set_tray_available(self, allow):
         """"""
         allow = "True" if allow else "False"
         self.set(SECTION_GUI, OPTION_TRAY_ICON, allow)
 
+    @exception_handler(default=False)
     def get_tray_available(self):
         """"""
         return self.getboolean(SECTION_GUI, OPTION_TRAY_ICON)
