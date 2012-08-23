@@ -17,9 +17,10 @@ class PluginDownload(PluginsCore):
     
     def parse(self):
         self.cookie = COOKIE
-        link = self.link
+        self.link = self.link.replace("download.php", "")
+        self.next_link = self.link
         c_pattern = 'http://www.google.com/recaptcha/api/challenge\?k=(?P<key>[^"]+)'
-        page = self.recaptcha(c_pattern, self.get_page(link))
+        page = self.recaptcha(c_pattern, self.get_page(self.link))
         file_id = self.link.split('?')[-1]
         s_pattern = '(?P<link>[^"]+/%s/[^"]+)' % file_id
         self.source = self.click(s_pattern, page, False)
