@@ -128,6 +128,10 @@ class AddDownloads(QVBoxLayout):
         
         generic_items = [(_('Download Selected'), self.on_download_selected),
                         (None, None),
+                        (_('Select all'), self.on_select_all),
+                        (_('Select none'), self.on_select_none),
+                        (_('Select inverse'), self.on_select_inverse),
+                        (None, None),
                         (_('Re-check'), self.on_recheck),
                         (_('Clear list'), self.on_clear_list)]
         
@@ -143,6 +147,18 @@ class AddDownloads(QVBoxLayout):
     
     def on_recheck(self):
         api.recheck_items()
+
+    def on_select_all(self):
+        for row in self.items:
+            row[1] = True
+
+    def on_select_none(self):
+        for row in self.items:
+            row[1] = False
+
+    def on_select_inverse(self):
+        for row in self.items:
+            row[1] = False if row[1] else True
     
     def on_import_container(self):
         file_name, filter = QFileDialog.getOpenFileName(filter='OCH Files (*.och)')
