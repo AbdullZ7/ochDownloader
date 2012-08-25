@@ -102,11 +102,20 @@ class History:
         except sqlite3.OperationalError as err:
             logger.debug(err)
 
+    def remove_rows(self, id_list):
+        try:
+            with self.conn:
+                for id in id_list:
+                    self.conn.execute("DELETE FROM history WHERE id = :id;",
+                                        {"id": id, })
+        except sqlite3.OperationalError as err:
+            logger.debug(err)
+
 
 if __name__ == "__main__":
     h = History()
-    for num in range(53):
-        h.set_values("example_soma"+str(num), None, 50000000, 50, "C:\\dir")
+    #for num in range(53):
+        #h.set_values("example_soma"+str(num), None, 50000000, 50, "C:\\dir")
     print h.get_data(0)
     #print [row for row in cur]
     print "done"

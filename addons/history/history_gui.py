@@ -63,10 +63,12 @@ class HistoryTab(QVBoxLayout):
         self.tree_view.setAlternatingRowColors(True)
         #
         self.items = []
-        headers = [_("File Name"), _("Size"), _("Complete"), _("Date Time"), _("Link"), _("Directory")]
+        headers = ["hidden_id_item", _("File Name"), _("Size"), _("Complete"), _("Date Time"), _("Link"), _("Directory")]
         #
         self.__model = SimpleListModel(headers, self.items)
         self.tree_view.setModel(self.__model)
+        self.tree_view.setColumnHidden(0, True)
+        #self.tree_view.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.addWidget(self.tree_view)
         
         self.btn_next = QPushButton(_("Next"))
@@ -87,7 +89,9 @@ class HistoryTab(QVBoxLayout):
         indexes = self.tree_view.selectedIndexes()
         sensitive = True if indexes else False
         individual_items = [(_('Open destination folder'), self.on_open_folder),
-                                    (_('Copy link'), self.on_copy_link)]
+                            (_('Copy link'), self.on_copy_link),
+                            (None, None),
+                            (_('Remove'), self.on_remove)]
         
         [menu.addAction(title, callback).setEnabled(sensitive) if title is not None else menu.addSeparator()
         for title, callback in individual_items]
@@ -97,7 +101,7 @@ class HistoryTab(QVBoxLayout):
     def on_open_folder(self):
         rows = self.get_selected_rows()
         if rows:
-            paths_list = set([self.items[row_index][5] for row_index in rows])
+            paths_list = set([self.items[row_index][6] for row_index in rows])
             for folder_path in paths_list:
                 #misc.open_folder_window(folder_path)
                 threading.Thread(group=None, target=misc.open_folder_window, name=None, args=(folder_path, )).start()
@@ -105,10 +109,18 @@ class HistoryTab(QVBoxLayout):
     def on_copy_link(self):
         rows = self.get_selected_rows()
         if rows:
-            links_list = [self.items[row_index][4] for row_index in rows]
+            links_list = [self.items[row_index][5] for row_index in rows]
             clipboard = QApplication.clipboard()
             clipboard.setText('\n'.join(links_list))
-    
+
+    def on_remove(self):
+        #TODO: reload list
+        rows = self.get_selected_rows()
+        if rows:
+            id_list = [self.items[row_index][0] for row_index in rows]
+            self.history_cls.remove_rows(id_list)
+            [self.__model.remove(row_index) for row_index in rows]
+
     def on_search(self):
         self.offset = 0
         self.on_load_items()
@@ -130,7 +142,7 @@ class HistoryTab(QVBoxLayout):
         match_term = self.search_entry.text()
         data_list = self.history_cls.get_data(self.offset, self.limit, match_term)
         self.__model.clear()
-        [self.__model.append((name, misc.size_format(size), misc.size_format(complete), date_.strftime("%d-%m-%y %H:%M"), link, path))
+        [self.__model.append((id, name, misc.size_format(size), misc.size_format(complete), date_.strftime("%d-%m-%y %H:%M"), link, path))
             for id, name, link, size, complete, path, date_ in data_list]
         if len(data_list) < self.limit:
             self.btn_next.setEnabled(False)
