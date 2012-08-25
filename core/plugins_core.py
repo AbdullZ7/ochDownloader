@@ -7,11 +7,6 @@ logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.get
 import misc
 from network.connection import URLClose, request
 
-try:
-    from addons.captcha.recaptcha import Recaptcha
-except ImportError as err:
-    logger.exception(err)
-
 BUFF_SZ = 1024 * 1024 #1MB
 
 
@@ -81,6 +76,8 @@ class PluginsCore:
     def recaptcha(self, pattern, page, extra_fields=None):
         #find catpcha and prompt captcha window
         #return source
+        from addons.captcha.recaptcha import Recaptcha
+
         if self.is_running():
             try:
                 m = self.get_match(pattern, page)
