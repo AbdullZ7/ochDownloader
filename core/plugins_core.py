@@ -22,8 +22,8 @@ class PluginsCore:
     """"""
     def __init__(self, link, content_range, wait_func, account_item):
         """"""
-        self.link = link
-        self.dl_link = link
+        self.link = link #host link
+        self.dl_link = link #file ready to download link
         self.next_link = link #go to next link
         self.content_range = content_range
         self.wait_func = wait_func
@@ -36,6 +36,9 @@ class PluginsCore:
         self.err_msg = None
         self.source = None
         self.cookie = cookielib.CookieJar()
+
+    def parse(self):
+        raise NotImplementedError()
 
     def get_page(self, link, form=None, default=None, close=True):
         #return source code.
@@ -53,10 +56,6 @@ class PluginsCore:
                 logger.warning(err)
                 logger.debug(link)
         return default
-    
-    def get_form(self, pattern):
-        #form parser.
-        pass
     
     def click(self, pattern, page, close=True):
         #find link and return source.
@@ -89,9 +88,9 @@ class PluginsCore:
                     link = "http://www.google.com/recaptcha/api/challenge?k=%s" % m.group('key')
                     for retry in range(3):
                           c = Recaptcha(misc.get_host(self.link), link, self.wait_func)
-                          challenge, response = c.solve_captcha()
-                          if response is not None:
-                             m, page = self.recaptcha_post(pattern, page, challenge, response, extra_fields)
+                          c.run_captcha()
+                          if c.solution is not None:
+                             m, page = self.recaptcha_post(pattern, page, c.captcha_challenge, c.solution, extra_fields)
                              if not self.is_running() or m is None:
                                   return page
                           else:

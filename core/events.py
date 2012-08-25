@@ -48,8 +48,8 @@ class _Events:
             for callback, args2 in event_values.values():
                 idle_add(callback, *(args+args2)) #call in the main thread.
     
-    def trigger_captcha_dialog(self, wait_func, service, get_captcha_img, set_solution):
-        self.trigger(cons.EVENT_CAPTCHA_DLG, wait_func, service, get_captcha_img, set_solution)
+    def trigger_captcha_dialog(self, service, get_captcha_img, set_solution):
+        self.trigger(cons.EVENT_CAPTCHA_DLG, service, get_captcha_img, set_solution)
     
     def trigger_download_complete(self, download_item):
         self.trigger(cons.EVENT_DL_COMPLETE, download_item)

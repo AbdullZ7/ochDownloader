@@ -7,6 +7,8 @@ import core.idle_queue as idle_queue
 from core.events import events
 from core.network.connection import request
 
+_thread_lock = threading.Lock()
+
 
 class Recaptcha:
     """"""
@@ -23,11 +25,18 @@ class Recaptcha:
         self.event.set()
         logger.debug(solution)
 
+    def run_captcha(self):
+        with _thread_lock: #one at the time please
+            if not self.wait_func(): #dl stopped?
+                self.solve_captcha()
+            else:
+                self.set_solution()
+
     def solve_captcha(self):
         """"""
         self.captcha_challenge = None
         if idle_queue.register_event(self.event):
-            events.trigger_captcha_dialog(self.wait_func, self.service_name, self.get_captcha, self.set_solution)
+            events.trigger_captcha_dialog(self.service_name, self.get_captcha, self.set_solution)
             self.event.wait()
             self.event.clear() #re-use.
             idle_queue.remove_event(self.event)
@@ -47,6 +56,6 @@ class Recaptcha:
                     image_data = handle.read()
                     image_type = handle.info()["Content-Type"].split("/")[1]
                     break
-        except Exception, e:
-            logger.exception("%s :%s" % (self.captcha_link, e))
+        except Exception as err:
+            logger.exception("%s :%s" % (self.captcha_link, err))
         return image_type, image_data
