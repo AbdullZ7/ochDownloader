@@ -41,7 +41,7 @@ class IPRenewer:
         if os.path.isfile(script_path):
             if cons.OS_WIN:
                 try:
-                    retcode = subprocess.call([script_path, ])
+                    retcode = subprocess.call([script_path, ], shell=True)
                 except OSError as err:
                     logger.warning(err)
     
