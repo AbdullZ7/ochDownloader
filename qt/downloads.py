@@ -209,8 +209,7 @@ class Downloads(QTreeView):
         finished_icon = self.icons_dict[cons.STATUS_FINISHED]
         for row in self.items[:]:
             if row[1] == finished_icon:
-                del self.rows_buffer[row[0]]
-                self.__model.remove(row)
+                self.remove_row(row[0])
                 #todo: remove from complete_downloads
     
     def on_start_all(self):
@@ -262,11 +261,17 @@ class Downloads(QTreeView):
                 row[7] = misc.time_format(download_item.time) if download_item.time else None
                 row[8] = misc.time_format(download_item.time_remain) if download_item.time_remain else None
                 row[9] = misc.speed_format(download_item.speed) if download_item.speed else None
-                row[10] = download_item.status_msg if not download_item.fail_count else "{0} ({1} #{2})".format(download_item.status_msg,_("Retry"), download_item.fail_count)
+                row[10] = self.get_status_msg(download_item)
             except KeyError as err:
                 logger.debug(err)
         #uncomment if model doesnt get upated.
         self.__model.refresh()
+
+    def get_status_msg(self, download_item):
+        if download_item.fail_count:
+            return "{0} ({1} #{2})".format(download_item.status_msg, _("Retry"), download_item.fail_count)
+        else:
+            return download_item.status_msg
     
     def get_host_icon(self, host):
         try:

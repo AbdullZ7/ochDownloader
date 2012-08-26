@@ -11,6 +11,9 @@ from qt.addons import AddonCore
 from history import History
 from history_gui import HistoryTab
 
+#Config parser
+OPTION_HISTORY_ACTIVE = "history_active"
+
 
 class Addon(AddonCore):
     """"""
@@ -18,19 +21,33 @@ class Addon(AddonCore):
         """"""
         AddonCore.__init__(self)
         self.name = _("History")
-        self.event_id = events.connect(cons.EVENT_DL_COMPLETE, self.trigger)
+        self.event_id = None
         self.parent = parent
         self.config = conf
         self.history = History()
         self.history_tab = HistoryTab(self.history)
-    
-    def set_menu_item(self):
-        pass
-        #WIDGET, TITLE, CALLBACK, SENSITIVE = range(4)
-        #return (gtk.MenuItem(), _("History"), self.on_history) #can toggle
-    
+
     def get_tab(self):
         return self.history_tab
+
+    def set_menu_item(self):
+        self.action = self.parent.menu.addAction(self.name, self.on_toggle) #can toggle
+        self.action.setCheckable(True)
+        if conf.get_addon_option(OPTION_HISTORY_ACTIVE, default=True, is_bool=True):
+            self.action.setChecked(True)
+            self.connect()
+
+    def on_toggle(self):
+        if self.action.isChecked(): #se activo
+            conf.set_addon_option(OPTION_HISTORY_ACTIVE, "True")
+            self.connect()
+        else:
+            conf.set_addon_option(OPTION_HISTORY_ACTIVE, "False")
+            events.disconnect(cons.EVENT_DL_COMPLETE, self.event_id)
+
+    def connect(self):
+        """"""
+        self.event_id = events.connect(cons.EVENT_DL_COMPLETE, self.trigger)
     
     #def on_history(self, widget):
         #HistoryDlg(self.history, self.parent)
