@@ -27,6 +27,7 @@ OPTION_PROXY_PORT = "proxy_port"
 OPTION_PROXY_TYPE = "proxy_type"
 OPTION_RETRIES_LIMIT = "retries_limit"
 OPTION_HTML_DL = "html_download"
+OPTION_MAX_CONN = "max_conn"
 
 #gui section
 SECTION_GUI = "gui"
@@ -42,8 +43,11 @@ SECTION_ADDONS = "addons"
 
 
 DEFAULT = {SECTION_MAIN: {OPTION_VERSION: cons.APP_VER, OPTION_CLIPBOARD_ACTIVE: "True"},
-                    SECTION_NETWORK: {OPTION_PROXY_TYPE: cons.PROXY_HTTP, OPTION_PROXY_IP: "", OPTION_PROXY_PORT: "0", OPTION_PROXY_ACTIVE: "False", OPTION_RETRIES_LIMIT: "99", OPTION_HTML_DL: "False"},
-                    SECTION_GUI: {OPTION_WINDOW_SETTINGS: "-1,-1,-1,-1", OPTION_SAVE_DL_PATHS: pickle.dumps([]), OPTION_COLUMNS_WIDTH: "-1, -1, -1, -1, -1, -1, -1", OPTION_TRAY_ICON: "False"},
+                    SECTION_NETWORK: {OPTION_PROXY_TYPE: cons.PROXY_HTTP, OPTION_PROXY_IP: "", OPTION_PROXY_PORT: "0",
+                                      OPTION_PROXY_ACTIVE: "False", OPTION_RETRIES_LIMIT: "99", OPTION_HTML_DL: "False",
+                                      OPTION_MAX_CONN: "10"},
+                    SECTION_GUI: {OPTION_WINDOW_SETTINGS: "-1,-1,-1,-1", OPTION_SAVE_DL_PATHS: pickle.dumps([]),
+                                  OPTION_COLUMNS_WIDTH: "-1, -1, -1, -1, -1, -1, -1", OPTION_TRAY_ICON: "False"},
                     SECTION_ADDONS: {}
                     }
 
@@ -73,7 +77,6 @@ class _Config(SafeConfigParser):
     """
     def __init__(self):
         """"""
-        #TODO: all getters should have the lock decorator.
         SafeConfigParser.__init__(self)
         try:
             self.read(cons.CONFIG_FILE) #read config file
@@ -175,6 +178,14 @@ class _Config(SafeConfigParser):
     def get_html_dl(self):
         """"""
         return self.getboolean(SECTION_NETWORK, OPTION_HTML_DL)
+
+    @exception_handler()
+    def set_max_conn(self, max):
+        self.set(SECTION_NETWORK, OPTION_MAX_CONN, max)
+
+    @exception_handler(default=10)
+    def get_max_conn(self):
+        return self.getint(SECTION_NETWORK, OPTION_MAX_CONN)
 
     
     #//////////////////////// [GUI] ////////////////////////

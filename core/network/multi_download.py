@@ -11,12 +11,13 @@ try:
 except ImportError:
     from StringIO import StringIO
 
+from core.conf_parser import conf
 from connection import URLClose, request
 from downloader_core import DownloaderCore
 
 
 NT_BUFSIZ = 8 * 1024 #8K. Network buffer.
-MAX_CONN = 10 #0 to 9
+#MAX_CONN = 10 #0 to 9
 DATA_BUFSIZ = 64 * 1024 #64K.
 START, END = range(2)
 
@@ -44,6 +45,8 @@ class MultiDownload(DownloaderCore):
         self.first_flag = True
         self.conn_count = 0
 
+        self.max_conn = conf.get_max_conn()
+
     def get_chunk_n_size(self):
         with self.lock2:
             return self.chunks[:], self.size_complete
@@ -59,7 +62,7 @@ class MultiDownload(DownloaderCore):
         return th
 
     def create_chunks(self):
-        chunk_size = (self.size_file / MAX_CONN) + (self.size_file % MAX_CONN)
+        chunk_size = (self.size_file / self.max_conn) + (self.size_file % self.max_conn)
         chunk_size = ((chunk_size / NT_BUFSIZ) + 1) * NT_BUFSIZ #proximo numero al tamanio del chunk que sea multiplo del buffer
         chunks = []
         start = 0
