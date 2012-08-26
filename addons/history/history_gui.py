@@ -1,3 +1,4 @@
+import os
 import datetime
 import threading
 import logging
@@ -68,6 +69,7 @@ class HistoryTab(QVBoxLayout):
         self.__model = SimpleListModel(headers, self.items)
         self.tree_view.setModel(self.__model)
         self.tree_view.setColumnHidden(0, True)
+        self.tree_view.doubleClicked.connect(self.on_double_click)
         #self.tree_view.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.addWidget(self.tree_view)
         
@@ -120,6 +122,11 @@ class HistoryTab(QVBoxLayout):
             id_list = [self.items[row_index][0] for row_index in rows]
             self.history_cls.remove_rows(id_list)
             [self.__model.remove(row_index) for row_index in rows]
+
+    def on_double_click(self, q_index):
+        row_index = q_index.row()
+        path = os.path.join(self.items[row_index][6], self.items[row_index][1])
+        threading.Thread(group=None, target=misc.run_file, name=None, args=(path, )).start()
 
     def on_search(self):
         self.offset = 0

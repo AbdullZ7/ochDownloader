@@ -65,7 +65,16 @@ def open_folder_window(path):
         else: #mac
             retcode = subprocess.call(["open", path])
     except OSError as err:
-            logger.warning(err)
+        logger.warning(err)
+
+def run_file(path):
+    """"""
+    try:
+        if cons.OS_WIN:
+            retcode = subprocess.call([path, ], shell=True)
+            #if retcode >= 0: #all good.
+    except OSError as err:
+        logger.warning(err)
 
 def links_parser(text_pasted):
     """
