@@ -40,7 +40,6 @@ class PluginDownload(PluginsCore):
                 s_pattern = '<a href="(?P<link>[^"]+/%s/[^"]+)' % file_id
                 #s_pattern = 'id="downloadLinkTarget[^<]+<a href="(?P<link>[^"]+)'
                 self.source = self.click(s_pattern, page, False)
-                print self.source.url
             else: #no path
                 pass
         else: #captcha not found
