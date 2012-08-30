@@ -150,14 +150,11 @@ def get_host(link):
     #assert link.startswith("http://"), ("'{0}' is not an url".format(link))
     i = 2 if link.startswith("http://") or link.startswith("https://") else 0
     host = link.split("/")[i] #get (www.)website.com
-    host = host.split(".")[1] if host.startswith("www") else host.split(".")[0] #get website
+    host = host.split(".")[1] if host.startswith("www.") else host.split(".")[0] #get website
     return host.lower()
 
-def get_filename_from_url(url, default=None):
-    ext = os.path.splitext(url)[-1]
-    if ext: #may be empty
-        return os.path.split(url)[-1].strip()
-    return default
+def get_filename_from_url(url):
+    return os.path.split(url)[-1].split("?")[0]
 
 def strip(input, to_strip=None):
     #strip: a string/list of chars you want to strip

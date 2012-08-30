@@ -68,7 +68,7 @@ class AddDownloadsManager:
             module = importlib.import_module("plugins.{0}.link_checker".format(download_item.host))
         except ImportError as err:
             logger.info(err)
-            file_name = misc.get_filename_from_url(download_item.link, None)
+            file_name = misc.get_filename_from_url(download_item.link)
             link_status, download_item.host = cons.LINK_ERROR, cons.UNSUPPORTED
         except Exception as err:
             logger.exception(err)
@@ -82,7 +82,7 @@ class AddDownloadsManager:
             download_item.link_status_msg = status_msg
             if file_name is not None:
                 file_name = misc.smartdecode(misc.html_entities_parser(file_name))
-                if download_item.name == cons.UNKNOWN:
+                if download_item.name == cons.UNKNOWN: #may be downloading
                     download_item.name = file_name #smartdecode return utf-8 string
     
     def get_checking_update(self):

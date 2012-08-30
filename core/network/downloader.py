@@ -90,7 +90,7 @@ class Downloader(threading.Thread, MultiDownload):
         """"""
         file_name = None
         if info.getheader("Content-Disposition", None): #Content-Disposition: Attachment; filename=name.ext
-            disposition = misc.html_entities_parser(info.getheader("Content-Disposition")) #get file name
+            disposition = info.getheader("Content-Disposition") #get file name
             if 'filename="' in disposition:
                 file_name = disposition.split('filename=')[-1].split('"')[1]
             elif "filename='" in disposition:
@@ -100,7 +100,8 @@ class Downloader(threading.Thread, MultiDownload):
             elif 'filename*=' in disposition:
                 file_name = disposition.split("'")[-1]
         if not file_name: #may be an empty string or None
-            file_name = misc.html_entities_parser(self.source.url.split("/")[-1].split("?")[0])
+            file_name = misc.get_filename_from_url(self.source.url)
+        file_name = misc.html_entities_parser(file_name)
         file_name = urllib.unquote_plus(file_name)
         file_name = misc.smartdecode(file_name)
         file_name = misc.strip(file_name, to_strip='/\\:*?"<>|')
