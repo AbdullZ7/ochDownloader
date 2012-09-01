@@ -67,7 +67,7 @@ class AddDownloadsManager:
         try:
             module = importlib.import_module("plugins.{0}.link_checker".format(download_item.host))
         except ImportError as err:
-            logger.info(err)
+            logger.debug(err)
             file_name = misc.get_filename_from_url(download_item.link) or cons.UNKNOWN #may be an empty str
             link_status, download_item.host = cons.LINK_ERROR, cons.UNSUPPORTED
         except Exception as err:
