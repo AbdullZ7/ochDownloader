@@ -153,7 +153,6 @@ class MultiDownload(DownloaderCore):
         len_buf = 0
         complete = 0
 
-        #for retry in range(3):
         try:
             with URLClose(self.get_source(chunk, is_first)) as s:
                 if not is_first and not self.is_valid_range(s, chunk[START]):
@@ -201,12 +200,10 @@ class MultiDownload(DownloaderCore):
             #first included
             #propagate
             self.set_err(err)
-            return
         except (BadSource, CanNotRun) as err:
             #not first (CanNotRun does not matter)
             #do not propagate
             logger.debug(err)
-            return
         except (urllib2.URLError, httplib.HTTPException, socket.error) as err:
             if is_first or is_downloading:
                 #propagate
@@ -214,11 +211,9 @@ class MultiDownload(DownloaderCore):
             else:
                 logger.debug(err)
                 #retry?
-            return
         except EnvironmentError as err:
             #propagate
             self.set_err(err)
-            return
         finally:
             self.flush_buffer(fh, i, chunk, complete, buf, len_buf)
 
