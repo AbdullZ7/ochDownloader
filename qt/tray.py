@@ -32,6 +32,8 @@ class Tray:
     def show_or_hide(self):
         if self.parent.isVisible():
             self.parent.hide()
+        elif self.parent.isMaximized():
+            self.parent.showMaximized()
         else:
             self.parent.showNormal()
 

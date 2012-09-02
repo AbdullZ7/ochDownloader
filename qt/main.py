@@ -76,9 +76,8 @@ class Gui(QMainWindow):
         
         self.setWindowTitle(cons.APP_TITLE)
         self.setWindowIcon(QIcon(os.path.join(cons.MEDIA_PATH, "misc", "ochd.ico")))
-        self.resize(600, 300)
+        self.resize(MIN_WIDTH, MIN_HEIGHT)
         self.center()
-        #self.setGeometry(x, y, w, h)
         
         self.restore_wnd_geometry()
         
@@ -170,10 +169,10 @@ class Gui(QMainWindow):
         x, y, w, h = conf.get_window_settings()
         if ww <= w or wh <= h:
             self.showMaximized()
-        elif w > MIN_WIDTH or h > MIN_HEIGHT:
+        elif ww > x >= 0 and wh > y >= 0: #resize and move
+            self.setGeometry(x, y, w, h)
+        else: #resize only
             self.resize(w, h)
-        if x >= 0 and y >= 0:
-            self.move(x, y)
     
     def on_stop_download(self):
         rows = self.downloads.get_selected_rows()
