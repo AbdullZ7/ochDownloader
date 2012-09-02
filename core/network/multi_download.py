@@ -107,11 +107,11 @@ class MultiDownload(DownloaderCore):
             return False
         return True
 
-    def get_source(self, chunk, complete, is_first):
+    def get_source(self, chunk, is_first):
         if is_first:
             return self.source
         else:
-            return request.get(self.link_file, cookie=self.cookie, range=(chunk[START] + complete, None))
+            return request.get(self.link_file, cookie=self.cookie, range=(chunk[START], None))
 
     def dl_next_chunk(self, chunk, i):
         with self.lock2: #safe.
@@ -157,7 +157,8 @@ class MultiDownload(DownloaderCore):
 
         #for retry in range(3):
         try:
-            with URLClose(self.get_source(chunk, complete, is_first)) as s:
+            with URLClose(self.get_source(chunk, is_first)) as s:
+                #logger.debug(s.headers)
                 if not is_first and not self.is_valid_range(s, chunk[START]):
                     raise BadSource('Link expired, or cant download the requested range.')
 
@@ -191,13 +192,13 @@ class MultiDownload(DownloaderCore):
                     if self.stop_flag or self.error_flag:
                         return
 
-                    if not len_data or (complete >= (chunk[END] - chunk[START]) and chunk[END]): #end may be 0
+                    if not len_data or (chunk[END] and complete >= (chunk[END] - chunk[START])): #end may be 0
                         if not self.is_chunk_complete(chunk, complete):
                             raise IncompleteChunk('Incomplete chunk')
                         logger.debug("complete {0} {1}".format(chunk[START], chunk[END]))
                         chunk = self.dl_next_chunk(chunk, i + 1)
-                        i += 1
                         logger.debug("keep dl {0} {1}".format(chunk[START], chunk[END]))
+                        i += 1
 
         except (IncompleteChunk, CanNotResume) as err:
             #first included
