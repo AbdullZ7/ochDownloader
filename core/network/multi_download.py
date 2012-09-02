@@ -120,13 +120,13 @@ class MultiDownload(DownloaderCore):
                     if self.chunks_control[i] and chunk[END] == self.chunks[i][START]: #on resume, end from the current segment must be equal to start from the next one.
                         self.chunks_control[i] = False
                         chunk = (chunk[START], self.chunks[i][END]) #in case chunk[START] > self.chunks[i_][START] ?
+                        return chunk
                     elif not self.chunks_control[i]:
                         raise CanNotRun('Next chunk is downloading')
                     else:
                         raise CanNotResume('Can not resume next chunk')
                 except IndexError:
                     raise CanNotRun('No more chunks left')
-        return chunk
 
     def set_err(self, err):
         logger.exception(err)
@@ -141,8 +141,6 @@ class MultiDownload(DownloaderCore):
             with self.lock2:
                 self.chunks[i] = (chunk[START] + complete, self.chunks[i][END])
             buf.close()
-        except ValueError as err:
-            logger.warning(err)
         except EnvironmentError as err:
             self.set_err(err)
 
@@ -158,7 +156,6 @@ class MultiDownload(DownloaderCore):
         #for retry in range(3):
         try:
             with URLClose(self.get_source(chunk, is_first)) as s:
-                #logger.debug(s.headers)
                 if not is_first and not self.is_valid_range(s, chunk[START]):
                     raise BadSource('Link expired, or cant download the requested range.')
 
