@@ -98,12 +98,8 @@ class MultiDownload(DownloaderCore):
             th.join()
 
     def is_chunk_complete(self, chunk, complete):
-        content_len = 0
-        if self.size_file and self.size_file > chunk[START]:
-            content_len = chunk[END] - chunk[START]
-            logger.debug("downloaded {0} of {1}".format(complete, content_len))
-
-        if content_len and complete < content_len:
+        logger.debug("downloaded {0} of {1}".format(complete, chunk[END] - chunk[START]))
+        if complete < chunk[END] - chunk[START]:
             return False
         return True
 
