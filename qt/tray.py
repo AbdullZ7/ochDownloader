@@ -27,7 +27,7 @@ class Tray:
 
     def restore(self, reason):
         if reason == QSystemTrayIcon.DoubleClick:
-            self.parent.showNormal()
+            self.show_or_hide()
 
     def show_or_hide(self):
         if self.parent.isVisible():
