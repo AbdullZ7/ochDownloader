@@ -1,9 +1,6 @@
-import time
-import threading
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+logger = logging.getLogger(__name__)
 
-from core.idle_queue import idle_add_and_wait
 from core.events import events
 import core.cons as cons
 
