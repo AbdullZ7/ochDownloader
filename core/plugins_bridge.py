@@ -43,9 +43,6 @@ class PluginBridge:
             if not self.source and account_item is not None:
                 account_status = p.get_account_status()
                 self.disable_account(account_item, account_status)
-        except ImportError as err:
-            self.err_msg = err
-            logger.exception(err)
         except Exception as err:
             self.err_msg = err
             logger.exception(err)
