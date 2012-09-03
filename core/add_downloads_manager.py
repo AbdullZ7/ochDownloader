@@ -30,6 +30,7 @@ class AddDownloadsManager:
         self.__pending_downloads.clear()
         self.__checking_downloads.clear()
         self.__ready_downloads.clear()
+        self.__thread_checking_downloads.clear()
         self.__slots.set_slots(slots=0)
 
     def create_download_item(self, file_name, size, link, copy_link=True):
