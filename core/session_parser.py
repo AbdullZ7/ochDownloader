@@ -18,7 +18,7 @@ class SessionParser:
     
     def load(self):
         """"""
-        result = None
+        result = []
         try:
             with open(cons.SESSION_FILE, "rb", cons.FILE_BUFSIZE) as fh:
                 result = pickle.load(fh)

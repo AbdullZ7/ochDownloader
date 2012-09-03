@@ -288,8 +288,8 @@ class Gui(QMainWindow):
 
     def load_session(self):
         """"""
-        api.load_session()
-        self.downloads.store_items(api.get_stopped_downloads().values())
+        ordered_list = api.load_session()
+        self.downloads.store_items(ordered_list)
     
     def save_session(self):
         """"""

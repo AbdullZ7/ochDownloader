@@ -60,19 +60,22 @@ class _Api(DownloadManager, AddDownloadsManager):
     
     def load_session(self):
         try:
+            ordered_list = []
             download_list = self.session_parser.load()
-            if download_list:
-                for item in download_list:
-                    FILE_NAME, FILE_PATH, LINK, HOST, SIZE, STATUS_MSG, PROGRESS, TIME, TIME_REMAIN, CHUNCKS = range(10) #cool stuff
-                    download_item = DownloadItem(item[FILE_NAME], item[HOST], item[SIZE], item[LINK], item[FILE_PATH])
-                    download_item.status = cons.STATUS_STOPPED
-                    download_item.progress = item[PROGRESS]
-                    download_item.size = item[SIZE]
-                    download_item.time = item[TIME]
-                    download_item.chunks = item[CHUNCKS]
-                    self.stopped_downloads[download_item.id] = download_item
+            for item in download_list:
+                FILE_NAME, FILE_PATH, LINK, HOST, SIZE, STATUS_MSG, PROGRESS, TIME, TIME_REMAIN, CHUNCKS = range(10) #cool stuff
+                download_item = DownloadItem(item[FILE_NAME], item[HOST], item[SIZE], item[LINK], item[FILE_PATH])
+                download_item.status = cons.STATUS_STOPPED
+                download_item.progress = item[PROGRESS]
+                download_item.size = item[SIZE]
+                download_item.time = item[TIME]
+                download_item.chunks = item[CHUNCKS]
+                self.stopped_downloads[download_item.id] = download_item
+                ordered_list.append(download_item)
         except Exception as err:
             logger.exception(err)
+            return []
+        return ordered_list
     
     def save_session(self, id_order_list):
         download_list = []
@@ -93,8 +96,7 @@ class _Api(DownloadManager, AddDownloadsManager):
         """"""
         result_list = self.get_items_update() #return only updated items
         return result_list
-    
-    
+
 
 #singleton like.
 api = _Api()
