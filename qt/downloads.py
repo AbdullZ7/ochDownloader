@@ -131,6 +131,7 @@ class Downloads(QTreeView):
             [self.__model.insert(index, item) for item in reversed(items) if item != dest_item]
         else:
             [self.__model.append(item) for item in items if item != dest_item]
+        api.reorder_queue([row[0] for row in self.items])
     
     #def keyboard_event(self, widget, event):
         #if gtk.gdk.keyval_name(event.keyval) == "Delete": #supr. key
