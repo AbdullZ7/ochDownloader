@@ -154,7 +154,7 @@ class DownloadManager(DownloadCore, ThreadManager): #herencia multiple
                 self.next_download()
                 if status == cons.STATUS_FINISHED:
                     events.trigger_download_complete(download_item)
-                if not (self.active_downloads or self.queue_downloads) and status != cons.STATUS_STOPPED:
+                if not self.active_downloads and status != cons.STATUS_STOPPED:
                     events.trigger_all_downloads_complete()
                 elif limit_exceeded: #cons.STATUS_ERROR
                     events.trigger_limit_exceeded()
@@ -166,7 +166,7 @@ class DownloadManager(DownloadCore, ThreadManager): #herencia multiple
         Crea los threads para la descarga de cada archivo.
         """
         #if not self.active_downloads: #after this method completes, there will be one active download at least.
-            #events.trigger_downloading_process_started()
+            #events.trigger_downloading_process_pre_start()
         for download_item in item_list: #in self.pending_downloads:
             download_item.set_path(save_to_path)
             download_item.reset_fail_count()
