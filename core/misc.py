@@ -102,7 +102,7 @@ def smartdecode(s):
             s = s.decode('latin-1') #will decode anything, even if it's not latin-1 (with weird characters in that case, tough)
         except UnicodeDecodeError as err:
             logger.exception("{0}: {1}".format(s[:30], err))
-    return s.encode("utf-8", "replace")
+    return s #.encode("utf-8", "replace")
 
 def time_format(the_time):
     """
