@@ -1,6 +1,7 @@
 import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
+
 class Slots:
     """
     Global slots limiter, just for now.
@@ -24,7 +25,6 @@ class Slots:
             self.__limit = int(limit)
         except Exception as err:
             logger.exception(err)
-            pass
     
     def add_slot(self):
         """"""
@@ -45,6 +45,3 @@ class Slots:
         if self.slots < self.__limit:
             return True
         return False
-    
-    
-    
