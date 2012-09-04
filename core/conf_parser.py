@@ -78,13 +78,16 @@ class _Config(SafeConfigParser):
     def __init__(self):
         """"""
         SafeConfigParser.__init__(self)
-        try:
-            self.read(cons.CONFIG_FILE) #read config file
-        except Exception as err:
-            logger.info(err)
+        self.load()
         self.create_config()
         logger.debug("config parser instanced.")
-    
+
+    def load(self):
+        try:
+            self.read(cons.CONFIG_FILE)
+        except Exception as err:
+            logger.info(err)
+
     def create_config(self):
         """"""
         for section, options in DEFAULT.items():
