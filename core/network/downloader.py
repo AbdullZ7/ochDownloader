@@ -139,7 +139,7 @@ class Downloader(threading.Thread, MultiDownload):
     
     def __download(self):
         """"""
-        if self.can_resume and self.file_exists and self.is_valid_range(self.source, self.content_range):
+        if self.file_exists and self.is_valid_range(self.source, self.content_range):
             mode = "r+b" #leer y escribir en la posicion deseada con seek.
         else:
             mode = "wb"
