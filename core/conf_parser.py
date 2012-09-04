@@ -86,7 +86,7 @@ class _Config(SafeConfigParser):
         try:
             self.read(cons.CONFIG_FILE)
         except Exception as err:
-            logger.info(err)
+            logger.warning(err)
 
     def create_config(self):
         """"""
