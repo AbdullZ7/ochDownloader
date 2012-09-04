@@ -5,10 +5,8 @@ import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
 import cons
-from misc import html_entities_parser, smartdecode #(html entities and numerics parser)
-from download_core import DownloadCore, DownloadItem
+from download_core import DownloadCore
 from thread_manager import ThreadManager
-from add_downloads_manager import AddDownloadsManager
 from slots import Slots
 from host_accounts import host_accounts
 from conf_parser import conf

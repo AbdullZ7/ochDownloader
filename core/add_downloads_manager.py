@@ -82,9 +82,9 @@ class AddDownloadsManager:
             download_item.size = size
             download_item.link_status_msg = status_msg
             if file_name is not None:
-                file_name = misc.smartdecode(misc.html_entities_parser(file_name))
+                file_name = misc.smart_decode(misc.html_entities_parser(file_name))
                 if download_item.name == cons.UNKNOWN: #may be downloading
-                    download_item.name = file_name #smartdecode return utf-8 string
+                    download_item.name = file_name #smart_decode return utf-8 string
     
     def get_checking_update(self):
         """"""

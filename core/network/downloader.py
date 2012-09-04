@@ -103,7 +103,7 @@ class Downloader(threading.Thread, MultiDownload):
             file_name = misc.get_filename_from_url(self.source.url)
         file_name = misc.html_entities_parser(file_name)
         file_name = urllib.unquote_plus(file_name)
-        file_name = misc.smartdecode(file_name)
+        file_name = misc.smart_decode(file_name)
         file_name = misc.strip(file_name, to_strip='/\\:*?"<>|')
         file_name = file_name.strip('.')
         return file_name

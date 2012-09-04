@@ -91,7 +91,7 @@ def links_parser(text_pasted):
             result_list.append("".join(("http", link)).strip())
     return result_list
 
-def smartdecode(s):
+def smart_decode(s):
     """
     Not pretty smart, just try and error. It only covers utf-8 and latin-1
     """
