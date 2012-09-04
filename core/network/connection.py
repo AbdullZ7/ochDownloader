@@ -80,6 +80,7 @@ class URLOpen:
     
     def open(self, url, form=None, headers=None, range=(None, None), referer=None, timeout=20):
         """"""
+        #url = url.encode('utf-8')
         url = urllib.quote_plus(url.strip(), safe="%/:=&?~#+!$,;'@()*[]") #fix url. replace spaces by plus sign and more. Solved on python 2.7+
         headers_ = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:10.0.1) Gecko/20100101 Firefox/10.0.1",
                     "Accept": "*/*",
