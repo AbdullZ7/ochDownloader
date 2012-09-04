@@ -116,7 +116,7 @@ class DownloadManager(DownloadCore, ThreadManager): #herencia multiple
             th.join()
         try:
             os.remove(os.path.join(download_item.path, download_item.name))
-        except EnvironmentError as err:
+        except Exception as err:
             logger.warning(err)
 
     def get_items_update(self):
