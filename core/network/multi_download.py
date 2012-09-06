@@ -97,6 +97,13 @@ class MultiDownload(DownloaderCore):
         for th in th_list:
             th.join()
 
+    def __wait_threads_to_complete(self):
+        #wait on CanNotReume, set event on finally block
+        #for _ in xrange(self.threads_count - 1): #do not wait for this one
+            #self.event.wait()
+            #self.event.clear()
+        pass
+
     def is_chunk_complete(self, chunk, complete):
         logger.debug("downloaded {0} of {1}".format(complete, chunk[END] - chunk[START]))
         if complete < chunk[END] - chunk[START]:
