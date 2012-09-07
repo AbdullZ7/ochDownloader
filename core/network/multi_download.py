@@ -99,6 +99,7 @@ class MultiDownload(DownloaderCore):
 
     def __wait_left_threads_to_complete(self):
         #wait on CanNotReume, put something in the queue on finally block
+        #what if more than one thread call this?
         #for _ in xrange(len(self.th_list) - 1): #do not wait for this one
             #self.sync_queue.get()
         pass
