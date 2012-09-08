@@ -97,11 +97,11 @@ class MultiDownload(DownloaderCore):
         for th in th_list:
             th.join()
 
-    def __wait_left_threads_to_complete(self):
-        #wait on CanNotReume, put something in the queue on finally block
-        #what if more than one thread call this?
-        #for _ in xrange(len(self.th_list) - 1): #do not wait for this one
-            #self.sync_queue.get()
+    def __wait_left_threads_to_complete(self, i):
+        #wait on CanNotReume, set event on finally block
+        #self.event_list[i].set() #do not wait for this one
+        #for event in self.event_list:
+            #event.wait()
         pass
 
     def is_chunk_complete(self, chunk, complete):
