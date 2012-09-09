@@ -97,16 +97,12 @@ class MultiDownload(DownloaderCore):
         for th in th_list:
             th.join()
 
-    def __wait_left_threads_to_complete(self, i):
-        #wait on CanNotReume, set event on finally block
-        #self.event_list[i].set() #do not wait for this one
-        #for event in self.event_list:
-            #event.wait()
-        pass
+        #for chunk in self.chunks:
+            #if not self.is_chunk_complete(chunk):
+                #self.set_err('Incomplete chunk')
 
-    def is_chunk_complete(self, chunk, complete):
-        logger.debug("downloaded {0} of {1}".format(complete, chunk[END] - chunk[START]))
-        if complete < chunk[END] - chunk[START]:
+    def is_chunk_complete(self, chunk):
+        if chunk[START] < chunk[END]:
             return False
         return True
 
@@ -127,7 +123,6 @@ class MultiDownload(DownloaderCore):
                     elif not self.chunks_control[i]:
                         raise CanNotRun('Next chunk is downloading')
                     else:
-                        #TODO: wait for other threads to terminate
                         raise CanNotResume('Can not resume next chunk')
                 except IndexError:
                     raise CanNotRun('No more chunks left')
@@ -137,13 +132,13 @@ class MultiDownload(DownloaderCore):
         self.error_flag = True
         self.status_msg = "Error: {0}".format(err)
 
-    def flush_buffer(self, fh, i, chunk, complete, buf, len_buf):
+    def flush_buffer(self, fh, i, chunk, buf, len_buf):
         try:
             with self.lock1:
-                fh.seek(chunk[START] + complete - len_buf)
+                fh.seek(chunk[START] - len_buf)
                 fh.write(buf.getvalue())
             with self.lock2:
-                self.chunks[i] = (chunk[START] + complete, self.chunks[i][END])
+                self.chunks[i] = (chunk[START], self.chunks[i][END])
             buf.close()
         except EnvironmentError as err:
             self.set_err(err)
@@ -155,7 +150,6 @@ class MultiDownload(DownloaderCore):
         is_downloading = False
         buf = StringIO()
         len_buf = 0
-        complete = 0
 
         try:
             with URLClose(self.get_source(chunk, is_first)) as s:
@@ -176,10 +170,10 @@ class MultiDownload(DownloaderCore):
 
                     buf.write(data)
                     len_buf += len_data
-                    complete += len_data
+                    chunk[START] += len_data
 
                     if len_buf >= DATA_BUFSIZ:
-                        self.flush_buffer(fh, i, chunk, complete, buf, len_buf)
+                        self.flush_buffer(fh, i, chunk, buf, len_buf)
                         buf = StringIO()
                         len_buf = 0
 
@@ -192,10 +186,10 @@ class MultiDownload(DownloaderCore):
                     if self.stop_flag or self.error_flag:
                         return
 
-                    if not len_data or (chunk[END] and complete >= (chunk[END] - chunk[START])): #end may be 0
-                        if not self.is_chunk_complete(chunk, complete):
-                            raise IncompleteChunk('Incomplete chunk')
+                    if not len_data or (chunk[END] and chunk[START] >= chunk[END]): #end may be 0
                         logger.debug("complete {0} {1}".format(chunk[START], chunk[END]))
+                        if not self.is_chunk_complete(chunk):
+                            raise IncompleteChunk('Incomplete chunk')
                         chunk = self.dl_next_chunk(chunk, i + 1)
                         logger.debug("keep dl {0} {1}".format(chunk[START], chunk[END]))
                         i += 1
@@ -219,7 +213,7 @@ class MultiDownload(DownloaderCore):
             #propagate
             self.set_err(err)
         finally:
-            self.flush_buffer(fh, i, chunk, complete, buf, len_buf)
+            self.flush_buffer(fh, i, chunk, buf, len_buf)
 
 
 if __name__ == "__main__":
