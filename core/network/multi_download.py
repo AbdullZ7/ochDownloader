@@ -127,7 +127,7 @@ class MultiDownload(DownloaderCore):
                     elif not self.chunks_control[i]:
                         raise CanNotRun('Next chunk is downloading')
                     else:
-                        #TODO: if is_first wait for other threads to terminate
+                        #TODO: wait for other threads to terminate
                         raise CanNotResume('Can not resume next chunk')
                 except IndexError:
                     raise CanNotRun('No more chunks left')
@@ -167,7 +167,7 @@ class MultiDownload(DownloaderCore):
                         self.chunks_control[i] = False
                         self.conn_count += 1
                         is_downloading = True
-                    elif not is_downloading: #may be retrying
+                    else:
                         raise CanNotRun('Another thread has taken over this chunk.')
 
                 while True:
