@@ -170,7 +170,7 @@ class MultiDownload(DownloaderCore):
 
                     buf.write(data)
                     len_buf += len_data
-                    chunk[START] += len_data
+                    chunk = (chunk[START] + len_data, chunk[END])
 
                     if len_buf >= DATA_BUFSIZ:
                         self.flush_buffer(fh, i, chunk, buf, len_buf)
