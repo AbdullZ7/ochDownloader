@@ -50,13 +50,14 @@ class Downloader(threading.Thread, MultiDownload):
     
     def __file_existence_check(self):
         """"""
+        START, END = range(2)
         try:
             if not os.path.exists(self.path_to_save):
                 os.makedirs(self.path_to_save)
             elif os.path.isfile(os.path.join(self.path_to_save, self.file_name)):
                 self.file_exists = True
-                start_chunks = [chunks_tuple[0] for chunks_tuple in self.chunks
-                                if chunks_tuple[0] < chunks_tuple[1]]
+                start_chunks = [chunk[START] for chunk in self.chunks
+                                if chunk[START] < chunk[END]]
                 if start_chunks:
                     self.content_range = min(start_chunks)
         except (EnvironmentError, ValueError) as err:
