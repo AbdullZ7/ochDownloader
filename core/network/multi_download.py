@@ -95,11 +95,14 @@ class MultiDownload(DownloaderCore):
         for th in th_list:
             th.join()
 
+        self.check_chunks_complete()
+
+    def check_chunks_complete(self):
         if not self.stop_flag and not self.error_flag:
             for chunk in self.chunks: #re-check
                 if not self.is_chunk_complete(chunk):
-                    #logger.debug("INCOMPLETEEEEEE: {} of {}".format(chunk[START], chunk[END]))
                     self.set_err('Incomplete chunk')
+                    logger.debug("INCOMPLETE: {} of {}".format(chunk[START], chunk[END]))
 
     def is_chunk_complete(self, chunk):
         if chunk[START] < chunk[END]:
@@ -123,6 +126,7 @@ class MultiDownload(DownloaderCore):
                     elif not self.chunks_control[i]:
                         raise CanNotRun('Next chunk is downloading')
                     else:
+                        #chunks completeness will be checked later.
                         raise CanNotRun('Can not resume next chunk')
                 except IndexError:
                     raise CanNotRun('No more chunks left')
@@ -190,11 +194,9 @@ class MultiDownload(DownloaderCore):
                         return
 
                     if not len_data or (chunk[END] and chunk[START] >= chunk[END]): #end may be 0
-                        flush()
+                        flush() #make sure the chunk is complete or oversized.
                         buf = StringIO()
                         len_buf = 0
-                        #with self.lock2:
-                            #logger.debug(self.chunks[i])
                         logger.debug("complete {0} {1}".format(chunk[START], chunk[END]))
                         if not self.is_chunk_complete(chunk):
                             raise IncompleteChunk('Incomplete chunk')
