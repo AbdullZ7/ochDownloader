@@ -139,8 +139,8 @@ class Downloader(threading.Thread, MultiDownload):
     
     def __download(self):
         """"""
-        if self.file_exists and self.is_valid_range(self.source, self.content_range):
-            mode = "r+b" #leer y escribir en la posicion deseada con seek.
+        if self.file_exists and self.chunks and self.is_valid_range(self.source, self.content_range):
+            mode = "r+b" #resume (with seek)
         else:
             mode = "wb"
             del self.chunks[:]
