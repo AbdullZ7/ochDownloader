@@ -95,11 +95,11 @@ class MultiDownload(DownloaderCore):
         for th in th_list:
             th.join()
 
-        #if not self.stop_flag and not self.error_flag:
-            #for chunk in self.chunks: #re-check
-                #if not self.is_chunk_complete(chunk):
+        if not self.stop_flag and not self.error_flag:
+            for chunk in self.chunks: #re-check
+                if not self.is_chunk_complete(chunk):
                     #logger.debug("INCOMPLETEEEEEE: {} of {}".format(chunk[START], chunk[END]))
-                    #self.set_err('Incomplete chunk')
+                    self.set_err('Incomplete chunk')
 
     def is_chunk_complete(self, chunk):
         if chunk[START] < chunk[END]:
@@ -151,6 +151,9 @@ class MultiDownload(DownloaderCore):
         buf = StringIO()
         len_buf = 0
 
+        def flush():
+            self.flush_buffer(fh, i, chunk, buf, len_buf)
+
         try:
             with URLClose(self.get_source(chunk, is_first)) as s:
                 if not is_first and not self.is_valid_range(s, chunk[START]):
@@ -173,7 +176,7 @@ class MultiDownload(DownloaderCore):
                     chunk = (chunk[START] + len_data, chunk[END])
 
                     if len_buf >= DATA_BUFSIZ:
-                        self.flush_buffer(fh, i, chunk, buf, len_buf)
+                        flush()
                         buf = StringIO()
                         len_buf = 0
 
@@ -187,6 +190,9 @@ class MultiDownload(DownloaderCore):
                         return
 
                     if not len_data or (chunk[END] and chunk[START] >= chunk[END]): #end may be 0
+                        flush()
+                        buf = StringIO()
+                        len_buf = 0
                         #with self.lock2:
                             #logger.debug(self.chunks[i])
                         logger.debug("complete {0} {1}".format(chunk[START], chunk[END]))
@@ -213,7 +219,7 @@ class MultiDownload(DownloaderCore):
             #propagate
             self.set_err(err)
         finally:
-            self.flush_buffer(fh, i, chunk, buf, len_buf)
+            flush()
 
 
 if __name__ == "__main__":
