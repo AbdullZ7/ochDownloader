@@ -1,14 +1,47 @@
-import os #usado en FileHandler
 import threading
 import importlib
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+logger = logging.getLogger(__name__)
 from collections import OrderedDict
 
 import cons
-import misc #(html entities and numerics parser)
+import misc
 from download_core import DownloadItem
 from slots import Slots
+
+
+class LinkChecker(threading.Thread):
+    """"""
+    def __init__(self, link, host):
+        """"""
+        threading.Thread.__init__(self)
+        self.file_name = cons.UNKNOWN
+        self.host = host
+        self.link = link
+        self.size = 0
+        self.link_status = cons.LINK_CHECKING
+        self.status_msg = None
+
+    def run(self):
+        """"""
+        self.check()
+
+    def check(self):
+        """"""
+        try:
+            module = importlib.import_module("plugins.{0}.link_checker".format(self.host))
+        except ImportError as err:
+            logger.debug(err)
+            self.file_name = misc.get_filename_from_url(self.link) or cons.UNKNOWN #may be an empty str
+            self.link_status = cons.LINK_ERROR
+            self.host = cons.UNSUPPORTED
+        except Exception as err:
+            logger.exception(err)
+            self.link_status = cons.LINK_ERROR
+            self.host = cons.UNSUPPORTED
+        else:
+            self.link_status, file_name, self.size, self.status_msg = module.LinkChecker().check(self.link)
+            self.file_name = misc.smart_decode(misc.html_entities_parser(file_name))
 
 
 class AddDownloadsManager:
@@ -46,46 +79,12 @@ class AddDownloadsManager:
             if self.__slots.add_slot():
                 self.__checking_downloads[id_item] = download_item
                 del self.__pending_downloads[id_item]
-                th = threading.Thread(group=None, target=self.plugin_link_checking, name=None, args=(download_item, ))
+                th = LinkChecker(download_item.link, download_item.host)
                 self.__thread_checking_downloads[id_item] = th
-                #th.daemon = True #quit thread on exit.
                 th.start()
             else:
                 break
-    
-    def plugin_link_checking(self, download_item): #link_checking
-        """
-        TODO: crear modulos multi_link_checker para los host
-        que permiten chequear varios links en un solo pedido.
-        TODO: crear en clase con atrubutos file_name, etc. asi actualizar
-        desde el update checking solo si aun esta en una lista.
-        """
-        #host = download_item.host
-        link_status = cons.LINK_CHECKING
-        size = 0
-        status_msg = None
-        file_name = None
-        try:
-            module = importlib.import_module("plugins.{0}.link_checker".format(download_item.host))
-        except ImportError as err:
-            logger.debug(err)
-            file_name = misc.get_filename_from_url(download_item.link) or cons.UNKNOWN #may be an empty str
-            link_status, download_item.host = cons.LINK_ERROR, cons.UNSUPPORTED
-        except Exception as err:
-            logger.exception(err)
-            link_status, download_item.host = cons.LINK_ERROR, cons.UNSUPPORTED
-        else:
-            link_status, file_name, size, status_msg = module.LinkChecker().check(download_item.link)
-        finally: #update items attributes. TODO: create a method to update all of them.
-            #atomic stuff.
-            download_item.link_status = link_status
-            download_item.size = size
-            download_item.link_status_msg = status_msg
-            if file_name is not None:
-                file_name = misc.smart_decode(misc.html_entities_parser(file_name))
-                if download_item.name == cons.UNKNOWN: #may be downloading
-                    download_item.name = file_name #smart_decode return utf-8 string
-    
+
     def get_checking_update(self):
         """"""
         result_list = []
@@ -93,6 +92,12 @@ class AddDownloadsManager:
             result_list.append(download_item)
             th = self.__thread_checking_downloads[id_item]
             if not th.is_alive():
+                download_item.host = th.host
+                download_item.link_status = th.link_status
+                download_item.size = th.size
+                download_item.status_msg = th.status_msg
+                if download_item.name == cons.UNKNOWN: #may be downloading
+                    download_item.name = th.file_name
                 self.__ready_downloads[id_item] = download_item
                 del self.__checking_downloads[id_item]
                 del self.__thread_checking_downloads[id_item]
@@ -108,7 +113,6 @@ class AddDownloadsManager:
                 self.__pending_downloads[id_item] = download_item
                 del self.__ready_downloads[id_item]
                 self.start_checking()
-                #threading.Thread(group=None, target=self.plugin_link_checking, name=None, args=(download_item, )).start() #safe
 
     def get_added_items(self, id_add_list): #get download_items (added) from pending.
         """"""
@@ -132,4 +136,3 @@ class AddDownloadsManager:
                 result_list.append(download_item)
             
         return result_list
-
