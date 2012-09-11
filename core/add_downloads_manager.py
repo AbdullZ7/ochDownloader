@@ -38,7 +38,6 @@ class LinkChecker(threading.Thread):
         except Exception as err:
             logger.exception(err)
             self.link_status = cons.LINK_ERROR
-            self.host = cons.UNSUPPORTED
         else:
             self.link_status, file_name, self.size, self.status_msg = module.LinkChecker().check(self.link)
             self.file_name = misc.smart_decode(misc.html_entities_parser(file_name))
