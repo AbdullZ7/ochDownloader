@@ -96,16 +96,12 @@ class _Config(SafeConfigParser):
             for option, value in options.items():
                 if not self.has_option(section, option):
                     self.set(section, option, value)
-        #self.save_config()
-  
-    def save_config(self):
+
+    @exception_handler()
+    def save(self):
         """"""
-        try:
-            with _thread_lock:
-                with open(cons.CONFIG_FILE, "wb", cons.FILE_BUFSIZE) as fh:
-                    self.write(fh)
-        except Exception as  err:
-            logger.exception(err)
+        with open(cons.CONFIG_FILE, "wb", cons.FILE_BUFSIZE) as fh:
+            self.write(fh)
     
     @exception_handler()
     def set_addon_option(self, option, value):
