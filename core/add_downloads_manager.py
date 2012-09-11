@@ -12,11 +12,11 @@ from slots import Slots
 
 class LinkChecker(threading.Thread):
     """"""
-    def __init__(self, link, host):
+    def __init__(self, link):
         """"""
         threading.Thread.__init__(self)
         self.file_name = cons.UNKNOWN
-        self.host = host
+        self.host = misc.get_host(link)
         self.link = link
         self.size = 0
         self.link_status = cons.LINK_CHECKING
@@ -47,9 +47,7 @@ class LinkChecker(threading.Thread):
 class AddDownloadsManager:
     """"""
     def __init__(self):
-        """
-        DONE: Cambiar listas por diccionarios {id_item: downloaditem, } para simplificar busquedas.
-        """
+        """"""
         self.__slots = Slots(limit=20) #checker stots
         self.__pending_downloads = OrderedDict() #{id_item: download_item, }
         self.__checking_downloads = {} #{id_item: download_item, }
@@ -79,7 +77,7 @@ class AddDownloadsManager:
             if self.__slots.add_slot():
                 self.__checking_downloads[id_item] = download_item
                 del self.__pending_downloads[id_item]
-                th = LinkChecker(download_item.link, download_item.host)
+                th = LinkChecker(download_item.link)
                 self.__thread_checking_downloads[id_item] = th
                 th.start()
             else:
