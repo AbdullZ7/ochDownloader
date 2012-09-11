@@ -53,7 +53,7 @@ DEFAULT = {SECTION_MAIN: {OPTION_VERSION: cons.APP_VER, OPTION_CLIPBOARD_ACTIVE:
 
 
 #thread safety
-_thread_lock = threading.RLock()
+_thread_lock = threading.Lock()
 
 #decorator
 def exception_handler(default=None):

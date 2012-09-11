@@ -9,7 +9,7 @@ import core.cons as cons
 PWD_FILE_PATH = os.path.join(cons.APP_PATH, "pwd.txt")
 
 #thread safety
-_thread_lock = threading.RLock()
+_thread_lock = threading.Lock()
 
 
 class _PasswordsHandler:

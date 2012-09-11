@@ -7,7 +7,7 @@ from idle_queue import idle_add
 
 
 #thread safety
-_thread_lock = threading.RLock()
+_thread_lock = threading.Lock()
 
 
 class _Events:

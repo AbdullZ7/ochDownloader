@@ -5,7 +5,7 @@ logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.get
 
 
 #thread safety
-_thread_lock = threading.RLock()
+_thread_lock = threading.Lock()
 _event_list = []
 _block = False
 idle_loop = Queue.Queue()
