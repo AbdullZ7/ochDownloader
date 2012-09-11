@@ -73,13 +73,13 @@ class AddDownloadsManager:
     
     def start_checking(self):
         """"""
-        for id_item, download_item in self.__pending_downloads.items(): #devuelve lista con key, values
+        for id_item, download_item in self.__pending_downloads.items():
             if self.__slots.add_slot():
+                th = LinkChecker(download_item.link)
+                th.start()
+                self.__thread_checking_downloads[id_item] = th
                 self.__checking_downloads[id_item] = download_item
                 del self.__pending_downloads[id_item]
-                th = LinkChecker(download_item.link)
-                self.__thread_checking_downloads[id_item] = th
-                th.start()
             else:
                 break
 
