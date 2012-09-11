@@ -323,7 +323,7 @@ class Gui(QMainWindow):
             self.save_session()
             self.addons_save()
             conf.set_window_settings(x, y, w, h)
-            conf.save_config()
+            conf.save()
             event.accept()
         else: #hide only
             self.hide()
