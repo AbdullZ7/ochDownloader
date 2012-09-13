@@ -11,8 +11,8 @@ from PySide.QtCore import *
 class AddLinks(QDialog):
     def __init__(self, parent=None):
         QDialog.__init__(self, parent, Qt.WindowSystemMenuHint | Qt.WindowTitleHint)
-        self.setWindowTitle(_('Select Folder'))
-        self.resize(500, 330)
+        self.setWindowTitle(_('Add links'))
+        self.resize(340, 200)
         
         self.links_list = []
         

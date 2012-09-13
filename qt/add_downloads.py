@@ -25,6 +25,7 @@ class AddDownloads(QVBoxLayout):
         self.setSpacing(5)
         
         self.downloads = downloads
+        self.parent = parent
         
         self.tree_view = QTreeView(parent)
         #
@@ -171,7 +172,7 @@ class AddDownloads(QVBoxLayout):
                 self.links_checking(links_list, copy_link=False)
     
     def on_add_links(self):
-        add_links = AddLinks()
+        add_links = AddLinks(self.parent)
         result_code = add_links.result()
         links_list = add_links.links_list
         if result_code == QDialog.Accepted and links_list:
