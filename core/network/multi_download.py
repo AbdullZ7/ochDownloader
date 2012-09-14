@@ -30,7 +30,7 @@ class MultiDownload(DownloaderCore):
     """"""
     def __init__(self, file_name, path_to_save, link, host, bucket, chunks):
         """"""
-        DownloaderCore.__init__(self, file_name,  path_to_save, link, host, bucket)
+        DownloaderCore.__init__(self, file_name, path_to_save, link, host, bucket)
 
         #Threading stuff
         self.lock1 = threading.Lock() #lock to write file.
