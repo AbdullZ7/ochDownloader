@@ -54,11 +54,12 @@ class GrabberDialog(QDialog):
     def on_ok(self):
         links_list = misc.links_parser(self.text_view.toPlainText())
         self.hide()
-        w_dialog = WaitDialog(self.parent, links_list)
-        video_links = w_dialog.video_links
-        if video_links:
-            #self.parent.links_checking(video_links)
-            pass
+        if links_list:
+            w_dialog = WaitDialog(self.parent, links_list)
+            video_links = w_dialog.video_links
+            if video_links:
+                #self.parent.links_checking(video_links)
+                pass
         self.accept()
 
 
@@ -80,12 +81,20 @@ class WaitDialog(QDialog):
         label_searching = QLabel(_('Searching...'))
         vbox.addWidget(label_searching)
 
+        self.th_plugin = Plugin(links_list)
+        self.th_plugin.start()
         self.timer = parent.idle_timeout(1000, self.update)
 
         self.exec_()
 
     def update(self):
-        pass
+        if not self.th_plugin.is_alive():
+            self.accept()
+
+    def accept(self):
+        self.timer.stop()
+        self.hide()
+        return QDialog.Accepted
 
     def reject(self):
         self.timer.stop()
@@ -98,19 +107,31 @@ import importlib
 import Queue
 
 class Plugin(threading.Thread):
-    def __init__(self, links_list):
+    def __init__(self, links_list, pool_limit=10):
         threading.Thread.__init__(self)
+        self.limiter_queue = Queue.Queue(pool_limit)
         self.video_queue = Queue.Queue()
         self.links_list = links_list
 
     def run(self):
-        th_list = []
-        for link in self.links_list:
-            th = threading.Thread(group=None, target=self.parser, name=None, args=(link, ))
-            th_list.append(th)
-            th.start()
+        self.create_threads()
+
+    def create_threads(self):
+        th_list = [self.spawn_thread(link) for link in self.links_list]
         for th in th_list:
             th.join()
+
+    def spawn_thread(self, link):
+        self.limiter_queue.put(None) #block if limit is reached
+        th = threading.Thread(group=None, target=self.worker_thread, name=None, args=(link, ))
+        th.start()
+        return th
+
+    def worker_thread(self, link):
+        try:
+            self.parser(link)
+        finally:
+            self.limiter_queue.get_nowait() #we are done
 
     def parser(self, link):
         #from addons.video_grabber.plugins import unsupported
