@@ -11,7 +11,7 @@ class Grab(BasePlugin):
     https://github.com/rg3/youtube-dl
     """
     def __init__(self, *args, **kwargs):
-        BasePlugin.__init__(*args, **kwargs)
+        BasePlugin.__init__(self, *args, **kwargs)
 
     def parse(self, link):
         #TODO: use findall.
@@ -22,6 +22,8 @@ class Grab(BasePlugin):
         if mobj is None:
             #Broaden the search a little bit
             mobj = re.search(r'[^A-Za-z0-9]?(?:file|source)=(http[^\'"&]*)', source)
+        if mobj is None:
+            mobj = re.search(r'(?:file|source)[\s]+src=["|\'](http[^\'"&]*)', source)
         if mobj is None:
             #nothing found
             return

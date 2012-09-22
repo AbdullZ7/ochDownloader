@@ -58,8 +58,7 @@ class GrabberDialog(QDialog):
             w_dialog = WaitDialog(self.parent, links_list)
             video_links = w_dialog.video_links
             if video_links:
-                #self.parent.links_checking(video_links)
-                pass
+                self.parent.add_downloads.links_checking(video_links)
         self.accept()
 
 
@@ -89,6 +88,7 @@ class WaitDialog(QDialog):
 
     def update(self):
         if not self.th_plugin.is_alive():
+            self.video_links = list(self.th_plugin.video_deque)
             self.accept()
 
     def accept(self):
@@ -105,12 +105,16 @@ class WaitDialog(QDialog):
 import threading
 import importlib
 import Queue
+import collections
+
+from addons.video_grabber.plugins import unsupported
+
 
 class Plugin(threading.Thread):
     def __init__(self, links_list, pool_limit=10):
         threading.Thread.__init__(self)
         self.limiter_queue = Queue.Queue(pool_limit)
-        self.video_queue = Queue.Queue()
+        self.video_deque = collections.deque()
         self.links_list = links_list
 
     def run(self):
@@ -134,17 +138,18 @@ class Plugin(threading.Thread):
             self.limiter_queue.get_nowait() #we are done
 
     def parser(self, link):
-        #from addons.video_grabber.plugins import unsupported
-
         host = misc.get_host(link)
         try:
             module = importlib.import_module("plugins.{0}".format(host))
-            p = module.Grab(link)
-            p.parse()
         except ImportError as err:
             logger.debug(err)
+            module = unsupported
+
+        try:
+            p = module.Grab()
+            p.parse(link)
         except Exception as err:
             logger.exception(err)
         else:
             for video in p.video_list:
-                self.video_queue.put(video)
+                self.video_deque.append(video)
