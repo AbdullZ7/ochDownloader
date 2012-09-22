@@ -139,7 +139,7 @@ class Plugin(threading.Thread):
         host = misc.get_host(link)
         try:
             module = importlib.import_module("plugins.{0}".format(host))
-            p = module.Download(link)
+            p = module.Grab(link)
             p.parse()
         except ImportError as err:
             logger.debug(err)
