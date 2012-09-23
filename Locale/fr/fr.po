@@ -1,236 +1,494 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.6.4\n"
+"Project-Id-Version: 0.8.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-02 19:16-0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2012-09-23 14:59-0300\n"
+"PO-Revision-Date: 2012-09-23 15:26-0300\n"
+"Last-Translator: \n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.3\n"
 
-msgid "Select Folder"
-msgstr "Sélectionner le dossier"
-
-msgid "Paste Your Links (one link per line):"
-msgstr "Coller vos liens (un lien par ligne)"
-
-msgid "Cancel"
-msgstr "Annuler"
-
-msgid "Add"
-msgstr "Ajouter"
-
-msgid "Host Accounts"
-msgstr "Comptes d'hébergement"
-
-msgid "Server:"
-msgstr "Serveur:"
-
-msgid "Accounts:"
-msgstr "Comptes:"
-
-msgid "Status"
-msgstr "Etat"
-
-msgid "Username"
-msgstr "Nom utilisateur"
-
-msgid "Password"
-msgstr "Mot de passe"
-
-msgid "Enable"
-msgstr "Activer"
-
-msgid "Remove"
-msgstr "Supprimer"
-
-msgid "Check"
-msgstr "Vérifier"
-
-msgid "Login:"
-msgstr "Enregistrer"
-
-msgid "Username:"
-msgstr "Nom utilisateur"
-
-msgid "Password:"
-msgstr "Mot de passe"
-
-msgid "Done"
-msgstr "Terminé"
-
-msgid "Slots limit:"
-msgstr "Limite slots"
-
-msgid "Speed limit:"
-msgstr "Limite vitesse"
-
-msgid "Update checking..."
-msgstr "Vérification mise à jour "
-
-msgid "Update available"
-msgstr "Mise a jour disponible"
-
-msgid "View Full Log"
-msgstr "Voir rapport complet"
-
-msgid "Full Log File"
-msgstr "Fichier rapport complet"
-
-msgid "Activity Log:"
-msgstr "Rapport d’activité"
-
-msgid "Close"
-msgstr "Fermer"
-
-msgid "File Name"
-msgstr "Nom fichier"
-
-msgid "Host"
-msgstr "Hôte"
-
-msgid "Size"
-msgstr "Dimention"
-
-msgid "Complete"
-msgstr "Complet"
-
-msgid "Progress"
-msgstr "Progrès"
-
-msgid "Time"
-msgstr "Temps"
-
-msgid "Remain"
-msgstr "Reste"
-
-msgid "Speed"
-msgstr "Vitesse"
-
-msgid "Status Message"
-msgstr "Message état"
-
-msgid "Do you want to remove the downloaded segments?"
-msgstr "Voulez-vous éliminer les segments téléchargés ?"
-
-msgid "Remove Files"
-msgstr "Eliminer les fichiers"
-
-msgid "Stop Download"
-msgstr " Arrêter le téléchargement"
-
-msgid "Start Download"
-msgstr "Initier le téléchargement"
-
-msgid "Accounts"
-msgstr "Comptes"
-
-msgid "Configuration"
-msgstr " Configuration "
-
+#: qt/about.py:12 qt/main.py:88
 msgid "About"
 msgstr "Sur"
 
-msgid "Clipboard watcher"
-msgstr "Importation du presse-papiers"
+#: qt/about.py:21
+msgid "ochDownloader is a simple tool for One Click Hoster automated download"
+msgstr ""
+"ochDownloader est un outil simple pour téléchargement automatisé des "
+"fichiers des sites d’hebergement"
 
-msgid "Preferences"
-msgstr "Préférences "
+#: qt/accounts.py:21
+msgid "Host Accounts"
+msgstr "Comptes d'hébergement"
 
-msgid "Downloads"
-msgstr "Téléchargements"
+#: qt/accounts.py:30
+msgid "Accounts:"
+msgstr "Comptes:"
 
-msgid "Add downloads"
-msgstr "Ajouter téléchargements "
+#: qt/accounts.py:42 qt/add_downloads.py:45 qt/downloads.py:43
+msgid "Host"
+msgstr "Hôte"
 
-msgid "Log"
-msgstr "Rapport"
+#: qt/accounts.py:42 qt/add_downloads.py:45 addons/unrar/unrar_gui.py:108
+msgid "Status"
+msgstr "Etat"
 
-msgid "ochDownload still has some active downloads. Do you want to quit anyway?"
-msgstr "ochDownload a encore des téléchargements actives. Voulez-vous arrêter?"
+#: qt/accounts.py:42
+msgid "Username"
+msgstr "Nom utilisateur"
 
-msgid "Active Downloads"
-msgstr "Téléchargements actives"
+#: qt/accounts.py:42
+msgid "Password"
+msgstr "Mot de passe"
 
-msgid "No"
-msgstr "Non"
+#: qt/accounts.py:42
+msgid "Enable"
+msgstr "Activer"
 
-msgid "Yes"
-msgstr "Oui"
+#: qt/accounts.py:55 addons/history/history_gui.py:96
+msgid "Remove"
+msgstr "Supprimer"
 
-msgid "Link checker:"
-msgstr "Vérificateur des liens:"
+#: qt/accounts.py:62
+msgid "Check"
+msgstr "Vérifier"
 
-msgid "Name"
-msgstr "Nom"
+#: qt/accounts.py:74
+msgid "Login:"
+msgstr "Enregistrer"
 
-msgid "Examine..."
-msgstr "Examiner..."
+#: qt/accounts.py:77
+msgid "Server:"
+msgstr "Serveur:"
 
+#: qt/accounts.py:79
+msgid "Username:"
+msgstr "Nom utilisateur"
+
+#: qt/accounts.py:80
+msgid "Password:"
+msgstr "Mot de passe"
+
+#: qt/accounts.py:97
+msgid "Add"
+msgstr "Ajouter"
+
+#: qt/accounts.py:116 addons/captcha/captcha_gui.py:58
+#: addons/video_grabber/grabber_gui.py:39
+msgid "Cancel"
+msgstr "Annuler"
+
+#: qt/accounts.py:122
 msgid "Accept"
 msgstr "Accepter"
 
-msgid "Checking"
-msgstr "Verifier"
+#: qt/add_downloads.py:45 qt/downloads.py:43 addons/history/history_gui.py:67
+#: addons/unrar/unrar_gui.py:108
+msgid "File Name"
+msgstr "Nom fichier"
 
-msgid "Open Folder"
-msgstr "Ouvrir dossier"
+#: qt/add_downloads.py:45 qt/downloads.py:43 addons/history/history_gui.py:67
+msgid "Size"
+msgstr "Dimention"
 
-msgid "General:"
-msgstr "General:"
+#: qt/add_downloads.py:45 qt/downloads.py:43
+msgid "Status Message"
+msgstr "Message état"
 
-msgid "Retries limit:"
-msgstr "Nombre des tentatives"
-
-msgid "Proxy:"
-msgstr "Proxy"
-
-msgid "Without proxy"
-msgstr "Pas de proxy"
-
-msgid "Manual proxy config"
-msgstr "Configuration manuelle du proxy"
-
-msgid "HTTP Proxy:"
-msgstr "HTTP Proxy:"
-
-msgid "Port:"
-msgstr "Port:"
-
-msgid "Connection"
-msgstr "Connexion "
-
-msgid "ochDownloader is a simple tool for One Click Hoster automated download"
-msgstr "ochDownloader est un outil simple pour téléchargement automatisé des fichiers des sites d’hebergement"
-
-msgid "Re-check"
-msgstr "Revérifier"
-
-msgid "Add Links"
-msgstr "Ajoutez liens"
-
-msgid "Download Selected"
-msgstr "Téléchargez sélectionnées"
-
+#: qt/add_downloads.py:100
 msgid "Import Container"
 msgstr "Importez le container"
 
+#: qt/add_downloads.py:102 qt/add_downloads.py:136
+msgid "Re-check"
+msgstr "Revérifier"
+
+#: qt/add_downloads.py:103 qt/add_downloads.py:137
 msgid "Clear list"
 msgstr "Videz la liste"
 
-msgid "Open File"
-msgstr "Ouvrez le fichier"
+#: qt/add_downloads.py:130
+msgid "Download Selected"
+msgstr "Téléchargez sélectionnées"
 
+#: qt/add_downloads.py:132
+msgid "Select all"
+msgstr ""
+
+#: qt/add_downloads.py:133
+msgid "Select none"
+msgstr ""
+
+#: qt/add_downloads.py:134
+msgid "Select inverse"
+msgstr ""
+
+#: qt/add_links_dlg.py:14
+msgid "Add links"
+msgstr ""
+
+#: qt/add_links_dlg.py:23 addons/video_grabber/grabber_gui.py:26
+msgid "Paste Your Links (one link per line):"
+msgstr "Coller vos liens (un lien par ligne)"
+
+#: qt/add_links_dlg.py:37 qt/log.py:70
+msgid "Close"
+msgstr "Fermer"
+
+#: qt/add_links_dlg.py:43 addons/captcha/captcha_gui.py:72
+#: addons/video_grabber/grabber_gui.py:45
+msgid "OK"
+msgstr ""
+
+#: qt/downloads.py:43 addons/history/history_gui.py:67
+msgid "Complete"
+msgstr "Complet"
+
+#: qt/downloads.py:43
+msgid "Progress"
+msgstr "Progrès"
+
+#: qt/downloads.py:43
+msgid "Time"
+msgstr "Temps"
+
+#: qt/downloads.py:43
+msgid "Remain"
+msgstr "Reste"
+
+#: qt/downloads.py:43
+msgid "Speed"
+msgstr "Vitesse"
+
+#: qt/downloads.py:146 addons/history/history_gui.py:93
+msgid "Open destination folder"
+msgstr ""
+
+#: qt/downloads.py:147 addons/history/history_gui.py:94
+msgid "Copy link"
+msgstr ""
+
+#: qt/downloads.py:148
+msgid "Add password"
+msgstr ""
+
+#: qt/downloads.py:149
+msgid "Delete"
+msgstr ""
+
+#: qt/downloads.py:155
+msgid "Clear Completed"
+msgstr ""
+
+#: qt/downloads.py:156
+msgid "Start all"
+msgstr ""
+
+#: qt/downloads.py:157
+msgid "Stop all"
+msgstr ""
+
+#: qt/downloads.py:273
+msgid "Retry"
+msgstr ""
+
+#: qt/log.py:22
+msgid "View Full Log"
+msgstr "Voir rapport complet"
+
+#: qt/log.py:49
+msgid "Full Log File"
+msgstr "Fichier rapport complet"
+
+#: qt/log.py:56
+msgid "Activity Log:"
+msgstr "Rapport d’activité"
+
+#: qt/main.py:84
+msgid "Stop Download"
+msgstr " Arrêter le téléchargement"
+
+#: qt/main.py:85
+msgid "Start Download"
+msgstr "Initier le téléchargement"
+
+#: qt/main.py:86
+msgid "Accounts"
+msgstr "Comptes"
+
+#: qt/main.py:87 qt/main.py:218
+msgid "Preferences"
+msgstr "Préférences "
+
+#: qt/main.py:105
+msgid "Downloads"
+msgstr "Téléchargements"
+
+#: qt/main.py:110
+msgid "Add downloads"
+msgstr "Ajouter téléchargements "
+
+#: qt/main.py:122
+msgid "Log"
+msgstr "Rapport"
+
+#: qt/status_bar.py:23
+msgid "Slots limit:"
+msgstr "Limite slots"
+
+#: qt/status_bar.py:33
+msgid "Speed limit:"
+msgstr "Limite vitesse"
+
+#: qt/status_bar.py:46 qt/status_bar.py:84 qt/status_bar.py:89
+msgid "Update checking..."
+msgstr "Vérification mise à jour "
+
+#: qt/status_bar.py:85
+msgid "Update available"
+msgstr "Mise a jour disponible"
+
+#: qt/tray.py:43
+msgid "Show/Hide"
+msgstr ""
+
+#: qt/tray.py:45
+msgid "Quit"
+msgstr ""
+
+#: qt/preferences/preferences.py:23
+msgid "Connection"
+msgstr "Connexion "
+
+#: qt/preferences/preferences.py:29
+msgid "Addons"
+msgstr ""
+
+#: qt/preferences/preferences.py:33
+msgid "GUI"
+msgstr ""
+
+#: qt/preferences/connection/general.py:9 qt/preferences/gui/general.py:9
+msgid "General:"
+msgstr "General:"
+
+#: qt/preferences/connection/general.py:15
+msgid "Retries limit:"
+msgstr "Nombre des tentatives"
+
+#: qt/preferences/connection/general.py:26
+msgid "HTML download:"
+msgstr ""
+
+#: qt/preferences/connection/general.py:33
+msgid "Connections per file:"
+msgstr ""
+
+#: qt/preferences/connection/proxy.py:11
+msgid "Proxy:"
+msgstr "Proxy"
+
+#: qt/preferences/connection/proxy.py:16
+msgid "Without proxy"
+msgstr "Pas de proxy"
+
+#: qt/preferences/connection/proxy.py:17
+msgid "Manual proxy config"
+msgstr "Configuration manuelle du proxy"
+
+#: qt/preferences/connection/proxy.py:25
+msgid "HTTP Proxy:"
+msgstr "HTTP Proxy:"
+
+#: qt/preferences/connection/proxy.py:31
+msgid "Port:"
+msgstr "Port:"
+
+#: qt/preferences/gui/general.py:15
+msgid "System tray icon (restart required):"
+msgstr ""
+
+#: addons/captcha/captcha_gui.py:46 addons/captcha/captcha_gui.py:120
+msgid "Expires in"
+msgstr "Expiration dans"
+
+#: addons/captcha/captcha_gui.py:66
+msgid "Refresh"
+msgstr ""
+
+#: addons/clipboard/addon_gui.py:17
+msgid "Clipboard"
+msgstr ""
+
+#: addons/clipboard/addon_gui.py:24
+msgid "Clipboard watcher"
+msgstr "Importation du presse-papiers"
+
+#: addons/clipboard/preferences_gui.py:20
+msgid "Extensions to catch:"
+msgstr ""
+
+#: addons/clipboard/preferences_gui.py:27
+msgid "Activate:"
+msgstr ""
+
+#: addons/history/addon_gui.py:23
+msgid "History"
+msgstr ""
+
+#: addons/history/history_gui.py:41
+msgid "Search"
+msgstr ""
+
+#: addons/history/history_gui.py:50
+msgid "Previous"
+msgstr ""
+
+#: addons/history/history_gui.py:67
+msgid "Date Time"
+msgstr ""
+
+#: addons/history/history_gui.py:67
+msgid "Link"
+msgstr ""
+
+#: addons/history/history_gui.py:67
+msgid "Directory"
+msgstr ""
+
+#: addons/history/history_gui.py:76
+msgid "Next"
+msgstr ""
+
+#: addons/ip_renewer/addon_gui.py:26
+msgid "IP Renewer"
+msgstr ""
+
+#: addons/ip_renewer/ip_renewer_gui.py:35
+msgid "Changing IP..."
+msgstr ""
+
+#: addons/ip_renewer/preferences_gui.py:23
+msgid "IP Renew (default)"
+msgstr ""
+
+#: addons/ip_renewer/preferences_gui.py:24
+msgid "Run Custom Script"
+msgstr ""
+
+#: addons/ip_renewer/preferences_gui.py:32
+msgid "Path:"
+msgstr ""
+
+#: addons/shutdown/addon_gui.py:30
 msgid "Shutdown"
 msgstr "Arrêter"
 
-msgid "The system is going to shout down."
-msgstr "Le système va fermer."
+#: addons/shutdown/shutdown_gui.py:18
+msgid "Shutting down"
+msgstr ""
 
+#: addons/shutdown/shutdown_gui.py:22
+msgid "The system is going to shut down."
+msgstr ""
+
+#: addons/shutdown/shutdown_gui.py:47
 msgid "Shutting in"
 msgstr "Arrêt dans"
 
-msgid "Expires in"
-msgstr "Expiration dans"
+#: addons/unrar/addon_gui.py:24
+msgid "Auto Extraction"
+msgstr ""
+
+#: addons/unrar/preferences_gui.py:23
+msgid "Passwords (one per line):"
+msgstr ""
+
+#: addons/unrar/unrar.py:73
+msgid "Incorrect rar password"
+msgstr ""
+
+#: addons/unrar/unrar.py:78
+msgid "Archive header broken"
+msgstr ""
+
+#: addons/unrar/unrar.py:80
+msgid "File open error"
+msgstr ""
+
+#: addons/unrar/unrar.py:82
+msgid "Invalid rar archive usage"
+msgstr ""
+
+#: addons/unrar/unrar.py:84
+msgid "Unknown error"
+msgstr ""
+
+#: addons/unrar/unrar_gui.py:42
+msgid "Extracting"
+msgstr ""
+
+#: addons/unrar/unrar_gui.py:132
+msgid "Success"
+msgstr ""
+
+#: addons/video_grabber/addon_gui.py:14
+msgid "Video grabber"
+msgstr ""
+
+#: addons/video_grabber/grabber_gui.py:17
+#: addons/video_grabber/grabber_gui.py:69
+msgid "Video Grabber"
+msgstr ""
+
+#: addons/video_grabber/grabber_gui.py:79
+msgid "Searching..."
+msgstr ""
+
+#~ msgid "Done"
+#~ msgstr "Terminé"
+
+#~ msgid "Do you want to remove the downloaded segments?"
+#~ msgstr "Voulez-vous éliminer les segments téléchargés ?"
+
+#~ msgid "Remove Files"
+#~ msgstr "Eliminer les fichiers"
+
+#~ msgid "Configuration"
+#~ msgstr " Configuration "
+
+#~ msgid ""
+#~ "ochDownload still has some active downloads. Do you want to quit anyway?"
+#~ msgstr ""
+#~ "ochDownload a encore des téléchargements actives. Voulez-vous arrêter?"
+
+#~ msgid "Active Downloads"
+#~ msgstr "Téléchargements actives"
+
+#~ msgid "No"
+#~ msgstr "Non"
+
+#~ msgid "Yes"
+#~ msgstr "Oui"
+
+#~ msgid "Link checker:"
+#~ msgstr "Vérificateur des liens:"
+
+#~ msgid "Name"
+#~ msgstr "Nom"
+
+#~ msgid "Examine..."
+#~ msgstr "Examiner..."
+
+#~ msgid "Checking"
+#~ msgstr "Verifier"
+
+#~ msgid "Open Folder"
+#~ msgstr "Ouvrir dossier"
+
+#~ msgid "Open File"
+#~ msgstr "Ouvrez le fichier"
