@@ -8,13 +8,13 @@ from PySide.QtCore import *
 
 class Proxy(QGroupBox):
     def __init__(self, parent=None):
-        QGroupBox.__init__(self, 'Proxy:')
+        QGroupBox.__init__(self, _('Proxy:'))
 
         vbox_proxy = QVBoxLayout()
         self.setLayout(vbox_proxy)
 
-        self.radio_without = QRadioButton('Without proxy')
-        self.radio_manual = QRadioButton('Manual proxy config')
+        self.radio_without = QRadioButton(_('Without proxy'))
+        self.radio_manual = QRadioButton(_('Manual proxy config'))
         self.radio_without.toggled.connect(self.on_toggled) #no need to connect manual.
 
         vbox_proxy.addWidget(self.radio_without)
@@ -22,13 +22,13 @@ class Proxy(QGroupBox):
 
         hbox_proxy = QHBoxLayout()
 
-        label_http_proxy = QLabel('HTTP Proxy:')
+        label_http_proxy = QLabel(_('HTTP Proxy:'))
         self.entry_proxy_ip = QLineEdit()
 
         hbox_proxy.addWidget(label_http_proxy)
         hbox_proxy.addWidget(self.entry_proxy_ip)
 
-        label_http_port = QLabel('Port:')
+        label_http_port = QLabel(_('Port:'))
         self.port_box = QSpinBox()
         self.port_box.setAccelerated(True)
         self.port_box.setRange(0, 9999)

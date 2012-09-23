@@ -20,17 +20,17 @@ class Preferences(QTabWidget):
         self.connection = Connection()
         #self.tab_connection = QWidget()
         #self.tab_connection.setLayout(self.connection)
-        self.addTab(self.connection, 'Connection')
+        self.addTab(self.connection, _('Connection'))
         self.tab_widgets.append(self.connection)
         
         self.addons_tab = AddonsTab(addons_list)
         #self.tab_connection = QWidget()
         #self.tab_connection.setLayout(self.connection)
-        self.addTab(self.addons_tab, 'Addons')
+        self.addTab(self.addons_tab, _('Addons'))
         self.tab_widgets.append(self.addons_tab)
 
         self.gui = GUI()
-        self.addTab(self.gui, 'GUI')
+        self.addTab(self.gui, _('GUI'))
         self.tab_widgets.append(self.gui)
 
         self.on_load()

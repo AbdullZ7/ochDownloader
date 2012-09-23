@@ -55,10 +55,9 @@ class GrabberDialog(QDialog):
         links_list = misc.links_parser(self.text_view.toPlainText())
         self.hide()
         if links_list:
-            w_dialog = WaitDialog(self.parent, links_list)
-            video_links = w_dialog.video_links
-            if video_links:
-                self.parent.add_downloads.links_checking(video_links)
+            w = WaitDialog(self.parent, links_list)
+            if w.video_links:
+                self.parent.add_downloads.links_checking(w.video_links)
         self.accept()
 
 

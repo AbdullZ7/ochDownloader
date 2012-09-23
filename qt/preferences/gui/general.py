@@ -6,13 +6,13 @@ from PySide.QtCore import *
 
 class General(QGroupBox):
     def __init__(self, parent=None):
-        QGroupBox.__init__(self, 'General:')
+        QGroupBox.__init__(self, _('General:'))
 
         #vbox_general = QVBoxLayout()
         grid_general = QGridLayout()
         self.setLayout(grid_general)
 
-        label_tray = QLabel('System tray icon (restart required):')
+        label_tray = QLabel(_('System tray icon (restart required):'))
 
         self.tray_box = QCheckBox()
 
