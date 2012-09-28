@@ -21,6 +21,7 @@ class TokenBucket:
         Change the bandwidth rate-limit.
         """
         self.fill_rate = float(limit * 1024)
+        self.__tokens = 0
 
     def consume(self, tokens): #tokens requeridos = cantidad de bites a leer.
         """
