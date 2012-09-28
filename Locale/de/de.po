@@ -1,0 +1,237 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.6.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-10-02 18:54-0300\n"
+"PO-Revision-Date: 2012-09-26 23:46+0100\n"
+"Last-Translator: Yannick Albert <dev@yckart.com>\n"
+"Language-Team: Language\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Select Folder"
+msgstr "Ordner Auswählen"
+
+msgid "Paste Your Links (one link per line):"
+msgstr "Links Einfügen (ein Link pro Zeile)"
+
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgid "Add"
+msgstr "Hinzufügen"
+
+msgid "Host Accounts"
+msgstr "Host Konten"
+
+msgid "Server:"
+msgstr "Server:"
+
+msgid "Accounts:"
+msgstr "Konten:"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Username"
+msgstr "Benutzername"
+
+msgid "Password"
+msgstr "Passwort"
+
+msgid "Enable"
+msgstr "Aktivieren"
+
+msgid "Remove"
+msgstr "Entfernen"
+
+msgid "Check"
+msgstr "Testen"
+
+msgid "Login:"
+msgstr "Einloggen:"
+
+msgid "Username:"
+msgstr "Benutzername:"
+
+msgid "Password:"
+msgstr "Passwort:"
+
+msgid "Done"
+msgstr "Fertig"
+
+msgid "Slots limit:"
+msgstr "Slots Eingrenzen"
+
+msgid "Speed limit:"
+msgstr "Geschwindigkeits-Begrenzung"
+
+msgid "Update checking..."
+msgstr "Prüft auf Aktualisierungen..."
+
+msgid "Update available"
+msgstr "Aktualisierung Verfügbar"
+
+msgid "View Full Log"
+msgstr "Zeige Gesamtes Protokoll"
+
+msgid "Full Log File"
+msgstr "Gesamte Protokolldatei"
+
+msgid "Activity Log:"
+msgstr "Aktivitätsprotokoll:"
+
+msgid "Close"
+msgstr "Schließen"
+
+msgid "File Name"
+msgstr "Dateiname"
+
+msgid "Host"
+msgstr "Server"
+
+msgid "Size"
+msgstr "Größe"
+
+msgid "Complete"
+msgstr "Fertigstellen"
+
+msgid "Progress"
+msgstr "Fortschritt"
+
+msgid "Time"
+msgstr "Zeit"
+
+msgid "Remain"
+msgstr "Verbleibend"
+
+msgid "Speed"
+msgstr "Geschwindigkeit"
+
+msgid "Status Message"
+msgstr "Status Nachricht"
+
+msgid "Do you want to remove the downloaded segments?"
+msgstr "Möchten Sie die heruntergeladenen Elemente entfernen?"
+
+msgid "Remove Files"
+msgstr "Dateien Entfernen"
+
+msgid "Stop Download"
+msgstr "Download Anhalten"
+
+msgid "Start Download"
+msgstr "Download Starten"
+
+msgid "Accounts"
+msgstr "Konten"
+
+msgid "Configuration"
+msgstr "Einstellungen"
+
+msgid "About"
+msgstr "Über..."
+
+msgid "Clipboard watcher"
+msgstr "Zwischenablage Überwachen"
+
+msgid "Preferences"
+msgstr "Einstellungen"
+
+msgid "Downloads"
+msgstr "Downloads"
+
+msgid "Add downloads"
+msgstr "Download Hinzufügen"
+
+msgid "Log"
+msgstr "Protokoll"
+
+msgid "ochDownload still has some active downloads. Do you want to quit anyway?"
+msgstr "ochDownloader lädt noch Dateien herunter. Möchtest du es trotzdem beenden?"
+
+msgid "Active Downloads"
+msgstr "Aktive Downloads"
+
+msgid "No"
+msgstr "Nein"
+
+msgid "Yes"
+msgstr "Ja"
+
+msgid "Link checker:"
+msgstr "Link-Checker:"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Examine..."
+msgstr "Prüfen..."
+
+msgid "Accept"
+msgstr "Akzeptieren"
+
+msgid "Checking"
+msgstr "Prüfung"
+
+msgid "Open Folder"
+msgstr "Ordner Öffnen"
+
+msgid "General:"
+msgstr "Allgemein:"
+
+msgid "Retries limit:"
+msgstr "Grenze für Downloadversuche:"
+
+msgid "Proxy:"
+msgstr "Proxy:"
+
+msgid "Without proxy"
+msgstr "Ohne Proxy"
+
+msgid "Manual proxy config"
+msgstr "Manuelle Proxy-Konfiguration"
+
+msgid "HTTP Proxy:"
+msgstr "HTTP Proxy:"
+
+msgid "Port:"
+msgstr "Port:"
+
+msgid "Connection"
+msgstr "Verbindung"
+
+msgid "ochDownloader is a simple tool for One Click Hoster automated download"
+msgstr "ochDownloader ist ein simples Tool zu automatisierung von 1-Click-Hoster Downloads"
+
+msgid "Re-check"
+msgstr "Erneut Überprüfen"
+
+msgid "Add Links"
+msgstr "Links hinzufügen"
+
+msgid "Download Selected"
+msgstr "Auswahl Herunterladen"
+
+msgid "Import Container"
+msgstr "DL-Container Importieren"
+
+msgid "Clear list"
+msgstr "Liste Leeren"
+
+msgid "Open File"
+msgstr "Datei Öffnen"
+
+msgid "Shutdown"
+msgstr "Automatisches Herunterfahren"
+
+msgid "The system is going to shout down."
+msgstr "Das System wird heruntergefahren."
+
+msgid "Shutting in"
+msgstr "Schließen in"
+
+msgid "Expires in"
+msgstr "Läuft ab in"
+
