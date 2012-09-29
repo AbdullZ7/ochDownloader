@@ -148,9 +148,9 @@ def speed_format(the_speed):
 def get_host(link):
     """"""
     #assert link.startswith("http://"), ("'{0}' is not an url".format(link))
-    i = 2 if link.startswith("http://") or link.startswith("https://") else 0
+    i = 2 if link.startswith(("http://", "https://")) else 0
     host = link.split("/")[i] #get (www.)website.com
-    host = host.split(".")[1] if host.startswith("www.") else host.split(".")[0] #get website
+    host = host.split(".")[1] if host.startswith("www") else host.split(".")[0] #get website
     return host.lower()
 
 def get_filename_from_url(url):
