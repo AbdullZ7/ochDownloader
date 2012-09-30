@@ -1,6 +1,6 @@
 import uuid
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+logger = logging.getLogger(__name__)
 from collections import OrderedDict
 
 #Libs
@@ -32,8 +32,8 @@ class DownloadItem:
         self.is_premium = False
         self.can_copy_link = can_copy_link
 
-    def update(self, name, status, progress, size, size_complete, speed,
-                time, time_remain, chunks, status_msg, can_resume, is_premium):
+    def update(self, name, status, progress, size, size_complete, speed, time,
+               time_remain, chunks, status_msg, can_resume, is_premium):
         """"""
         self.name = name
         self.status = status
@@ -48,10 +48,6 @@ class DownloadItem:
         self.can_resume = can_resume
         self.is_premium = is_premium
 
-    def set_path(self, path):
-        """"""
-        self.path = path
-
     def reset_fail_count(self):
         """"""
         self.fail_count = 0
@@ -65,7 +61,7 @@ class DownloadCore:
         self.queue_downloads = OrderedDict()
         self.complete_downloads = {}
         self.stopped_downloads = {}
-    
+
     def reorder_queue(self, id_order_list):
         """
         TODO: only replace the order list in OrderedDict.
@@ -81,11 +77,7 @@ class DownloadCore:
             self.queue_downloads.update(ordered_items_dict)
         else:
             logger.warning("reorder_queue failed")
-    
-    #def reorder_queue(self, id_order_list):
-        #""""""
-        #self.reorder_list(self.queue_downloads, id_order_list)
-    
+
     def reorder_list(self, download_list, id_order_list):
         """
         binding: los cambios en la 'copia' de la lista se reflejan en la lista original.
