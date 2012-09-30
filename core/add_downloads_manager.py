@@ -53,6 +53,9 @@ class AddDownloadsManager:
         self.__ready_downloads = {} #{id_item: download_item, } checked_downloads
         self.__thread_checking_downloads = {} #{id_item: th, }
 
+    def get_checking_downloads(self):
+        return self.__checking_downloads.copy()
+
     def clear_pending(self):
         """
         Erase pending_downloads dicts
@@ -82,11 +85,11 @@ class AddDownloadsManager:
             else:
                 break
 
-    def get_checking_update(self):
-        """"""
-        result_list = []
+    def update_checking_downloads(self):
+        """
+        This may change the checking_downloads dict, you should get a dict copy before calling this method.
+        """
         for id_item, download_item in self.__checking_downloads.items():
-            result_list.append(download_item)
             th = self.__thread_checking_downloads[id_item]
             if not th.is_alive():
                 download_item.host = th.host
@@ -100,7 +103,6 @@ class AddDownloadsManager:
                 del self.__thread_checking_downloads[id_item]
                 self.__slots.remove_slot()
                 self.start_checking()
-        return result_list
     
     def recheck_items(self):
         """"""
@@ -119,6 +121,7 @@ class AddDownloadsManager:
                 download_item = self.__checking_downloads.pop(id_item)
                 del self.__thread_checking_downloads[id_item]
                 self.__slots.remove_slot()
+                self.start_checking()
             except:
                 try:
                     download_item = self.__ready_downloads.pop(id_item)

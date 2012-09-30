@@ -226,9 +226,10 @@ class AddDownloads(QVBoxLayout):
             self.rows_buffer[item[0]] = item
         api.start_checking()
     
-    def update(self): #this method steals cycles, its not a new thread
-        items_list = api.get_checking_update()
-        for download_item in items_list:
+    def update(self):
+        checking_downloads = api.get_checking_downloads()
+        api.update_checking_downloads()
+        for download_item in checking_downloads.itervalues():
             try:
                 row = self.rows_buffer[download_item.id]
                 row[1] = True if download_item.link_status != cons.LINK_DEAD else False
