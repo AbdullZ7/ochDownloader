@@ -16,30 +16,23 @@ class ThreadManager:
     
     def get_thread(self, id_item):
         """"""
-        try:
-            return self.thread_downloads[id_item]
-        except KeyError as err:
-            logger.exception(err)
-            return None
-    
-    def add_thread(self, id_item, file_name, save_to_path, link, host, chunks):
+        return self.thread_downloads[id_item]
+
+    def add_thread(self, id_item, file_name, path, link, host, chunks):
         """"""
-        th = Downloader(file_name, save_to_path, link, host, self.bucket, chunks)
+        th = Downloader(file_name, path, link, host, self.bucket, chunks)
         self.thread_downloads[id_item] = th
         th.start()
 
     def delete_thread(self, id_item):
         """"""
-        try:
-            del self.thread_downloads[id_item]
-        except KeyError:
-            pass
+        del self.thread_downloads[id_item]
 
-    def stop_thread(self, th):
+    def stop_thread(self, id_item):
         """"""
-        if th is not None:
-            th.stop_flag = True
-            #th.join()
+        th = self.thread_downloads[id_item]
+        th.stop_flag = True
+        #th.join()
     
     def stop_all_threads(self):
         """"""
@@ -53,28 +46,21 @@ class ThreadManager:
                 else:
                     threads.remove(th)
     
-    def get_thread_status(self, id_item):
+    def get_thread_update(self, id_item):
         """"""
-        th = self.get_thread(id_item)
-        
-        if th is not None:
-            if th.error_flag and th.stop_flag: #fix on stopped failed download
-                status = cons.STATUS_STOPPED
-            else:
-                status = th.status #get before any other attr
+        th = self.thread_downloads[id_item]
 
-            chunks, size_complete = th.get_chunk_n_size()
-            
-            return th.file_name, status, th.get_progress(), th.size_file, size_complete, th.get_speed(), th.get_time(), th.get_remain(), chunks, th.status_msg, th.can_resume, th.is_premium #metodos del Downloader.
-            #NAME, STATUS, PROGRESS, SIZE, COMPLETE, SPEED, TIME, REMAIN, CHUNKS, MSG, RESUME, PREMIUM = range(12)
-        
-        return None
+        if th.error_flag and th.stop_flag: #fix on stopped failed download
+            status = cons.STATUS_STOPPED
+        else:
+            status = th.status #get before any other attr
+
+        chunks, size_complete = th.get_chunk_n_size()
+
+        return th.file_name, status, th.get_progress(), th.size_file, size_complete, th.get_speed(),\
+               th.get_time(), th.get_remain(), chunks, th.status_msg, th.can_resume, th.is_premium
+        #NAME, STATUS, PROGRESS, SIZE, COMPLETE, SPEED, TIME, REMAIN, CHUNKS, MSG, RESUME, PREMIUM = range(12)
 
     def is_limit_exceeded(self, id_item):
-        """"""
-        th = self.get_thread(id_item)
-        
-        if th is not None:
-            return th.limit_exceeded
-        else:
-            return False
+        th = self.thread_downloads[id_item]
+        return th.limit_exceeded
