@@ -113,7 +113,7 @@ class AddDownloadsManager:
                 del self.__ready_downloads[id_item]
                 self.start_checking()
 
-    def get_added_items(self, id_add_list): #get download_items (added) from pending.
+    def get_added_items(self, id_add_list):
         """"""
         result_list = []
         for id_item in id_add_list: #add this items.
@@ -121,7 +121,7 @@ class AddDownloadsManager:
                 download_item = self.__checking_downloads.pop(id_item)
                 del self.__thread_checking_downloads[id_item]
                 self.__slots.remove_slot()
-                self.start_checking()
+                #self.start_checking()
             except:
                 try:
                     download_item = self.__ready_downloads.pop(id_item)
@@ -134,5 +134,7 @@ class AddDownloadsManager:
                 
             if download_item is not None:
                 result_list.append(download_item)
+
+        self.start_checking()
             
         return result_list
