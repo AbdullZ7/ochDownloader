@@ -5,7 +5,7 @@ import core.cons as cons
 
 class DownloaderCore:
     """"""
-    def __init__(self, file_name, path_to_save, link, host, bucket):
+    def __init__(self, file_name, path, link, host, bucket):
         """"""
         self.stop_flag = False
         self.error_flag = False
@@ -14,7 +14,7 @@ class DownloaderCore:
         self.source = None
         self.link_file = None
         self.file_name = file_name
-        self.path_to_save = path_to_save
+        self.path = path
         self.status = cons.STATUS_RUNNING #status: Running, stopped, Queue, finished.
         self.status_msg = "Connecting"
         self.size_file = 0

@@ -20,10 +20,10 @@ class StatusStopped(Exception): pass
 
 class Downloader(threading.Thread, MultiDownload):
     """"""
-    def __init__(self, file_name, path_to_save, link, host, bucket, chunks):
+    def __init__(self, file_name, path, link, host, bucket, chunks):
         """"""
-        threading.Thread.__init__(self) #iniciar threading.Thread
-        MultiDownload.__init__(self, file_name, path_to_save, link, host, bucket, chunks)
+        threading.Thread.__init__(self)
+        MultiDownload.__init__(self, file_name, path, link, host, bucket, chunks)
 
     def run(self):
         """"""
@@ -52,9 +52,9 @@ class Downloader(threading.Thread, MultiDownload):
         """"""
         START, END = range(2)
         try:
-            if not os.path.exists(self.path_to_save):
-                os.makedirs(self.path_to_save)
-            elif os.path.isfile(os.path.join(self.path_to_save, self.file_name)):
+            if not os.path.exists(self.path):
+                os.makedirs(self.path)
+            elif os.path.isfile(os.path.join(self.path, self.file_name)):
                 self.file_exists = True
                 start_chunks = [chunk[START] for chunk in self.chunks
                                 if chunk[START] < chunk[END]]
@@ -124,7 +124,7 @@ class Downloader(threading.Thread, MultiDownload):
         while True:
             if self.stop_flag or self.error_flag:
                 return True
-            elif not wait: # 0 = False = None
+            elif not wait:
                 return False
             time.sleep(1) #segundos
             wait -= 1
@@ -147,7 +147,7 @@ class Downloader(threading.Thread, MultiDownload):
             del self.chunks[:]
         
         try:
-            with open(os.path.join(self.path_to_save, self.file_name), mode, cons.FILE_BUFSIZE) as fh:
+            with open(os.path.join(self.path, self.file_name), mode, cons.FILE_BUFSIZE) as fh:
                 self.start_time = time.time()
                 self.status_msg = cons.STATUS_RUNNING
                 self.threaded_download_manager(fh)
@@ -158,7 +158,8 @@ class Downloader(threading.Thread, MultiDownload):
                 elif self.error_flag:
                     raise StatusError(self.status_msg)
                 else:
-                    self.status, self.status_msg = cons.STATUS_FINISHED, "Finished"
+                    self.status = cons.STATUS_FINISHED
+                    self.status_msg = "Finished"
         except EnvironmentError as err:
             logger.exception(err)
             raise StatusError(err)
