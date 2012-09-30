@@ -46,12 +46,12 @@ class PluginsCore:
                     else:
                         self.dl_link = link
                         return s
-            except (urllib2.URLError, httplib.HTTPException, socket.error, ValueError) as err:
+            except (urllib2.URLError, httplib.HTTPException, socket.error) as err:
                 self.err_msg = err
                 logger.warning(err)
                 logger.debug(link)
         return default
-    
+
     def click(self, pattern, page, close=True):
         #find link and return source.
         if self.is_running():
@@ -63,7 +63,7 @@ class PluginsCore:
         #not running or pattern not found
         if close:
             return page
-    
+
     def recaptcha_post(self, pattern, page, challenge, response, extra_fields=None):
         #POST
         form_list = [("recaptcha_challenge_field", challenge), ("recaptcha_response_field", response)]
@@ -72,7 +72,7 @@ class PluginsCore:
         page = self.get_page(self.next_link, form=form_list, default=page)
         m = self.get_match(pattern, page)
         return (m, page)
-    
+
     def recaptcha(self, pattern, page, extra_fields=None):
         #find catpcha and prompt captcha window
         #return source
@@ -99,7 +99,7 @@ class PluginsCore:
                 self.err_msg = err
                 logger.debug(err)
         return page
-    
+
     def get_match(self, pattern, page, warning=True):
         #TODO: re.search does not releases the GIL. Searching line by line is wiser.
         if self.is_running():
@@ -108,7 +108,7 @@ class PluginsCore:
                 logger.warning("Pattern not found: %s" % pattern)
             return m
         return None
-    
+
     def countdown(self, pattern, page, limit, default):
         if self.is_running():
             m = self.get_match(pattern, page)

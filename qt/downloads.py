@@ -246,8 +246,9 @@ class Downloads(QTreeView):
             self.rows_buffer[item[0]] = item
 
     def update(self):
-        downloads_list = api.get_status()
-        for download_item in downloads_list:
+        active_downloads = api.get_active_downloads()
+        api.update_active_downloads()
+        for download_item in active_downloads.itervalues():
             try:
                 row = self.rows_buffer[download_item.id]
                 #row[0] = download_item.id #this column is hidden and wont be modificated.
