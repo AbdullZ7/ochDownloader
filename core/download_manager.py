@@ -1,8 +1,7 @@
-import os #usado en FileHandler
-import importlib
+import os
 import threading
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+logger = logging.getLogger(__name__)
 
 import cons
 from download_core import DownloadCore
@@ -14,7 +13,7 @@ from plugins_parser import plugins_parser
 from events import events
 
 
-class DownloadManager(DownloadCore, ThreadManager): #herencia multiple
+class DownloadManager(DownloadCore, ThreadManager):
     """
     DownloadCore:
     .Contiene las listas con los items (tipos de clase, DownloadItem) de descarga, y los metodos para modificar esas listas.
@@ -32,8 +31,8 @@ class DownloadManager(DownloadCore, ThreadManager): #herencia multiple
     """
     def __init__(self):
         """"""
-        DownloadCore.__init__(self) #inicializar download_core.py
-        ThreadManager.__init__(self) #inicializar thread_manager.py
+        DownloadCore.__init__(self) #download_core.py
+        ThreadManager.__init__(self) #thread_manager.py
         self.global_slots = Slots() #slots.py
     
     def start_all(self, id_order_list):
@@ -47,17 +46,16 @@ class DownloadManager(DownloadCore, ThreadManager): #herencia multiple
     
     def stop_all(self, filter_host_list=None):
         """"""
-        if filter_host_list is None:
-            filter_host_list = []
+        filter_host_list = filter_host_list or []
         for id_item, download_item in self.active_downloads.iteritems():
             if download_item.host not in filter_host_list:
-                self.stop_thread(self.get_thread(id_item))
+                self.stop_thread(id_item)
         for id_item, download_item in self.queue_downloads.items():
             if download_item.host not in filter_host_list:
                 self.stopped_downloads[id_item] = download_item
                 del self.queue_downloads[id_item]
 
-    def start_download(self, id_item): #iniciar descarga. Boton play.
+    def start_download(self, id_item):
         """"""
         try:
             download_item = self.stopped_downloads.pop(id_item)
@@ -67,7 +65,7 @@ class DownloadManager(DownloadCore, ThreadManager): #herencia multiple
             self.downloader_init([download_item, ], download_item.path)
             return True
 
-    def stop_download(self, id_item): #detener descarga. Boton stop.
+    def stop_download(self, id_item):
         """"""
         try:
             download_item = self.active_downloads[id_item]
@@ -80,7 +78,7 @@ class DownloadManager(DownloadCore, ThreadManager): #herencia multiple
             else:
                 return True
         else:
-            self.stop_thread(self.get_thread(id_item))
+            self.stop_thread(id_item)
             return True
 
     def delete_download(self, id_items_list):
@@ -101,7 +99,7 @@ class DownloadManager(DownloadCore, ThreadManager): #herencia multiple
             th = None
             if is_active:
                 th = self.get_thread(id_item)
-                self.stop_thread(th)
+                self.stop_thread(id_item)
                 self.delete_thread(id_item)
                 self.global_slots.remove_slot()
                 self.next_download()
@@ -117,26 +115,22 @@ class DownloadManager(DownloadCore, ThreadManager): #herencia multiple
         except Exception as err:
             logger.warning(err)
 
-    def get_items_update(self):
+    def update_active_downloads(self):
         """
         Roba ciclos.
+        This may change the active_downloads dict, you should get a dict copy before calling this method.
         """
-        result_list = []
         for id_item, download_item in self.active_downloads.items():
-            item_data = self.get_thread_status(id_item) #Metodo de threadManager heredado
-            if item_data is not None:
-                download_item.update(*item_data)
-                limit_exceeded = self.is_limit_exceeded(download_item.id)
-            else:
-                download_item.status = cons.STATUS_ERROR
-                limit_exceeded = False
+            item_data = self.get_thread_update(id_item) #threadmanager
+            download_item.update(*item_data)
+            limit_exceeded = self.is_limit_exceeded(id_item) #threadmanager
             status = download_item.status
-            result_list.append(download_item)
             if status in (cons.STATUS_STOPPED, cons.STATUS_FINISHED, cons.STATUS_ERROR):
-                if status == cons.STATUS_FINISHED:
+                if status == cons.STATUS_STOPPED:
+                    self.stopped_downloads[id_item] = download_item
+                elif status == cons.STATUS_FINISHED:
                     self.complete_downloads[id_item] = download_item
-                elif status == cons.STATUS_ERROR:
-                    logger.warning("status error: {0}".format(download_item.host))
+                else: #status == cons.STATUS_ERROR
                     download_item.fail_count += 1
                     if download_item.fail_count > conf.get_retries_limit():
                         download_item.status = cons.STATUS_STOPPED
@@ -144,29 +138,25 @@ class DownloadManager(DownloadCore, ThreadManager): #herencia multiple
                     else:
                         download_item.status = cons.STATUS_QUEUE
                         self.queue_downloads[id_item] = download_item
-                else: #stopped
-                    self.stopped_downloads[id_item] = download_item
-                self.delete_thread(id_item) #metodo de threadmanager heredado
+                self.delete_thread(id_item) #threadmanager
                 del self.active_downloads[id_item]
-                self.global_slots.remove_slot() #remove the slot, so the next download can start.
+                self.global_slots.remove_slot()
                 self.next_download()
                 if status == cons.STATUS_FINISHED:
                     events.trigger_download_complete(download_item)
                 if not self.active_downloads and status != cons.STATUS_STOPPED:
                     events.trigger_all_downloads_complete()
-                elif limit_exceeded: #cons.STATUS_ERROR
+                if limit_exceeded and self.active_downloads and status == cons.STATUS_ERROR:
                     events.trigger_limit_exceeded()
-        
-        return result_list
 
-    def downloader_init(self, item_list, save_to_path): #start_thread. Crea el thread para el link dado.
+    def downloader_init(self, item_list, path):
         """
         Crea los threads para la descarga de cada archivo.
         """
         #if not self.active_downloads: #after this method completes, there will be one active download at least.
             #events.trigger_downloading_process_pre_start()
-        for download_item in item_list: #in self.pending_downloads:
-            download_item.set_path(save_to_path)
+        for download_item in item_list:
+            download_item.path = path
             download_item.reset_fail_count()
             self.queue_downloads[download_item.id] = download_item
             self.download_starter(download_item)
@@ -175,9 +165,9 @@ class DownloadManager(DownloadCore, ThreadManager): #herencia multiple
         """
         Init next download on queue. This is called when an active download is stopped or has finished.
         """
-        for download_item in self.queue_downloads.values(): #iniciar la proxima descarga en la cola, o la proxima...
+        for download_item in self.queue_downloads.values():
             if self.global_slots.available_slot():
-                self.download_starter(download_item) #iniciar descarga si es posible (si ya no se esta bajando del mismo host)
+                self.download_starter(download_item)
             else:
                 break
 
@@ -185,12 +175,12 @@ class DownloadManager(DownloadCore, ThreadManager): #herencia multiple
         """"""
         if self.global_slots.available_slot():
             slot = True
-            if host_accounts.get_account(download_item.host) is None: #si no es premium entrar.
+            if host_accounts.get_account(download_item.host) is None: #not premium.
                 if not self.is_host_slot_available(download_item.host):
                     slot = False
             if slot:
                 self.global_slots.add_slot()
-                self.add_thread(download_item.id, download_item.name, download_item.path, download_item.link, download_item.host, download_item.chunks) #crear thread y comenzar descarga. Metodo de threadmanager heredado
+                self.add_thread(download_item.id, download_item.name, download_item.path, download_item.link, download_item.host, download_item.chunks) #threadmanager
                 self.active_downloads[download_item.id] = download_item
                 del self.queue_downloads[download_item.id]
 
