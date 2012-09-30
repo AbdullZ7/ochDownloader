@@ -56,8 +56,5 @@ class LinkChecker:
 
 
 if __name__ == "__main__":
-    #test
-    #name, size = LinkChecker().check("http://www.megaupload.com/?d=XVIJ051I") #dead
-    print LinkChecker().check("http://rapidshare.com/files/3415371904/WC_0310_HRALinks.info.avi")
-    
+    pass
     

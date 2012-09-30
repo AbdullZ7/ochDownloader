@@ -49,9 +49,6 @@ class LinkChecker:
 
 
 if __name__ == "__main__":
-    #test
-    #name, size = LinkChecker().check("http://www.megaupload.com/?d=XVIJ051I") #dead
-    print LinkChecker().check("http://uploaded.to/file/fdn987ab/Mrs.Browns.Boys.S02E06.HDTV.XviD-TLA.avi")
-
+    pass
 
 

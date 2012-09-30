@@ -60,6 +60,4 @@ class LinkChecker:
 
 
 if __name__ == "__main__":
-    #test
-    #name, size = LinkChecker().check("http://www.megaupload.com/?d=XVIJ051I") #dead
-    print LinkChecker().check("http://bitshare.com/files/mklpswlg/Alcatraz.S01E04.720p.HDTV.X264-DIMENSION.mkv.html")
+    pass
