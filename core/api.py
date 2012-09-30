@@ -86,16 +86,11 @@ class _Api(DownloadManager, AddDownloadsManager):
         #download_list = self.get_downloads_list(id_order_list)
         self.session_parser.save(download_list)
         logger.debug("Session has been saved")
-    
+
     def get_download_items(self, id_items_list):
         """"""
         all_downloads = self.get_all_downloads()
         return [all_downloads[id_item] for id_item in id_items_list]
-    
-    def get_status(self):
-        """"""
-        result_list = self.get_items_update() #return only updated items
-        return result_list
 
 
 #singleton like.
