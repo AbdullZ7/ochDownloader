@@ -326,7 +326,7 @@ msgstr "Porta papeles"
 
 #: addons/clipboard/addon_gui.py:24
 msgid "Clipboard watcher"
-msgstr "Monitorear clipboard"
+msgstr "Monitorear porta papeles"
 
 #: addons/clipboard/preferences_gui.py:20
 msgid "Extensions to catch:"
