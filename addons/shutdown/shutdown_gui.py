@@ -12,7 +12,7 @@ if cons.OS_WIN:
 TIME_OUT = 60
 
 
-class ShutdownDlg(QMessageBox):
+class ShutdownDialog(QMessageBox):
     def __init__(self, parent):
         QMessageBox.__init__(self, parent)
         self.setWindowTitle(_('Shutting down'))

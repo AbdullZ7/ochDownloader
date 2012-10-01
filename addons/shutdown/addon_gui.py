@@ -7,7 +7,7 @@ import core.cons as cons
 
 from qt.addons import AddonCore
 
-from shutdown_gui import ShutdownDlg
+from shutdown_gui import ShutdownDialog
 
 
 RETRIES_LIMIT = 0
@@ -42,4 +42,4 @@ class Addon(AddonCore):
     
     def trigger(self, *args, **kwargs):
         """"""
-        ShutdownDlg(self.parent)
+        ShutdownDialog(self.parent)
