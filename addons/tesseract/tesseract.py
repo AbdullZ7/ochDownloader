@@ -1,5 +1,4 @@
 import os
-import sys
 import subprocess
 import tempfile
 import logging
@@ -22,7 +21,7 @@ TEXT_SUFFIX = ".txt"
 def get_path():
     """"""
     if cons.OS_WIN:
-        return os.path.join(cons.ADDONS_GUI_PATH, "tesseract","bin", "tesseract.exe")
+        return os.path.join(cons.ADDONS_GUI_PATH, "tesseract", "bin", "tesseract.exe")
     #elif cons.OS_OSX:
         #return os.path.join(sys.path[0], "bin", "tesseract")
     else:
@@ -87,7 +86,7 @@ if __name__ == "__main__":
         image_ = clean_image.convert_to_greyscale(image)
         image_ = clean_image.clean_noise(image_, 3)
         return image_
-    with open("/home/estecb/Proyecto/addons/tesseract/image_examples/example_netload.png", "rb") as fh:
+    with open("./addons/tesseract/image_examples/example_netload.png", "rb") as fh:
         t = Tesseract(fh.read(), filter)
     print t.get_captcha()
 
