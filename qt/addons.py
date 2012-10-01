@@ -30,19 +30,17 @@ class AddonsManager:
         """"""
         self.addons_list = []
         self.init_addons(*args, **kwargs)
-    
+
     def init_addons(self, *args, **kwargs):
         """
         find all files in the addons directory and import them
         """
-        #addons =  []
         for module_loader, name, ispkg in pkgutil.iter_modules(path=[cons.ADDONS_GUI_PATH, ]):
             try:
                 module = importlib.import_module("addons.{module}.addon_gui".format(module=name))
                 self.addons_list.append(module.Addon(*args, **kwargs))
             except Exception as err:
                 logger.exception("{0}: {1}".format(name, err))
-        #return addons
 
 
 if __name__ == "__main__":
