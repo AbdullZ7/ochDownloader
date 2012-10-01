@@ -102,6 +102,8 @@ class Downloader(threading.Thread, MultiDownload):
                 file_name = disposition.split("'")[-1]
         if not file_name: #may be an empty string or None
             file_name = misc.get_filename_from_url(self.source.url)
+        elif file_name.startswith('=?UTF-8?B?'): #base64
+            file_name = file_name.lstrip('=?UTF-8?B?').decode('base64')
         file_name = misc.html_entities_parser(file_name)
         file_name = urllib.unquote_plus(file_name)
         file_name = misc.smart_decode(file_name)
