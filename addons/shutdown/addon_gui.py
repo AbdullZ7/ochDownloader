@@ -42,7 +42,4 @@ class Addon(AddonCore):
     
     def trigger(self, *args, **kwargs):
         """"""
-        shutdown_dlg = ShutdownDlg(self.parent)
-        shutdown_dlg.run()
-
-
+        ShutdownDlg(self.parent)
