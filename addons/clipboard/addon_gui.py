@@ -18,12 +18,11 @@ class Addon(AddonCore):
         self.event_id = None
         self.clipboard_monitor = Clipboard(parent)
         self.parent = parent
-        self.config = conf
     
     def set_menu_item(self):
         self.action = self.parent.menu.addAction(_("Clipboard watcher"), self.on_toggle) #can toggle
         self.action.setCheckable(True)
-        if self.config.get_clipboard_active():
+        if conf.get_clipboard_active():
             self.action.setChecked(True)
             self.clipboard_monitor.enable()
 
@@ -33,10 +32,10 @@ class Addon(AddonCore):
     
     def on_toggle(self):
         if self.action.isChecked(): #se activo
-            self.config.set_clipboard_active("True")
+            conf.set_clipboard_active("True")
             self.clipboard_monitor.enable()
         else:
-            self.config.set_clipboard_active("False")
+            conf.set_clipboard_active("False")
             self.clipboard_monitor.disable()
 
 

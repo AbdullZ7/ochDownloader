@@ -21,7 +21,7 @@ class Addon(AddonCore):
     def __init__(self, parent, *args, **kwargs):
         """"""
         AddonCore.__init__(self)
-        self.name = _("Auto Extraction")
+        self.name = _("Auto extraction")
         self.event_id = None
         self.parent = parent
         self.unrar_gui = UnRARGUI(parent)

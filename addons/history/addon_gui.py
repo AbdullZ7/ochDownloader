@@ -23,7 +23,6 @@ class Addon(AddonCore):
         self.name = _("History")
         self.event_id = None
         self.parent = parent
-        self.config = conf
         self.history = History()
         self.history_tab = HistoryTab(self.history)
 

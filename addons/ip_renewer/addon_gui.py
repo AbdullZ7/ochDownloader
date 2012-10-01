@@ -23,7 +23,7 @@ class Addon(AddonCore):
     def __init__(self, parent, *args, **kwargs):
         """"""
         AddonCore.__init__(self)
-        self.name = _("IP Renewer")
+        self.name = _("IP renewer")
         self.event_id = None
         self.parent = parent
         self.ip_renewer = IPRenewer()
@@ -50,10 +50,10 @@ class Addon(AddonCore):
     
     def connect(self):
         """"""
-        self.event_id = events.connect(cons.EVENT_LIMIT_EXCEEDED, self.trigger, self.parent)
+        self.event_id = events.connect(cons.EVENT_LIMIT_EXCEEDED, self.trigger)
     
-    def trigger(self, parent, *args, **kwargs):
+    def trigger(self, *args, **kwargs):
         """"""
         #prevent from been garbage collected.
         if not hasattr(self, 'ip_renewer_gui') or not self.ip_renewer_gui.is_working:
-            self.ip_renewer_gui = IPRenewerGUI(parent, self.ip_renewer)
+            self.ip_renewer_gui = IPRenewerGUI(self.parent, self.ip_renewer)
