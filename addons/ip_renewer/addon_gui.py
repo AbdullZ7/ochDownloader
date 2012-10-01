@@ -26,8 +26,7 @@ class Addon(AddonCore):
         self.name = _("IP Renewer")
         self.event_id = None
         self.parent = parent
-        #self.rlock = threading.RLock()
-        self.ip_renewer_cls = IPRenewer()
+        self.ip_renewer = IPRenewer()
 
     def get_preferences(self):
         """"""
@@ -55,5 +54,5 @@ class Addon(AddonCore):
     
     def trigger(self, parent, *args, **kwargs):
         """"""
-        if not self.ip_renewer_cls.is_alive():
-            change_ip = IPRenewerGUI(parent, self.ip_renewer_cls)
+        if not self.ip_renewer.is_running():
+            change_ip = IPRenewerGUI(parent, self.ip_renewer)
