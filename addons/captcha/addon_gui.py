@@ -6,7 +6,7 @@ import core.cons as cons
 
 from qt.addons import AddonCore
 
-from captcha_gui import CaptchaDlg
+from captcha_gui import CaptchaDialog
 
 
 class Addon(AddonCore):
@@ -34,7 +34,7 @@ class Addon(AddonCore):
         self.captcha(*args, **kwargs)
     
     def captcha(self, service, get_captcha_img, set_solution, *args, **kwargs):
-        captcha_dlg = CaptchaDlg(service, get_captcha_img, self.parent)
+        captcha_dlg = CaptchaDialog(service, get_captcha_img, self.parent)
         solution = captcha_dlg.get_solution() #user input solution
         set_solution(solution)
 

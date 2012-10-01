@@ -13,7 +13,7 @@ if cons.OS_WIN:
 TIMEOUT = 55
 
 
-class CaptchaDlg(QDialog):
+class CaptchaDialog(QDialog):
     """"""
     def __init__(self, service, get_captcha, parent):
         """"""
