@@ -54,5 +54,6 @@ class Addon(AddonCore):
     
     def trigger(self, parent, *args, **kwargs):
         """"""
-        if not self.ip_renewer.is_running():
-            change_ip = IPRenewerGUI(parent, self.ip_renewer)
+        #prevent from been garbage collected.
+        if not hasattr(self, 'ip_renewer_gui') or not self.ip_renewer_gui.is_working:
+            self.ip_renewer_gui = IPRenewerGUI(parent, self.ip_renewer)
