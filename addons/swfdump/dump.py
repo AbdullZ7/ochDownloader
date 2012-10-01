@@ -19,7 +19,6 @@ def get_swf_dump(content):
             fh.write(content)
             p = subprocess.Popen([get_path(), '-a', fh.name], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out_put, err = p.communicate()
-
             if err:
                 raise Exception(err)
             else:
