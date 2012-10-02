@@ -17,29 +17,21 @@ class PluginDownload(PluginsCore):
         link = 'http://%s.zippyshare.com/' % www
         page = self.get_page(self.link)
         time = self.get_time(link, page)
-        if time:
-            key = self.link.split('/v/')[-1].split('/')[0] #file id
-            data = [('key', key), ('time', time)]
-            link += 'download?' + urllib.urlencode(data) #http://wwwXX.zippyshare.com/download?key=XXXX&time=XXXX
-            self.source = self.get_page(link, close=False)
-        else:
-            self.err_msg = "File not found."
+        key = self.link.split('/v/')[-1].split('/')[0] #file id
+        data = [('key', key), ('time', time)]
+        link += 'download?' + urllib.urlencode(data) #http://wwwXX.zippyshare.com/download?key=XXXX&time=XXXX
+        self.source = self.get_page(link, close=False)
 
     def get_time(self, link, page):
         m = self.get_match('seed: (?P<seed>\d+)', page)
         m2 = self.get_match('embedSWF\("/(?P<swf>[^"]+)', page)
-        if m is not None and m2 is not None:
-            #these values were taken using "swfdump -a file.swf" from swftools
-            link += m2.group('swf')
-            swf_content = self.get_page(link) #may be None
-            raw_swf = dump.get_swf_dump(swf_content) #may be None
-            multiply, modulo = self.get_multiply_and_modulo(raw_swf) #may be None
-            #multiply = 5 #pushbyte
-            #modulo = 71678963 #pushhint
-            seed = m.group('seed')
-            time = (int(seed) * multiply) % modulo
-            return time
-        return None
+        link += m2.group('swf')
+        swf_content = self.get_page(link) #may be None
+        raw_swf = dump.get_swf_dump(swf_content) #may be None
+        multiply, modulo = self.get_multiply_and_modulo(raw_swf) #may be None
+        seed = m.group('seed')
+        time = (int(seed) * multiply) % modulo
+        return time
 
     def get_multiply_and_modulo(self, raw_swf):
         """
