@@ -43,7 +43,7 @@ class CaptchaDialog(QDialog):
         hbox_input = QHBoxLayout()
         vbox.addLayout(hbox_input)
         
-        self.label_expires = QLabel(_("Expires in") + " {0}".format(self.timeout))
+        self.label_expires = QLabel("{} {}".format(_("Expires in"), self.timeout))
         hbox_input.addWidget(self.label_expires)
         
         self.entry_input = QLineEdit()
@@ -117,7 +117,7 @@ class CaptchaDialog(QDialog):
     def expire_update(self):
         if self.timeout > 0:
             self.timeout -= 1
-            self.label_expires.setText(_("Expires in") + " {0}".format(self.timeout))
+            self.label_expires.setText("{} {}".format(_("Expires in"), self.timeout))
         else:
             self.reject()
     

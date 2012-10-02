@@ -29,8 +29,8 @@ class Recaptcha:
         with _thread_lock: #one at the time please
             if not self.wait_func(): #dl stopped?
                 self.solve_captcha()
-            else:
-                self.set_solution()
+            else: #reset solution.
+                self.solution = None
 
     def solve_captcha(self):
         """"""
@@ -42,7 +42,6 @@ class Recaptcha:
             idle_queue.remove_event(self.event)
             if not self.solution:
                 logger.warning("No response for {0} event".format(cons.EVENT_CAPTCHA_DLG))
-        return self.captcha_challenge, self.solution
 
     def get_captcha(self):
         """"""
