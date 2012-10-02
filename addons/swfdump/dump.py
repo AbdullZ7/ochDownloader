@@ -15,14 +15,14 @@ def get_path():
 def get_swf_dump(content):
     #swf file
     try:
-        with tempfile.NamedTemporaryFile(suffix=".txt", delete=True) as fh:
+        with tempfile.NamedTemporaryFile(suffix=".swf", delete=False) as fh:
             fh.write(content)
-            p = subprocess.Popen([get_path(), '-a', fh.name], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            out_put, err = p.communicate()
-            if err:
-                raise Exception(err)
-            else:
-                return out_put
+        p = subprocess.Popen([get_path(), '-a', fh.name], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out_put, err = p.communicate()
+        if err:
+            raise Exception(err)
+        else:
+            return out_put
     except Exception as err:
         logger.exception(err)
         return None
