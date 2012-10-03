@@ -7,7 +7,12 @@ from PySide.QtGui import *
 from PySide.QtCore import *
 
 import core.cons as cons
+from core.events import events
 from core.conf_parser import conf
+
+ICON_INFO = QSystemTrayIcon.Information
+ICON_WARN = QSystemTrayIcon.Warning
+ICON_CRITICAL = QSystemTrayIcon.Critical
 
 
 class Tray:
@@ -24,6 +29,7 @@ class Tray:
             if conf.get_tray_available():
                 self.available = True
                 self.tray_icon.show()
+                self.connect_messages()
 
     def restore(self, reason):
         if reason == QSystemTrayIcon.DoubleClick:
@@ -48,3 +54,12 @@ class Tray:
          for title, callback in items]
 
         self.tray_icon.setContextMenu(self.menu)
+
+    def show_message(self, title, msg, icon=ICON_INFO, duration=15):
+        self.tray_icon.showMessage(title, msg, icon, duration * 1000)
+
+    def connect_messages(self):
+        events.connect(cons.EVENT_CAPTURED_LINKS_COUNT, self.show_captured_links_message)
+
+    def show_captured_links_message(self, count):
+        self.show_message('{} {}'.format(count, _('link(s) were captured.')), None)

@@ -64,6 +64,9 @@ class _Events:
     def trigger_pwd(self, pwd):
         self.trigger(cons.EVENT_PASSWORD, pwd)
 
+    def trigger_captured_links_count(self, count):
+        self.trigger(cons.EVENT_CAPTURED_LINKS_COUNT, count)
+
 #modules are singletons-like in python :)
 events = _Events() #make it global.
 

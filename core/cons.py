@@ -84,6 +84,7 @@ EVENT_CAPTCHA_DLG = "captcha-dialog"
 EVENT_LIMIT_EXCEEDED = "limit-exceeded"
 EVENT_DL_COMPLETE = "download-complete"
 EVENT_PASSWORD = "add-password"
+EVENT_CAPTURED_LINKS_COUNT = "captured-links-count"
 
 #unavailable names
 UNKNOWN = "Unknown"

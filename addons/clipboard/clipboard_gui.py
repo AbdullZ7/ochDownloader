@@ -3,6 +3,7 @@ logger = logging.getLogger(__name__)
 
 import core.cons as cons
 import core.misc as misc
+from core.events import events
 from core.conf_parser import conf
 from core.plugins_parser import plugins_parser
 
@@ -46,6 +47,7 @@ class Clipboard:
             urls = self.check_supported(self.check_text(text))
             if urls:
                 self.add_downloads.links_checking(urls)
+                events.trigger_captured_links_count(len(urls))
             self.len_old = len(text)
             self.text_old = text
 
