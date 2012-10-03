@@ -39,12 +39,13 @@ class _Events:
     def trigger(self, event_name, *args):
         try:
             with _thread_lock:
-                event_values = self.events_dict[event_name]
+                event_dict = self.events_dict[event_name]
+                event_values = event_dict.values()
         except KeyError as err:
             logger.debug("No signals assosiated with: {0}".format(err))
         else:
             logger.debug("Event triggered: {0}".format(event_name))
-            for callback, args2 in event_values.values():
+            for callback, args2 in event_values:
                 idle_add(callback, *(args + args2)) #call in the main thread.
     
     def trigger_captcha_dialog(self, service, get_captcha_img, set_solution):
