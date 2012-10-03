@@ -1,6 +1,6 @@
 import threading
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+logger = logging.getLogger(__name__)
 
 import cons
 from idle_queue import idle_add
@@ -31,9 +31,8 @@ class _Events:
     def disconnect(self, event_name, event_id):
         try:
             with _thread_lock:
-                event_values = self.events_dict[event_name] #get values, if name doesnt exists return a dict.
-                del event_values[event_id]
-                self.events_dict[event_name] = event_values
+                event_values = self.events_dict[event_name]
+                del event_values[event_id] #binding
         except KeyError as err:
             logger.exception(err)
     
@@ -46,7 +45,7 @@ class _Events:
         else:
             logger.debug("Event triggered: {0}".format(event_name))
             for callback, args2 in event_values.values():
-                idle_add(callback, *(args+args2)) #call in the main thread.
+                idle_add(callback, *(args + args2)) #call in the main thread.
     
     def trigger_captcha_dialog(self, service, get_captcha_img, set_solution):
         self.trigger(cons.EVENT_CAPTCHA_DLG, service, get_captcha_img, set_solution)
