@@ -60,6 +60,14 @@ class Tray:
 
     def connect_messages(self):
         events.connect(cons.EVENT_CAPTURED_LINKS_COUNT, self.show_captured_links_message)
+        events.connect(cons.EVENT_CAPTCHA_DLG, self.show_catpcha_message)
+        events.connect(cons.EVENT_ALL_COMPLETE, self.show_all_downloads_complete_message)
 
-    def show_captured_links_message(self, count):
-        self.show_message('{} {}'.format(count, _('link(s) were captured.')), None)
+    def show_captured_links_message(self, count, *args, **kwargs):
+        self.show_message('{} {}'.format(count, _('link(s) were captured')), None)
+
+    def show_catpcha_message(self, *args, **kwargs):
+        self.show_message(_('Captcha required'), _('You should fill the captcha.'))
+
+    def show_all_downloads_complete_message(self, *args, **kwargs):
+        self.show_message(_('All downloads are complete'), None)
