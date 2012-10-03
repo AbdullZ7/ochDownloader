@@ -36,6 +36,7 @@ class StatusBar(QStatusBar):
         self.speed_box = QSpinBox()
         self.speed_box.setAccelerated(True)
         self.speed_box.setRange(0, 99999)
+        self.speed_box.setSuffix(" KB/s")
         self.speed_box.valueChanged.connect(self.on_speed_changed)
         hbox.addWidget(self.speed_box)
         
