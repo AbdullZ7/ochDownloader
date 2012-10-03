@@ -5,7 +5,6 @@ logger = logging.getLogger(__name__)
 import cons
 from idle_queue import idle_add
 
-
 #thread safety
 _thread_lock = threading.Lock()
 
@@ -39,8 +38,7 @@ class _Events:
     def trigger(self, event_name, *args):
         try:
             with _thread_lock:
-                event_dict = self.events_dict[event_name]
-                event_values = event_dict.values()
+                event_values = self.events_dict[event_name].values()
         except KeyError as err:
             logger.debug("No signals assosiated with: {0}".format(err))
         else:
