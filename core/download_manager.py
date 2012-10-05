@@ -173,11 +173,16 @@ class DownloadManager(DownloadCore, ThreadManager):
 
     def download_starter(self, download_item):
         """"""
-        if self.global_slots.available_slot() and self.is_host_slot_available(download_item.host):
-            self.global_slots.add_slot()
-            self.add_thread(download_item.id, download_item.name, download_item.path, download_item.link, download_item.host, download_item.chunks) #threadmanager
-            self.active_downloads[download_item.id] = download_item
-            del self.queue_downloads[download_item.id]
+        if self.global_slots.available_slot():
+            slot = True
+            if host_accounts.get_account(download_item.host) is None: #not premium.
+                if not self.is_host_slot_available(download_item.host):
+                    slot = False
+            if slot:
+                self.global_slots.add_slot()
+                self.add_thread(download_item.id, download_item.name, download_item.path, download_item.link, download_item.host, download_item.chunks) #threadmanager
+                self.active_downloads[download_item.id] = download_item
+                del self.queue_downloads[download_item.id]
 
     def is_host_slot_available(self, host):
         """"""
