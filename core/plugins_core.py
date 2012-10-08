@@ -1,8 +1,10 @@
 import re
-import urllib, urllib2, httplib, socket
+import urllib2
+import httplib
+import socket
 import cookielib
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+logger = logging.getLogger(__name__)
 
 import misc
 from network.connection import URLClose, request
@@ -71,7 +73,7 @@ class PluginsCore:
             form_list.extend(extra_fields)
         page = self.get_page(self.next_link, form=form_list, default=page)
         m = self.get_match(pattern, page)
-        return (m, page)
+        return m, page
 
     def recaptcha(self, pattern, page, extra_fields=None):
         #find catpcha and prompt captcha window
@@ -101,12 +103,13 @@ class PluginsCore:
         return page
 
     def get_match(self, pattern, page, warning=True):
-        #TODO: re.search does not releases the GIL. Searching line by line is wiser.
         if self.is_running():
-            m = re.search(pattern, page, re.S)
-            if warning and m is None:
+            for line in page.splitlines():
+                m = re.search(pattern, line)
+                if m is not None:
+                    return m
+            if warning:
                 logger.warning("Pattern not found: %s" % pattern)
-            return m
         return None
 
     def countdown(self, pattern, page, limit, default):
