@@ -31,9 +31,9 @@ FILE_BUFSIZE = 1024 * 1024 #1MB, 0 = no buffer, -1 = OS buffer.
 OS_WIN = False
 OS_UNIX = False
 OS_OSX = False
-if sys.platform.startswith("win"):
+if 'win32' in sys.platform.lower():
     OS_WIN = True
-elif "darwin" in sys.platform:
+elif 'darwin' in sys.platform.lower():
     OS_OSX = True
 else:
     OS_UNIX = True
