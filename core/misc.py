@@ -6,8 +6,8 @@ import htmlentitydefs
 import subprocess
 
 import cons
-import logging #registro de errores, van a consola y al fichero de texto.
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+import logging
+logger = logging.getLogger(__name__)
 
 
 def keep_system_awake(stop=False):
