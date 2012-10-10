@@ -1,5 +1,4 @@
 import os
-#import platform
 import ctypes
 import re
 import htmlentitydefs
@@ -128,11 +127,14 @@ def time_format(the_time):
     m, s = divmod(the_time, 60)
     h, m = divmod(m, 60)
     d, h = divmod(h, 24)
-    if d: return "{0:.0f}d {1:.0f}h {2:.0f}m".format(d, h, m)
-    elif h: return "{0:.0f}h {1:.0f}m {2:.0f}s".format(h, m, s)
-    elif m: return "{0:.0f}m {1:.0f}s".format(m, s)
-    else: return "{0:.0f}s".format(s)
-    #return "{0:0>2.0f}:{1:0>2.0f}:{2:0>2.0f}".format(h, m, s)
+    if d:
+        return "{0:.0f}d {1:.0f}h {2:.0f}m".format(d, h, m)
+    elif h:
+        return "{0:.0f}h {1:.0f}m {2:.0f}s".format(h, m, s)
+    elif m:
+        return "{0:.0f}m {1:.0f}s".format(m, s)
+    else:
+        return "{0:.0f}s".format(s)
 
 
 def size_format(the_size):
@@ -179,7 +181,7 @@ def get_filename_from_url(url):
 
 
 def strip(input, to_strip=None):
-    #strip: a string/list of chars you want to strip
+    #to_strip: a string/list of chars you want to strip
     for x in to_strip or []:
         input = input.replace(x, '')
     return input
