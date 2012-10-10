@@ -102,7 +102,7 @@ def links_parser(text_pasted):
                     for line in text_pasted.splitlines()
                     for link in line.split("http")] #['parte1:http://www....', ]
     for link in links_list:
-        if link.startswith("://") or link.startswith("s://"): #https
+        if link.startswith(("://", "s://")): #http/https
             result_list.append("".join(("http", link)).strip())
     return result_list
 
