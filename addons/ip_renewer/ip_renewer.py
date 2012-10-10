@@ -5,6 +5,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 import core.cons as cons
+import core.misc as misc
 from core.conf_parser import conf
 
 #Config parser
@@ -36,7 +37,7 @@ class IPRenewer:
         if os.path.isfile(path):
             if cons.OS_WIN:
                 try:
-                    retcode = subprocess.call([path, ], shell=True)
+                    retcode = misc.subprocess_call([path, ], shell=True)
                 except OSError as err:
                     logger.warning(err)
 
@@ -44,8 +45,8 @@ class IPRenewer:
         """default ip renewer"""
         if cons.OS_WIN:
             try:
-                retcode = subprocess.call(["ipconfig", "/release"])
-                retcode = subprocess.call(["ipconfig", "/renew"])
+                retcode = misc.subprocess_call(["ipconfig", "/release"])
+                retcode = misc.subprocess_call(["ipconfig", "/renew"])
                 #if retcode >= 0: #all good.
             except OSError as err:
                 logger.warning(err)

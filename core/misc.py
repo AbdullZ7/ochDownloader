@@ -54,16 +54,26 @@ def get_free_space(folder):
     except Exception as err:
         logger.exception(err)
 
+def subprocess_call(*args, **kwargs):
+    #hide console window on Windows. Python 2.7 only.
+    if cons.OS_WIN:
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW
+        startupinfo.wShowWindow = subprocess.SW_HIDE
+        kwargs['startupinfo'] = startupinfo
+    retcode = subprocess.call(*args, **kwargs)
+    return retcode
+
 def open_folder_window(path):
     """"""
     try:
         if cons.OS_WIN:
-            retcode = subprocess.call(["explorer", path])
+            retcode = subprocess_call(["explorer", path], shell=True)
             #if retcode >= 0: #all good.
         elif cons.OS_UNIX: #sys.platform == 'linux2'
-            retcode = subprocess.call(["gnome-open", path])
+            retcode = subprocess_call(["gnome-open", path], shell=True)
         else: #mac
-            retcode = subprocess.call(["open", path])
+            retcode = subprocess_call(["open", path], shell=True)
     except OSError as err:
         logger.warning(err)
 
@@ -71,7 +81,7 @@ def run_file(path):
     """"""
     try:
         if cons.OS_WIN:
-            retcode = subprocess.call([path, ], shell=True)
+            retcode = subprocess_call([path, ], shell=True)
             #if retcode >= 0: #all good.
     except OSError as err:
         logger.warning(err)
