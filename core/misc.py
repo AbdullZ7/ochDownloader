@@ -35,6 +35,7 @@ def keep_system_awake(stop=False):
     except Exception as err:
         logger.exception(err)
 
+
 def get_free_space(folder):
     """
     Return folder/drive free space in bytes.
@@ -54,6 +55,7 @@ def get_free_space(folder):
     except Exception as err:
         logger.exception(err)
 
+
 def subprocess_call(*args, **kwargs):
     #hide console window on Windows. Python 2.7 only.
     if cons.OS_WIN:
@@ -63,6 +65,7 @@ def subprocess_call(*args, **kwargs):
         kwargs['startupinfo'] = startupinfo
     retcode = subprocess.call(*args, **kwargs)
     return retcode
+
 
 def open_folder_window(path):
     """"""
@@ -77,6 +80,7 @@ def open_folder_window(path):
     except OSError as err:
         logger.warning(err)
 
+
 def run_file(path):
     """"""
     try:
@@ -85,6 +89,7 @@ def run_file(path):
             #if retcode >= 0: #all good.
     except OSError as err:
         logger.warning(err)
+
 
 def links_parser(text_pasted):
     """
@@ -101,6 +106,7 @@ def links_parser(text_pasted):
             result_list.append("".join(("http", link)).strip())
     return result_list
 
+
 def smart_decode(s):
     """
     Not pretty smart, just try and error. It only covers utf-8 and latin-1
@@ -114,6 +120,7 @@ def smart_decode(s):
             logger.exception("{0}: {1}".format(s[:30], err))
     return s #.encode("utf-8", "replace")
 
+
 def time_format(the_time):
     """
     BUG: seconds go from 1 to 60, etc... dont remember. Should be from 0 to 59...
@@ -126,6 +133,7 @@ def time_format(the_time):
     elif m: return "{0:.0f}m {1:.0f}s".format(m, s)
     else: return "{0:.0f}s".format(s)
     #return "{0:0>2.0f}:{1:0>2.0f}:{2:0>2.0f}".format(h, m, s)
+
 
 def size_format(the_size):
     """"""
@@ -141,6 +149,7 @@ def size_format(the_size):
     else: #si no deben ser B.
         return "{0:.0f}Bytes".format(the_size)
 
+
 def speed_format(the_speed):
     """"""
     kb_speed = float(the_speed) / 1024
@@ -155,6 +164,7 @@ def speed_format(the_speed):
     else: #si no deben ser B.
         return "{0:.0f}Bytes/s".format(the_speed)
 
+
 def get_host(link):
     """"""
     #assert link.startswith("http://"), ("'{0}' is not an url".format(link))
@@ -163,14 +173,17 @@ def get_host(link):
     host = host.split(".")[1] if host.startswith("www") else host.split(".")[0] #get website
     return host.lower()
 
+
 def get_filename_from_url(url):
     return os.path.split(url)[-1].split("?")[0]
+
 
 def strip(input, to_strip=None):
     #strip: a string/list of chars you want to strip
     for x in to_strip or []:
         input = input.replace(x, '')
     return input
+
 
 def tail(fh, lines_limit=20):
     """
@@ -200,6 +213,7 @@ def tail(fh, lines_limit=20):
     data.reverse() #put in right order.
     return '\n'.join(''.join(data).splitlines()[-lines_limit:])
 
+
 def html_entities_parser(text):
     """
     Replace HTML or XML character references and entities from a text string.
@@ -224,6 +238,7 @@ def html_entities_parser(text):
                 pass
         return text # leave as is
     return re.sub("&#?\w+;", fixup, text)
+
 
 def dict_from_cookiejar(cj):
     """
