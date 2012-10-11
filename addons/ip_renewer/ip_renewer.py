@@ -14,6 +14,7 @@ OPTION_IP_RENEW_SCRIPT_PATH = "ip_renew_script_path"
 
 class IPRenewer:
     """"""
+    #TODO: change to popen and popen.poll() instead of threading
     def is_running(self):
         """"""
         if hasattr(self, 'th') and self.th.is_alive():
