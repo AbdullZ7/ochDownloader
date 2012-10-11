@@ -166,9 +166,8 @@ class Downloads(QTreeView):
             items_list = api.get_download_items([self.items[row_index][0] for row_index in rows])
             paths_list = set([download_item.path for download_item in items_list])
             for folder_path in paths_list:
-                #misc.open_folder_window(folder_path)
-                threading.Thread(group=None, target=misc.open_folder_window, name=None, args=(folder_path, )).start()
-    
+                misc.open_folder_window(folder_path)
+
     def on_copy_link(self):
         rows = self.get_selected_rows()
         if rows:

@@ -105,9 +105,8 @@ class HistoryTab(QVBoxLayout):
         if rows:
             paths_list = set([self.items[row_index][6] for row_index in rows])
             for folder_path in paths_list:
-                #misc.open_folder_window(folder_path)
-                threading.Thread(group=None, target=misc.open_folder_window, name=None, args=(folder_path, )).start()
-    
+                misc.open_folder_window(folder_path)
+
     def on_copy_link(self):
         rows = self.get_selected_rows()
         if rows:
@@ -126,7 +125,7 @@ class HistoryTab(QVBoxLayout):
     def on_double_click(self, q_index):
         row_index = q_index.row()
         path = os.path.join(self.items[row_index][6], self.items[row_index][1])
-        threading.Thread(group=None, target=misc.run_file, name=None, args=(path, )).start()
+        misc.run_file(path)
 
     def on_search(self):
         self.offset = 0

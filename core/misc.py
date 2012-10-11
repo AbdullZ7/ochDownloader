@@ -66,16 +66,26 @@ def subprocess_call(*args, **kwargs):
     return retcode
 
 
+def subprocess_popen(*args, **kwargs):
+    #hide console window on Windows. Python 2.7 only.
+    if cons.OS_WIN:
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW
+        startupinfo.wShowWindow = subprocess.SW_HIDE
+        kwargs['startupinfo'] = startupinfo
+    popen = subprocess.Popen(*args, **kwargs)
+    return popen
+
+
 def open_folder_window(path):
     """"""
     try:
         if cons.OS_WIN:
-            retcode = subprocess_call(["explorer", path], shell=True)
-            #if retcode >= 0: #all good.
-        elif cons.OS_UNIX: #sys.platform == 'linux2'
-            retcode = subprocess_call(["gnome-open", path], shell=True)
+            subprocess_popen(["explorer", path], shell=True)
+        elif cons.OS_UNIX:
+            subprocess_popen(["gnome-open", path], shell=True)
         else: #mac
-            retcode = subprocess_call(["open", path], shell=True)
+            subprocess_popen(["open", path], shell=True)
     except OSError as err:
         logger.warning(err)
 
@@ -84,8 +94,7 @@ def run_file(path):
     """"""
     try:
         if cons.OS_WIN:
-            retcode = subprocess_call([path, ], shell=True)
-            #if retcode >= 0: #all good.
+            subprocess_popen([path, ], shell=True)
     except OSError as err:
         logger.warning(err)
 
