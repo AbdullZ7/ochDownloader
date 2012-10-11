@@ -122,18 +122,16 @@ class AddDownloadsManager:
                 del self.__thread_checking_downloads[id_item]
                 self.__slots.remove_slot()
                 #self.start_checking()
-            except:
+            except KeyError:
                 try:
                     download_item = self.__ready_downloads.pop(id_item)
-                except:
+                except KeyError:
                     try:
                         download_item = self.__pending_downloads.pop(id_item) #so we only keep the non-added items in the pending_dict
-                    except Exception as err:
-                        download_item = None
-                        logger.warning(err)
-                
-            if download_item is not None:
-                result_list.append(download_item)
+                    except KeyError:
+                        raise
+
+            result_list.append(download_item)
 
         self.start_checking()
             
