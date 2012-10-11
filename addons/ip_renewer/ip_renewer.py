@@ -37,7 +37,7 @@ class IPRenewer:
         if os.path.isfile(path):
             if cons.OS_WIN:
                 try:
-                    retcode = misc.subprocess_call([path, ], shell=True)
+                    misc.subprocess_call([path, ], shell=True)
                 except OSError as err:
                     logger.warning(err)
 
@@ -45,9 +45,8 @@ class IPRenewer:
         """default ip renewer"""
         if cons.OS_WIN:
             try:
-                retcode = misc.subprocess_call(["ipconfig", "/release"])
-                retcode = misc.subprocess_call(["ipconfig", "/renew"])
-                #if retcode >= 0: #all good.
+                misc.subprocess_call(["ipconfig", "/release"])
+                misc.subprocess_call(["ipconfig", "/renew"])
             except OSError as err:
                 logger.warning(err)
 
