@@ -12,8 +12,8 @@ import PngImagePlugin
 import GifImagePlugin
 import JpegImagePlugin
 
-import core.cons as cons
-import core.misc as misc
+from core import cons
+from core import misc
 from core.network.connection import URLClose, request
 
 IMAGE_SUFFIX = ".tif"

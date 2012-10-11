@@ -4,8 +4,8 @@ import sys
 import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
-import core.cons as cons
-import core.misc as misc
+from core import cons
+from core import misc
 from core.api import api
 from core.conf_parser import conf
 from core.events import events

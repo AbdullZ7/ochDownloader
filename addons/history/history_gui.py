@@ -4,8 +4,7 @@ import threading
 import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
-import core.misc as misc
-from core.api import api
+from core import misc
 
 from PySide.QtGui import *
 from PySide.QtCore import *

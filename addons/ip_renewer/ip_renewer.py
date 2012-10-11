@@ -4,8 +4,8 @@ import os
 import logging
 logger = logging.getLogger(__name__)
 
-import core.cons as cons
-import core.misc as misc
+from core import cons
+from core import misc
 from core.conf_parser import conf
 
 #Config parser

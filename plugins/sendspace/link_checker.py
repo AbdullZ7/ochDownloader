@@ -8,8 +8,8 @@ logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.get
 from core.network.connection import URLClose, request
 #from core.misc import html_entities_parser #(html entities and numerics parser)
 
-import core.cons as cons
-import core.misc as misc
+from core import cons
+from core import misc
 
 
 class LinkChecker:

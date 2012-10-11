@@ -6,8 +6,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Local Libs
-import core.cons as cons
-import core.misc as misc
+from core import cons
+from core import misc
 from core.conf_parser import conf
 from core.plugins_bridge import PluginBridge
 
