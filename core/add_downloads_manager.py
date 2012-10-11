@@ -127,7 +127,7 @@ class AddDownloadsManager:
                     download_item = self.__ready_downloads.pop(id_item)
                 except KeyError:
                     try:
-                        download_item = self.__pending_downloads.pop(id_item) #so we only keep the non-added items in the pending_dict
+                        download_item = self.__pending_downloads.pop(id_item)
                     except KeyError:
                         raise
 

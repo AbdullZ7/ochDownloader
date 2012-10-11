@@ -94,8 +94,8 @@ class DownloadManager(DownloadCore, ThreadManager):
                 except KeyError:
                     try:
                         download_item = self.queue_downloads.pop(id_item)
-                    except KeyError as err: #will crash after this and that's ok.
-                        logger.exception(err)
+                    except KeyError:
+                        raise
             th = None
             if is_active:
                 th = self.get_thread(id_item)
