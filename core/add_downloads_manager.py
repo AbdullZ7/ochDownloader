@@ -119,9 +119,6 @@ class AddDownloadsManager:
         for id_item in id_add_list: #add this items.
             try:
                 download_item = self.__checking_downloads.pop(id_item)
-                del self.__thread_checking_downloads[id_item]
-                self.__slots.remove_slot()
-                #self.start_checking()
             except KeyError:
                 try:
                     download_item = self.__ready_downloads.pop(id_item)
@@ -130,6 +127,10 @@ class AddDownloadsManager:
                         download_item = self.__pending_downloads.pop(id_item)
                     except KeyError:
                         raise
+            else:
+                del self.__thread_checking_downloads[id_item]
+                self.__slots.remove_slot()
+                #self.start_checking()
 
             result_list.append(download_item)
 
