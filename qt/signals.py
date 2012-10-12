@@ -8,7 +8,7 @@ class Signals(QObject):
     store_items = Signal(list)
     add_downloads_to_check = Signal(list)
     on_stop_all = Signal()
-    status_bar_pop_msg = Slot(str)
-    status_bar_push_msg = Slot(str)
+    status_bar_pop_msg = Signal(str)
+    status_bar_push_msg = Signal(str)
 
 signals = Signals()
