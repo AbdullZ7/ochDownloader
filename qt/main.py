@@ -1,11 +1,10 @@
 import traceback
-import gettext #internationalization
+import gettext
 import locale
-import os #usado en start_download
+import os
 import Queue
-import logging #registro de errores, van a consola y al fichero de texto.
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
-
+import logging
+logger = logging.getLogger(__name__)
 #Libs
 #from core.Container_Extractor import Container
 from core.idle_queue import idle_loop
