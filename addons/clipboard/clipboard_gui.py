@@ -47,6 +47,8 @@ class Clipboard:
             if urls:
                 self.add_downloads.links_checking(urls)
                 events.trigger_captured_links_count(len(urls))
+                #TODO: add auto tab switching config. use a signal.
+                self.parent.tab.setCurrentIndex(1)
             self.len_old = len(text)
             self.text_old = text
 

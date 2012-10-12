@@ -1,8 +1,5 @@
-import threading
-import os #clase SaveFile
-import sys
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+logger = logging.getLogger(__name__)
 
 from core import cons
 from core import misc
@@ -216,6 +213,9 @@ class AddDownloads(QVBoxLayout):
         api.downloader_init(item_list, current_path) #iniciar threads de descarga.
         #TODO: use a signal.
         self.downloads.store_items(item_list)
+
+        #TODO: add auto tab switching config. use a signal.
+        self.parent.tab.setCurrentIndex(0)
 
     def links_checking(self, links_list, copy_link=True):
         for link in links_list:
