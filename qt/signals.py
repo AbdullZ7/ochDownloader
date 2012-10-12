@@ -10,5 +10,6 @@ class Signals(QObject):
     on_stop_all = Signal()
     status_bar_pop_msg = Signal(str)
     status_bar_push_msg = Signal(str)
+    captured_links_count = Signal(int)
 
 signals = Signals()

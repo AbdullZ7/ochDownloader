@@ -47,7 +47,7 @@ class Clipboard:
             if urls:
                 signals.add_downloads_to_check.emit(urls)
                 signals.switch_tab.emit(1)
-                events.trigger_captured_links_count(len(urls))
+                signals.captured_links_count.emit(len(urls))
             self.len_old = len(text)
             self.text_old = text
 

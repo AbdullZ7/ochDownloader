@@ -10,6 +10,8 @@ import core.cons as cons
 from core.events import events
 from core.conf_parser import conf
 
+from signals import signals
+
 ICON_INFO = QSystemTrayIcon.Information
 ICON_WARN = QSystemTrayIcon.Warning
 ICON_CRITICAL = QSystemTrayIcon.Critical
@@ -59,11 +61,12 @@ class Tray:
         self.tray_icon.showMessage(title, msg, icon, duration * 1000)
 
     def connect_messages(self):
-        events.connect(cons.EVENT_CAPTURED_LINKS_COUNT, self.show_captured_links_message)
         events.connect(cons.EVENT_CAPTCHA_DLG, self.show_catpcha_message)
         events.connect(cons.EVENT_ALL_COMPLETE, self.show_all_downloads_complete_message)
+        signals.captured_links_count.connect(self.show_captured_links_message)
 
-    def show_captured_links_message(self, count, *args, **kwargs):
+    @Slot(int)
+    def show_captured_links_message(self, count):
         self.show_message('{} {}'.format(count, _('link(s) were captured')), None)
 
     def show_catpcha_message(self, *args, **kwargs):
