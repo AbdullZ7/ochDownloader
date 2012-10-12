@@ -19,8 +19,6 @@ class GrabberDialog(QDialog):
         self.setWindowTitle(_('Video Grabber'))
         self.resize(340, 200)
 
-        self.parent = parent
-
         vbox = QVBoxLayout()
         vbox.setSpacing(20)
         self.setLayout(vbox)
