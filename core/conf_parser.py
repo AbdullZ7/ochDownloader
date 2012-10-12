@@ -1,8 +1,8 @@
-import os
+import functools
 import threading
 import pickle
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+logger = logging.getLogger(__name__)
 from ConfigParser import SafeConfigParser, NoSectionError, NoOptionError
 
 #Libs
@@ -43,12 +43,19 @@ OPTION_SWITCH_TAB = "switch_tab"
 SECTION_ADDONS = "addons"
 
 
-DEFAULT = {SECTION_MAIN: {OPTION_VERSION: cons.APP_VER, OPTION_CLIPBOARD_ACTIVE: "True"},
-                    SECTION_NETWORK: {OPTION_PROXY_TYPE: cons.PROXY_HTTP, OPTION_PROXY_IP: "", OPTION_PROXY_PORT: "0",
-                                      OPTION_PROXY_ACTIVE: "False", OPTION_RETRIES_LIMIT: "99", OPTION_HTML_DL: "False",
+DEFAULT = {SECTION_MAIN: {OPTION_VERSION: cons.APP_VER,
+                          OPTION_CLIPBOARD_ACTIVE: "True"},
+                    SECTION_NETWORK: {OPTION_PROXY_TYPE: cons.PROXY_HTTP,
+                                      OPTION_PROXY_IP: "",
+                                      OPTION_PROXY_PORT: "0",
+                                      OPTION_PROXY_ACTIVE: "False",
+                                      OPTION_RETRIES_LIMIT: "99",
+                                      OPTION_HTML_DL: "False",
                                       OPTION_MAX_CONN: "10"},
-                    SECTION_GUI: {OPTION_WINDOW_SETTINGS: "-1,-1,-1,-1", OPTION_SAVE_DL_PATHS: pickle.dumps([]),
-                                  OPTION_COLUMNS_WIDTH: "-1, -1, -1, -1, -1, -1, -1", OPTION_TRAY_ICON: "False",
+                    SECTION_GUI: {OPTION_WINDOW_SETTINGS: "-1,-1,-1,-1",
+                                  OPTION_SAVE_DL_PATHS: pickle.dumps([]),
+                                  OPTION_COLUMNS_WIDTH: "-1, -1, -1, -1, -1, -1, -1",
+                                  OPTION_TRAY_ICON: "False",
                                   OPTION_SWITCH_TAB: "True"},
                     SECTION_ADDONS: {}
                     }
@@ -58,18 +65,12 @@ DEFAULT = {SECTION_MAIN: {OPTION_VERSION: cons.APP_VER, OPTION_CLIPBOARD_ACTIVE:
 _thread_lock = threading.Lock()
 
 #decorator
-def exception_handler(default=None):
-    def decorator(func):
-        #@functools.wraps(func) #accurate debugging
-        def wrapper(*args, **kwargs):
-            try:
-                with _thread_lock:
-                    return func(*args, **kwargs)
-            except Exception as err:
-                logger.exception(err)
-                return default
-        return wrapper
-    return decorator
+def thread_locker(func):
+    @functools.wraps(func) #accurate debugging
+    def wrapper(*args, **kwargs):
+        with _thread_lock:
+            return func(*args, **kwargs)
+    return wrapper
 
 
 class _Config(SafeConfigParser):
@@ -79,7 +80,7 @@ class _Config(SafeConfigParser):
     """
     def __init__(self):
         """"""
-        #TODO: remove exception_handler, exception should only happen on set and get addon option.
+        #exceptions should only happen on set and get addon option.
         SafeConfigParser.__init__(self)
         self.load()
         self.create_config()
@@ -100,18 +101,21 @@ class _Config(SafeConfigParser):
                 if not self.has_option(section, option):
                     self.set(section, option, value)
 
-    @exception_handler()
+    @thread_locker
     def save(self):
         """"""
-        with open(cons.CONFIG_FILE, "wb", cons.FILE_BUFSIZE) as fh:
-            self.write(fh)
-    
-    @exception_handler()
+        try:
+            with open(cons.CONFIG_FILE, "wb", cons.FILE_BUFSIZE) as fh:
+                self.write(fh)
+        except Exception as err:
+            logger.exception(err)
+
+    @thread_locker
     def set_addon_option(self, option, value):
         """"""
         self.set(SECTION_ADDONS, option, value)
 
-    #@exception_handler(default=...)
+    @thread_locker
     def get_addon_option(self, option, default=None, is_bool=False):
         """"""
         try:
@@ -125,79 +129,79 @@ class _Config(SafeConfigParser):
             logger.exception(err)
         return default
 
-    @exception_handler()
+    @thread_locker
     def set_clipboard_active(self, clipboard_active="True"):
         """"""
         self.set(SECTION_MAIN, OPTION_CLIPBOARD_ACTIVE, clipboard_active)
 
-    @exception_handler(default=True)
+    @thread_locker
     def get_clipboard_active(self):
         """"""
         return self.getboolean(SECTION_MAIN, OPTION_CLIPBOARD_ACTIVE)
 
-    @exception_handler()
+    @thread_locker
     def set_proxy_active(self, proxy_active="False"):
         """"""
         self.set(SECTION_NETWORK, OPTION_PROXY_ACTIVE, proxy_active)
 
-    @exception_handler(default=False)
+    @thread_locker
     def get_proxy_active(self):
         """"""
         return self.getboolean(SECTION_NETWORK, OPTION_PROXY_ACTIVE)
 
-    @exception_handler()
+    @thread_locker
     def set_proxy(self, ptype, ip, port):
         """"""
         self.set(SECTION_NETWORK, OPTION_PROXY_TYPE, ptype)
         self.set(SECTION_NETWORK, OPTION_PROXY_IP, ip)
         self.set(SECTION_NETWORK, OPTION_PROXY_PORT, port)
 
-    @exception_handler(default=None)
-    def get_proxy(self): #proxy_dict
+    @thread_locker
+    def get_proxy(self):
         """"""
         ptype = self.get(SECTION_NETWORK, OPTION_PROXY_TYPE)
         ip = self.get(SECTION_NETWORK, OPTION_PROXY_IP)
         port = self.getint(SECTION_NETWORK, OPTION_PROXY_PORT)
         return ptype, ip, port
 
-    @exception_handler()
+    @thread_locker
     def set_retries_limit(self, limit):
         """"""
         self.set(SECTION_NETWORK, OPTION_RETRIES_LIMIT, limit)
 
-    @exception_handler(default=99)
+    @thread_locker
     def get_retries_limit(self):
         """"""
         return self.getint(SECTION_NETWORK, OPTION_RETRIES_LIMIT)
 
-    @exception_handler()
+    @thread_locker
     def set_html_dl(self, allow):
         """"""
         allow = "True" if allow else "False"
         self.set(SECTION_NETWORK, OPTION_HTML_DL, allow)
 
-    @exception_handler(default=False)
+    @thread_locker
     def get_html_dl(self):
         """"""
         return self.getboolean(SECTION_NETWORK, OPTION_HTML_DL)
 
-    @exception_handler()
+    @thread_locker
     def set_max_conn(self, max):
         self.set(SECTION_NETWORK, OPTION_MAX_CONN, max)
 
-    @exception_handler(default=10)
+    @thread_locker
     def get_max_conn(self):
         return self.getint(SECTION_NETWORK, OPTION_MAX_CONN)
 
     
     #//////////////////////// [GUI] ////////////////////////
 
-    @exception_handler()
+    @thread_locker
     def set_window_settings(self, x, y, w, h):
         """"""
         self.set(SECTION_GUI, OPTION_WINDOW_SETTINGS, "{0},{1},{2},{3}".format(x, y, w, h))
 
-    @exception_handler(default=(-1, -1, -1, -1))
+    @thread_locker
     def get_window_settings(self):
         """"""
         tmp = self.get(SECTION_GUI, OPTION_WINDOW_SETTINGS)
@@ -205,45 +209,45 @@ class _Config(SafeConfigParser):
         x, y, w, h = int(x), int(y), int(w), int(h)
         return x, y, w, h
 
-    @exception_handler()
+    @thread_locker
     def set_columns_width(self, columns):
         """"""
         self.set(SECTION_GUI, OPTION_COLUMNS_WIDTH, "{0},{1},{2},{3},{4},{5},{6}".format(*columns))
 
-    @exception_handler(default=None)
+    @thread_locker
     def get_columns_width(self):
         """"""
         tmp = self.get(SECTION_GUI, OPTION_COLUMNS_WIDTH)
         columns = tuple([int(width) for width in tmp.split(",")])
         return columns
 
-    @exception_handler()
+    @thread_locker
     def set_save_dl_paths(self, paths_list):
         """"""
         self.set(SECTION_GUI, OPTION_SAVE_DL_PATHS, pickle.dumps(paths_list))
 
-    @exception_handler(default=[])
+    @thread_locker
     def get_save_dl_paths(self):
         """"""
         return pickle.loads(self.get(SECTION_GUI, OPTION_SAVE_DL_PATHS))
 
-    @exception_handler()
+    @thread_locker
     def set_tray_available(self, allow):
         """"""
         allow = "True" if allow else "False"
         self.set(SECTION_GUI, OPTION_TRAY_ICON, allow)
 
-    @exception_handler(default=False)
+    @thread_locker
     def get_tray_available(self):
         """"""
         return self.getboolean(SECTION_GUI, OPTION_TRAY_ICON)
 
-    @exception_handler()
+    @thread_locker
     def set_auto_switch_tab(self, allow):
         allow = "True" if allow else "False"
         self.set(SECTION_GUI, OPTION_SWITCH_TAB, allow)
 
-    @exception_handler(default=True)
+    @thread_locker
     def get_auto_switch_tab(self):
         """"""
         return self.getboolean(SECTION_GUI, OPTION_SWITCH_TAB)
