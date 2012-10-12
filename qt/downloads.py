@@ -1,14 +1,10 @@
-import threading
 import os
-import sys
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+logger = logging.getLogger(__name__)
 
 from core import cons
 from core import misc
 from core.api import api
-from core.conf_parser import conf
-from core.events import events
 
 from PySide.QtGui import *
 from PySide.QtCore import *
@@ -81,6 +77,7 @@ class Downloads(QTreeView):
         self.line.setGeometry(0, 0, 0, 0)
         self.line.hide()
 
+        #custom signals
         signals.store_items.connect(self.store_items)
 
         #update list
