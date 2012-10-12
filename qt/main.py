@@ -240,6 +240,7 @@ class Gui(QMainWindow):
         index_page = self.tab.indexOf(self.preferences)
         if index_page >= 0:
             self.tab.removeTab(index_page)
+        self.tab.setCurrentIndex(0)
     
     def on_about(self):
         about = About(self)
