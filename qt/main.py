@@ -12,13 +12,14 @@ from core.idle_queue import idle_loop
 from core.conf_parser import conf
 from core.events import events
 from core.api import api
-import core.cons as cons
+from core import cons
 
 #GUI
 from PySide.QtGui import *
 from PySide.QtCore import *
 
 import media
+from signals import signals
 from status_bar import StatusBar
 from downloads import Downloads
 from add_downloads import AddDownloads
@@ -155,8 +156,15 @@ class Gui(QMainWindow):
 
         #quit event
         events.connect(cons.EVENT_QUIT, self.event_close)
+
+        #custom qt signals
+        signals.switch_tab.connect(self.switch_tab)
         
         self.show()
+
+    @Slot(int)
+    def switch_tab(self, index):
+        self.tab.setCurrentIndex(index)
 
     def center(self):
         qr = self.frameGeometry()

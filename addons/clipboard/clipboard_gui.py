@@ -9,6 +9,8 @@ from core.plugins_parser import plugins_parser
 from PySide.QtGui import *
 from PySide.QtCore import *
 
+from qt.signals import signals
+
 #Config parser
 OPTION_CLIPBOARD_EXTS = "clipboard_exts"
 OPTION_CLIPBOARD_ACTIVE = "clipboard_exts_active"
@@ -47,8 +49,7 @@ class Clipboard:
             if urls:
                 self.add_downloads.links_checking(urls)
                 events.trigger_captured_links_count(len(urls))
-                #TODO: add auto tab switching config. use a signal.
-                self.parent.tab.setCurrentIndex(1)
+                signals.switch_tab.emit(1)
             self.len_old = len(text)
             self.text_old = text
 

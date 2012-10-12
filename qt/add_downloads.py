@@ -13,6 +13,7 @@ from PySide.QtCore import *
 import media
 from list_model import SimpleListModel
 from add_links_dlg import AddLinks
+from signals import signals
 
 
 class AddDownloads(QVBoxLayout):
@@ -214,8 +215,7 @@ class AddDownloads(QVBoxLayout):
         #TODO: use a signal.
         self.downloads.store_items(item_list)
 
-        #TODO: add auto tab switching config. use a signal.
-        self.parent.tab.setCurrentIndex(0)
+        signals.switch_tab.emit(index=0)
 
     def links_checking(self, links_list, copy_link=True):
         for link in links_list:
