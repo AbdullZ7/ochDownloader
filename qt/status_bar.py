@@ -1,10 +1,9 @@
+from core.api import api
 
 from PySide.QtGui import *
 from PySide.QtCore import *
 
-import core.cons as cons
-from core.conf_parser import conf
-from core.api import api
+from signals import signals
 
 
 class StatusBar(QStatusBar):
@@ -43,6 +42,10 @@ class StatusBar(QStatusBar):
         # ####################### #
         
         self.msg_list = []
+
+        #custom signals
+        signals.status_bar_pop_msg.connect(self.pop_msg)
+        signals.status_bar_push_msg.connect(self.push_msg)
         
         self.push_msg(_('Update checking...'))
         self.timer = parent.idle_timeout(1000, self.update_check)
@@ -54,11 +57,13 @@ class StatusBar(QStatusBar):
     
     def on_speed_changed(self, new_value):
         api.bucket.rate_limit(new_value)
-    
+
+    @Slot(str)
     def push_msg(self, msg):
         self.showMessage(msg)
         self.msg_list.append(msg)
-    
+
+    @Slot(str)
     def pop_msg(self, msg):
         try:
             self.msg_list.remove(msg) #should remove the last ocurrence not the first...
@@ -85,7 +90,7 @@ class StatusBar(QStatusBar):
                 self.pop_msg(_('Update checking...')) #eliminar mensaje anterior, sino se acumulan.
                 self.push_msg(_("Update available"))
                 #add links to check list.
-                self.parent.add_downloads.links_checking(self.update_manager.url_update)
+                signals.add_downloads_to_check.emit(self.update_manager.url_update)
             else:
                 self.pop_msg(_('Update checking...'))
             self.timer.stop()
