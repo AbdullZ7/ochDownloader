@@ -10,9 +10,11 @@ from PySide.QtCore import *
 
 class Log(QVBoxLayout):
     def __init__(self, parent=None):
-        QVBoxLayout.__init__(self, parent)
+        QVBoxLayout.__init__(self)
         self.setContentsMargins(0, 0, 0, 0)
         self.setSpacing(5)
+
+        self.parent = parent
         
         self.text_view = QPlainTextEdit()
         self.text_view.setReadOnly(True)
@@ -40,14 +42,14 @@ class Log(QVBoxLayout):
         self.text_view.setPlainText(smart_decode(last_lines))
 
     def on_view_log(self):
-        view_full_log = ViewFullLog()
+        view_full_log = ViewFullLog(self.parent)
 
 
 class ViewFullLog(QDialog):
     def __init__(self, parent=None):
         QDialog.__init__(self, parent, Qt.WindowSystemMenuHint | Qt.WindowTitleHint)
         self.setWindowTitle(_('Full Log File'))
-        self.resize(500, 330)
+        self.resize(340, 200)
         
         vbox = QVBoxLayout()
         vbox.setSpacing(20)

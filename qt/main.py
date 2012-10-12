@@ -96,7 +96,7 @@ class Gui(QMainWindow):
         self.toolbar = self.addToolBar(toolbar)
 
         #self.vbox = QVBoxLayout(self)
-        
+
         #tabs
         self.previous_tab = None
         self.tab = QTabWidget(self)
@@ -116,7 +116,7 @@ class Gui(QMainWindow):
         self.addon_tab_widgets = []
         self.load_addon_tabs()
         #
-        self.log = Log()
+        self.log = Log(self)
         self.tab_log = QWidget()
         self.tab_log.setLayout(self.log)
         self.tab.addTab(self.tab_log, _('Log'))
@@ -131,7 +131,7 @@ class Gui(QMainWindow):
         #status bar
         self.status_bar = StatusBar(self)
         self.setStatusBar(self.status_bar)
-        
+
         #drop down menu
         [addon.set_menu_item() for addon in self.addons_list]
         #self.menu.addSeparator()
