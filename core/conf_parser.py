@@ -79,6 +79,7 @@ class _Config(SafeConfigParser):
     """
     def __init__(self):
         """"""
+        #TODO: remove exception_handler, exception should only happen on set and get addon option.
         SafeConfigParser.__init__(self)
         self.load()
         self.create_config()
