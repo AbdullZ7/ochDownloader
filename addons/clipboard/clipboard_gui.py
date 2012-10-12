@@ -19,12 +19,10 @@ EXTS = ".exe;.rar;.zip;.avi;.mkv;.mp4"
 
 class Clipboard:
     """"""
-    def __init__(self, parent):
+    def __init__(self):
         """"""
-        self.parent = parent
         self.text_old= ""
         self.len_old = 0
-        self.add_downloads = parent.add_downloads #addDownloads class
         self.services = self.services()
         self.clipboard = QApplication.clipboard()
 
@@ -47,9 +45,9 @@ class Clipboard:
         if len(text) != self.len_old or text != self.text_old:
             urls = self.check_supported(self.check_text(text))
             if urls:
-                self.add_downloads.links_checking(urls)
-                events.trigger_captured_links_count(len(urls))
+                signals.add_downloads_to_check.emit(urls)
                 signals.switch_tab.emit(1)
+                events.trigger_captured_links_count(len(urls))
             self.len_old = len(text)
             self.text_old = text
 
