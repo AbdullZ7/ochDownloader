@@ -212,11 +212,11 @@ class AddDownloads(QVBoxLayout):
         [self.__model.remove(self.items.index(iter)) for iter in iters]
         
         item_list = api.get_added_items(id_items_list)
-        
         api.downloader_init(item_list, current_path)
-
         signals.store_items.emit(item_list)
-        signals.switch_tab.emit(0)
+
+        if conf.get_auto_switch_tab():
+            signals.switch_tab.emit(0)
 
     @Slot(list)
     def add_downloads_to_check(self, links_list, copy_link=True):

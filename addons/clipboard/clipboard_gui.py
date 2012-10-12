@@ -46,8 +46,9 @@ class Clipboard:
             urls = self.check_supported(self.check_text(text))
             if urls:
                 signals.add_downloads_to_check.emit(urls)
-                signals.switch_tab.emit(1)
                 signals.captured_links_count.emit(len(urls))
+                if conf.get_auto_switch_tab():
+                    signals.switch_tab.emit(1)
             self.len_old = len(text)
             self.text_old = text
 

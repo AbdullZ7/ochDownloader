@@ -13,11 +13,14 @@ class General(QGroupBox):
         self.setLayout(grid_general)
 
         label_tray = QLabel(_('System tray icon (restart required):'))
-
         self.tray_box = QCheckBox()
-
         grid_general.addWidget(label_tray, 1, 0)
         grid_general.addWidget(self.tray_box, 1, 1)
+
+        label_tab = QLabel(_('Auto tab switching:'))
+        self.switch_tab_box = QCheckBox()
+        grid_general.addWidget(label_tab, 2, 0)
+        grid_general.addWidget(self.switch_tab_box, 2, 1)
 
         #
         grid_general.setColumnStretch(2, 1)
@@ -25,7 +28,11 @@ class General(QGroupBox):
     def load(self):
         if conf.get_tray_available():
             self.tray_box.toggle()
+        if conf.get_auto_switch_tab():
+            self.switch_tab_box.toggle()
 
     def save(self):
         tray = self.tray_box.isChecked()
         conf.set_tray_available(tray)
+        switch_tab = self.switch_tab_box.isChecked()
+        conf.set_auto_switch_tab(switch_tab)
