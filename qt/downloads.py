@@ -79,6 +79,7 @@ class Downloads(QTreeView):
 
         #custom signals
         signals.store_items.connect(self.store_items)
+        signals.on_stop_all.connect(self.on_stop_all)
 
         #update list
         parent.idle_timeout(1000, self.update)
@@ -223,7 +224,8 @@ class Downloads(QTreeView):
         for row in self.items:
             if row[1] == stopped_icon:
                 row[1] = queue_icon
-    
+
+    @Slot()
     def on_stop_all(self):
         api.stop_all()
         stopped_icon = self.icons_dict[cons.STATUS_STOPPED]

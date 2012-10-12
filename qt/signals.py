@@ -7,5 +7,6 @@ class Signals(QObject):
     switch_tab = Signal(int)
     store_items = Signal(list)
     add_downloads_to_check = Signal(list)
+    on_stop_all = Signal()
 
 signals = Signals()

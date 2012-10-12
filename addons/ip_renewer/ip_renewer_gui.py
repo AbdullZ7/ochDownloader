@@ -5,6 +5,8 @@ import core.cons as cons
 from core.api import api
 from core.conf_parser import conf
 
+from qt.signals import signals
+
 #Config parser
 OPTION_IP_RENEW_ACTIVE = "ip_renew_active"
 OPTION_RENEW_SCRIPT_ACTIVE = "renew_script_active"
@@ -22,14 +24,14 @@ class IPRenewerGUI:
 
         if self.can_change_ip():
             self.id_item_list = [download_item.id for download_item in api.get_active_downloads().values() + api.get_queue_downloads().values()]
-            self.parent.downloads.on_stop_all()
+            signals.on_stop_all.emit()
             if conf.get_addon_option(OPTION_RENEW_SCRIPT_ACTIVE, default=False, is_bool=True):
                 self.ip_renewer.start_shell_script()
             else:
                 self.ip_renewer.start_default_ip_renew()
             
             self.status_msg = _("Changing IP...")
-            self.parent.status_bar.push_msg(self.status_msg)
+            signals.status_bar_push_msg.emit(self.status_msg)
             
             self.timer = self.parent.idle_timeout(1000, self.update)
         else:
@@ -46,7 +48,7 @@ class IPRenewerGUI:
     def update(self):
         """"""
         if not self.ip_renewer.is_running():
-            self.parent.status_bar.pop_msg(self.status_msg)
+            signals.status_bar_pop_msg.emit(self.status_msg)
             for id_item in self.id_item_list:
                 api.start_download(id_item)
                 try:
