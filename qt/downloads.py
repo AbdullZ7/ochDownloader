@@ -15,6 +15,7 @@ from PySide.QtCore import *
 
 import media
 from list_model import SimpleListModel
+from signals import signals
 
 
 class Downloads(QTreeView):
@@ -79,7 +80,9 @@ class Downloads(QTreeView):
         self.line.setPalette(pal)
         self.line.setGeometry(0, 0, 0, 0)
         self.line.hide()
-        
+
+        signals.store_items.connect(self.store_items)
+
         #update list
         parent.idle_timeout(1000, self.update)
 
@@ -231,7 +234,8 @@ class Downloads(QTreeView):
         for row in self.items:
             if row[1] == queue_icon:
                 row[1] = stopped_icon
-    
+
+    @Slot(list)
     def store_items(self, item_list):
         for download_item in item_list:
             size_file = misc.size_format(download_item.size) if download_item.size else None

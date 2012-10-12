@@ -17,12 +17,11 @@ from signals import signals
 
 
 class AddDownloads(QVBoxLayout):
-    def __init__(self, downloads, parent=None):
+    def __init__(self, parent=None):
         QVBoxLayout.__init__(self)
         self.setContentsMargins(0, 0, 0, 0)
         self.setSpacing(5)
-        
-        self.downloads = downloads
+
         self.parent = parent
         
         self.tree_view = QTreeView(parent)
@@ -211,10 +210,9 @@ class AddDownloads(QVBoxLayout):
         
         item_list = api.get_added_items(id_items_list)
         
-        api.downloader_init(item_list, current_path) #iniciar threads de descarga.
-        #TODO: use a signal.
-        self.downloads.store_items(item_list)
+        api.downloader_init(item_list, current_path)
 
+        signals.store_items.emit(item_list)
         signals.switch_tab.emit(0)
 
     def links_checking(self, links_list, copy_link=True):

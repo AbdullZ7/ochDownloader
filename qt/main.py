@@ -105,7 +105,7 @@ class Gui(QMainWindow):
         self.downloads = Downloads(self)
         self.tab.addTab(self.downloads, _('Downloads'))
         #
-        self.add_downloads = AddDownloads(self.downloads, self)
+        self.add_downloads = AddDownloads(self)
         self.tab_add_downloads = QWidget()
         self.tab_add_downloads.setLayout(self.add_downloads)
         self.tab.addTab(self.tab_add_downloads, _('Add downloads'))
