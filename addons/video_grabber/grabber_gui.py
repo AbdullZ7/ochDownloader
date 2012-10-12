@@ -6,6 +6,8 @@ from core import misc
 from PySide.QtGui import *
 from PySide.QtCore import *
 
+from qt.signals import signals
+
 
 class GrabberDialog(QDialog):
     """"""
@@ -57,7 +59,7 @@ class GrabberDialog(QDialog):
         if links_list:
             w = WaitDialog(self.parent, links_list)
             if w.video_links:
-                self.parent.add_downloads.links_checking(w.video_links)
+                signals.add_downloads_to_check.emit(w.video_links)
         self.accept()
 
 
