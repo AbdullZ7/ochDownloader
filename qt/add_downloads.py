@@ -215,7 +215,7 @@ class AddDownloads(QVBoxLayout):
         #TODO: use a signal.
         self.downloads.store_items(item_list)
 
-        signals.switch_tab.emit(index=0)
+        signals.switch_tab.emit(0)
 
     def links_checking(self, links_list, copy_link=True):
         for link in links_list:
