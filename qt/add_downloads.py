@@ -108,6 +108,9 @@ class AddDownloads(QVBoxLayout):
         
         
         self.addLayout(hbox)
+
+        #custom signals
+        signals.add_downloads_to_check.connect(self.add_downloads_to_check)
         
         #update list
         parent.idle_timeout(1000, self.update)
@@ -166,14 +169,14 @@ class AddDownloads(QVBoxLayout):
             links_list = container.get_linklist()
             
             if links_list:
-                self.links_checking(links_list, copy_link=False)
+                self.add_downloads_to_check(links_list, copy_link=False)
     
     def on_add_links(self):
         add_links = AddLinks(self.parent)
         result_code = add_links.result()
         links_list = add_links.links_list
         if result_code == QDialog.Accepted and links_list:
-            self.links_checking(links_list)
+            self.add_downloads_to_check(links_list)
     
     def on_examine(self):
         folder = QFileDialog.getExistingDirectory()
@@ -215,7 +218,8 @@ class AddDownloads(QVBoxLayout):
         signals.store_items.emit(item_list)
         signals.switch_tab.emit(0)
 
-    def links_checking(self, links_list, copy_link=True):
+    @Slot(list)
+    def add_downloads_to_check(self, links_list, copy_link=True):
         for link in links_list:
             download_item = api.create_download_item(cons.UNKNOWN, 0, link, copy_link) #return download_item object
             item = [download_item.id, True, cons.LINK_CHECKING, cons.UNKNOWN, None, None, None]
