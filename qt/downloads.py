@@ -211,7 +211,7 @@ class Downloads(QTreeView):
         for row in self.items[:]:
             if row[1] == finished_icon:
                 self.remove_row(row[0])
-                #todo: remove from complete_downloads
+        api.clear_complete()
     
     def on_start_all(self):
         """
