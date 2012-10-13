@@ -2,11 +2,10 @@ import threading
 import pickle
 import logging
 logger = logging.getLogger(__name__)
-from ConfigParser import SafeConfigParser, NoSectionError, NoOptionError
+from ConfigParser import RawConfigParser, NoSectionError, NoOptionError
 
 #Libs
 import cons
-
 
 #main section
 SECTION_MAIN = "main"
@@ -76,16 +75,13 @@ def exception_handler(default=None):
     return decorator
 
 
-class _Config(SafeConfigParser):
-    """
-    Thread safe.
-    when saving (def set_option()) strings do value.replace('%', '%%') to avoid interpolation errors.
-    """
+class _Config(RawConfigParser):
+    """"""
     def __init__(self):
         """"""
-        SafeConfigParser.__init__(self)
+        RawConfigParser.__init__(self)
         self.load()
-        self.create_config()
+        self.create()
         logger.debug("config parser instanced.")
 
     def load(self):
@@ -94,7 +90,7 @@ class _Config(SafeConfigParser):
         except Exception as err:
             logger.warning(err)
 
-    def create_config(self):
+    def create(self):
         """"""
         for section, options in DEFAULT.items():
             if not self.has_section(section):

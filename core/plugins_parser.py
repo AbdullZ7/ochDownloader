@@ -1,12 +1,11 @@
 import os
 import pkgutil
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
-from ConfigParser import SafeConfigParser, NoSectionError, NoOptionError
+logger = logging.getLogger(__name__)
+from ConfigParser import RawConfigParser, NoSectionError, NoOptionError
 
 #Libs
 import cons
-
 
 #main section
 SECTION_MAIN = "main"
@@ -28,39 +27,43 @@ class _PluginsParser:
     def __init__(self):
         """"""
         self.services_dict = {}
+        self.load_plugins_config()
+        logger.debug("plugin parser instanced.")
+
+    def load_plugins_config(self):
         try:
             for module_loader, plugin, ispkg in pkgutil.iter_modules(path=[cons.PLUGINS_PATH, ]):
-                file_path = os.path.join(cons.PLUGINS_PATH, plugin, cons.PLUGIN_CONFIG_FILE)
-                self.services_dict[plugin] = _PluginsConfig(file_path)
+                path = os.path.join(cons.PLUGINS_PATH, plugin, cons.PLUGIN_CONFIG_FILE)
+                self.services_dict[plugin] = _PluginsConfig(path)
         except Exception as err:
             logger.exception(err)
-        logger.debug("plugin parser instanced.")
-    
+
     def get_plugin_item(self, plugin): #plugin = host
         """"""
         try:
             return self.services_dict[plugin]
         except KeyError:
-            file_path = os.path.join(cons.PLUGINS_PATH, plugin, cons.PLUGIN_CONFIG_FILE)
-            plugin_config = _PluginsConfig(file_path)
+            path = os.path.join(cons.PLUGINS_PATH, plugin, cons.PLUGIN_CONFIG_FILE)
+            plugin_config = _PluginsConfig(path)
             self.services_dict[plugin] = plugin_config
             return plugin_config
 
 
-class _PluginsConfig(SafeConfigParser):
-    """
-    when saving (def set_option()) strings do value.replace('%', '%%') to avoid interpolation errors.
-    """
-    def __init__(self, file_path):
+class _PluginsConfig(RawConfigParser):
+    """"""
+    def __init__(self, path):
         """"""
-        SafeConfigParser.__init__(self)
+        RawConfigParser.__init__(self)
+        self.load(path)
+        self.create()
+
+    def load(self, path):
         try:
-            self.read(file_path) #read config file
+            self.read(path) #read config file
         except Exception as err:
             logger.info(err)
-        self.create_config()
-    
-    def create_config(self):
+
+    def create(self):
         """"""
         for section, options in DEFAULT.items():
             if not self.has_section(section):
@@ -68,7 +71,6 @@ class _PluginsConfig(SafeConfigParser):
             for option, value in options.items():
                 if not self.has_option(section, option):
                     self.set(section, option, value)
-        #self.save_config()
 
     def get_premium_available(self):
         """"""
