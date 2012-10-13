@@ -57,6 +57,9 @@ class _Api(DownloadManager, AddDownloadsManager):
         all_downloads.update(self.stopped_downloads)
         all_downloads.update(self.complete_downloads)
         return all_downloads
+
+    def clear_complete(self):
+        self.complete_downloads.clear()
     
     def load_session(self):
         try:
