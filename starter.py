@@ -73,6 +73,7 @@ class Starter:
             app = QApplication(['']) #QApplication(sys.argv)
             gui = Gui()
             app.exec_()
+            gui.dispacher.stop()
         except Exception as err:
             self.logger.exception(err)
             halt() #close gui.

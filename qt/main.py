@@ -28,6 +28,7 @@ from about import About
 from preferences.preferences import Preferences
 from addons import AddonsManager
 from tray import Tray
+from idle_queue_dispacher import ThreadDispacher
 
 
 MIN_WIDTH = 550
@@ -72,6 +73,7 @@ def halt():
 
 class Gui(QMainWindow):
     def __init__(self):
+        #TODO: REFACTORY
         QMainWindow.__init__(self)
         
         self.setWindowTitle(cons.APP_TITLE)
@@ -151,7 +153,9 @@ class Gui(QMainWindow):
         self.load_session()
 
         #add core's event loop
-        self.idle_timeout(500, self.queue_loop)
+        #self.idle_timeout(500, self.queue_loop)
+        self.dispacher = ThreadDispacher(self)
+        self.dispacher.start()
 
         #quit event
         events.connect(cons.EVENT_QUIT, self.event_close)
@@ -160,6 +164,10 @@ class Gui(QMainWindow):
         signals.switch_tab.connect(self.switch_tab)
         
         self.show()
+
+    def customEvent(self, event):
+        #process idle_queue_dispacher events
+        event.callback()
 
     @Slot(int)
     def switch_tab(self, index):
@@ -310,12 +318,12 @@ class Gui(QMainWindow):
         timer.start(interval)
         return timer
     
-    def queue_loop(self):
-        try:
-            callback = idle_loop.get_nowait()
-            callback()
-        except Queue.Empty:
-            pass
+    #def queue_loop(self):
+        #try:
+            #callback = idle_loop.get_nowait()
+            #callback()
+        #except Queue.Empty:
+            #pass
 
     def event_close(self):
         self.can_close = True
