@@ -218,7 +218,6 @@ class AddDownloads(QVBoxLayout):
         if conf.get_auto_switch_tab():
             signals.switch_tab.emit(0)
 
-    @Slot(list)
     def add_downloads_to_check(self, links_list, copy_link=True):
         for link in links_list:
             download_item = api.create_download_item(cons.UNKNOWN, 0, link, copy_link) #return download_item object

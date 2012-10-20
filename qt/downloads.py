@@ -225,7 +225,6 @@ class Downloads(QTreeView):
             if row[1] == stopped_icon:
                 row[1] = queue_icon
 
-    @Slot()
     def on_stop_all(self):
         api.stop_all()
         stopped_icon = self.icons_dict[cons.STATUS_STOPPED]
@@ -234,7 +233,6 @@ class Downloads(QTreeView):
             if row[1] == queue_icon:
                 row[1] = stopped_icon
 
-    @Slot(list)
     def store_items(self, item_list):
         for download_item in item_list:
             size_file = misc.size_format(download_item.size) if download_item.size else None

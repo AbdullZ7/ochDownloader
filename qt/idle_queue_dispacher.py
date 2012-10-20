@@ -1,26 +1,23 @@
 from PySide.QtGui import *
 from PySide.QtCore import *
 
-from core import idle_queue
+from core.idle_queue import idle_loop
 
 
 class ThreadDispacher(QThread):
     def __init__(self, parent):
         QThread.__init__(self)
         self.parent = parent
-        self.stop_flag = False
 
     def run(self):
         while True:
-            callback = idle_queue.idle_loop.get()
-            if self.stop_flag:
+            callback = idle_loop.get()
+            if callback is None:
                 break
-            else:
-                QApplication.postEvent(self.parent, _Event(callback))
+            QApplication.postEvent(self.parent, _Event(callback))
 
     def stop(self):
-        self.stop_flag = True
-        idle_queue.idle_add(None)
+        idle_loop.put(None)
         self.wait()
 
 

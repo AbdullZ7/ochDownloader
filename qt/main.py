@@ -82,6 +82,10 @@ class Gui(QMainWindow):
         self.center()
         
         self.restore_wnd_geometry()
+
+        self.downloads = Downloads(self)
+        self.add_downloads = AddDownloads(self)
+        self.log = Log(self)
         
         self.stop = (QToolButton(), media.get_icon(media.STOP, media.MEDIUM), _('Stop Download'), self.on_stop_download, False)
         self.start = (QToolButton(), media.get_icon(media.START, media.MEDIUM), _('Start Download'), self.on_start_download, False)
@@ -103,10 +107,8 @@ class Gui(QMainWindow):
         self.previous_tab = None
         self.tab = QTabWidget(self)
         #
-        self.downloads = Downloads(self)
         self.tab.addTab(self.downloads, _('Downloads'))
         #
-        self.add_downloads = AddDownloads(self)
         self.tab_add_downloads = QWidget()
         self.tab_add_downloads.setLayout(self.add_downloads)
         self.tab.addTab(self.tab_add_downloads, _('Add downloads'))
@@ -118,7 +120,6 @@ class Gui(QMainWindow):
         self.addon_tab_widgets = []
         self.load_addon_tabs()
         #
-        self.log = Log(self)
         self.tab_log = QWidget()
         self.tab_log.setLayout(self.log)
         self.tab.addTab(self.tab_log, _('Log'))
@@ -169,7 +170,6 @@ class Gui(QMainWindow):
         #process idle_queue_dispacher events
         event.callback()
 
-    @Slot(int)
     def switch_tab(self, index):
         self.tab.setCurrentIndex(index)
 

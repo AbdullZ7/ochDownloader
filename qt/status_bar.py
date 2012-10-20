@@ -58,12 +58,10 @@ class StatusBar(QStatusBar):
     def on_speed_changed(self, new_value):
         api.bucket.rate_limit(new_value)
 
-    @Slot(str)
     def push_msg(self, msg):
         self.showMessage(msg)
         self.msg_list.append(msg)
 
-    @Slot(str)
     def pop_msg(self, msg):
         try:
             self.msg_list.remove(msg) #should remove the last ocurrence not the first...
