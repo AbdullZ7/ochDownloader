@@ -9,21 +9,26 @@ class Event:
     def __init__(self, name=None):
         self.name = name
         self.callbacks = []
+        self.lock = threading.Lock()
 
     def connect(self, callback):
-        self.callbacks.append(callback)
+        with self.lock:
+            self.callbacks.append(callback)
 
     def disconnect(self, callback):
-        self.callbacks.remove(callback)
+        with self.lock:
+            self.callbacks.remove(callback)
 
     def emit(self, *args, **kwargs):
-        if not self.callbacks:
-            logger.debug("No signals assosiated to: {}".format(self.name))
-        else:
-            #connected_methods = [callback.__name__ for callback in self.callbacks]
-            logger.debug("Event emitted: {}".format(self.name))
-        for callback in self.callbacks:
-            idle_queue.idle_add(callback, *args, **kwargs)
+        with self.lock:
+            if not self.callbacks:
+                logger.debug("No signals assosiated to: {}".format(self.name))
+            else:
+                #connected_methods = [callback.__name__ for callback in self.callbacks]
+                logger.debug("Event emitted: {}".format(self.name))
+
+            for callback in self.callbacks:
+                idle_queue.idle_add(callback, *args, **kwargs)
 
 
 class Signals:
