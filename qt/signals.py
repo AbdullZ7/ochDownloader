@@ -4,9 +4,6 @@ logger = logging.getLogger(__name__)
 
 from core import idle_queue
 
-from PySide.QtGui import *
-from PySide.QtCore import *
-
 
 class Event:
     def __init__(self, name=None):
@@ -23,6 +20,7 @@ class Event:
         if not self.callbacks:
             logger.debug("No signals assosiated to: {}".format(self.name))
         else:
+            #connected_methods = [callback.__name__ for callback in self.callbacks]
             logger.debug("Event emitted: {}".format(self.name))
         for callback in self.callbacks:
             idle_queue.idle_add(callback, *args, **kwargs)
