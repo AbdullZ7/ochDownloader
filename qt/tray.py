@@ -65,7 +65,6 @@ class Tray:
         events.connect(cons.EVENT_ALL_COMPLETE, self.show_all_downloads_complete_message)
         signals.captured_links_count.connect(self.show_captured_links_message)
 
-    @Slot(int)
     def show_captured_links_message(self, count):
         self.show_message('{} {}'.format(count, _('link(s) were captured')), None)
 
