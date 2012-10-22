@@ -56,7 +56,7 @@ class Event:
                     self.callbacks.remove(weakref_callback)
             if not self.callbacks:
                 logger.debug("No signals assosiated to: {}".format(self.name))
- 
+
 
 class Signals:
     switch_tab = Event('switch_tab')
