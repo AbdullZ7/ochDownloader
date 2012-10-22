@@ -47,16 +47,20 @@ class Event:
 
     def emit(self, *args, **kwargs):
         with self.lock:
-            if not self.callbacks:
-                logger.debug("No signals assosiated to: {}".format(self.name))
-            else:
-                #connected_methods = [callback.__name__ for callback in self.callbacks]
-                logger.debug("Event emitted: {}".format(self.name))
+            callbacks = self.callbacks[:]
 
-            for weakref_callback in self.callbacks:
-                callback = weakref_callback()
-                if callback is not None:
-                    idle_queue.idle_add(callback, *args, **kwargs)
+        if not callbacks:
+            logger.debug("No signals assosiated to: {}".format(self.name))
+        else:
+            #connected_methods = [callback.__name__ for callback in self.callbacks]
+            logger.debug("Event emitted: {}".format(self.name))
+
+        for weakref_callback in callbacks:
+            callback = weakref_callback()
+            if callback is not None:
+                idle_queue.idle_add(callback, *args, **kwargs)
+            else:
+                self.disconnect(callback) #callback = None
 
 
 class Signals:
