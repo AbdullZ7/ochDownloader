@@ -19,10 +19,6 @@ class _BoundMethodWeakref:
             func = getattr(func_cls, self.func_name)
             return func
 
-    #def __cmp__(self, other):
-        #func = self.__call__()
-        #return cmp(func, other)
-
 def weak_ref(callback):
     if hasattr(callback, '__self__') and callback.__self__ is not None: #is a bound method?
         return _BoundMethodWeakref(callback)
@@ -50,19 +46,17 @@ class Event:
 
     def emit(self, *args, **kwargs):
         with self.lock:
-            if not self.callbacks:
-                logger.debug("No signals assosiated to: {}".format(self.name))
-            else:
-                #connected_methods = [callback.__name__ for callback in self.callbacks]
-                logger.debug("Event emitted: {}".format(self.name))
-
+            #connected_methods = [callback.__name__ for callback in self.callbacks]
+            logger.debug("Event emitted: {}".format(self.name))
             for weakref_callback in self.callbacks[:]:
                 callback = weakref_callback()
                 if callback is not None:
                     idle_queue.idle_add(callback, *args, **kwargs)
                 else: #lost reference
                     self.callbacks.remove(weakref_callback)
-
+            if not self.callbacks:
+                logger.debug("No signals assosiated to: {}".format(self.name))
+ 
 
 class Signals:
     switch_tab = Event('switch_tab')
