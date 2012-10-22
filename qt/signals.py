@@ -43,7 +43,7 @@ class Event:
 
     def disconnect(self, callback):
         with self.lock:
-            for index, weakref_callback in enumerate(self.callbacks[:]):
+            for index, weakref_callback in enumerate(self.callbacks):
                 if callback == weakref_callback():
                     del self.callbacks[index]
                     break
@@ -66,8 +66,11 @@ class Event:
                 self.clean_up()
 
     def clean_up(self):
-        with self.lock:
-            self.callbacks[:] = [callback for callback in self.callbacks if callback is not None]
+        try:
+            with self.lock:
+                self.callbacks.remove(None)
+        except ValueError:
+            pass
 
 
 class Signals:
