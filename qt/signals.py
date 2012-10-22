@@ -19,9 +19,9 @@ class _BoundMethodWeakref:
             func = getattr(func_cls, self.func_name)
             return func
 
-    def __cmp__(self, other):
-        func = self.__call__()
-        return cmp(func, other)
+    #def __cmp__(self, other):
+        #func = self.__call__()
+        #return cmp(func, other)
 
 def weak_ref(callback):
     if hasattr(callback, '__self__') and callback.__self__ is not None: #is a bound method?
@@ -43,7 +43,10 @@ class Event:
 
     def disconnect(self, callback):
         with self.lock:
-            self.callbacks.remove(callback)
+            for index, weakref_callback in enumerate(self.callbacks[:]):
+                if callback == weakref_callback():
+                    del self.callbacks[index]
+                    break
 
     def emit(self, *args, **kwargs):
         with self.lock:
@@ -59,8 +62,12 @@ class Event:
             callback = weakref_callback()
             if callback is not None:
                 idle_queue.idle_add(callback, *args, **kwargs)
-            else:
-                self.disconnect(callback) #callback = None
+            else: #lost reference
+                self.clean_up()
+
+    def clean_up(self):
+        with self.lock:
+            self.callbacks[:] = [callback for callback in self.callbacks if callback is not None]
 
 
 class Signals:
