@@ -143,11 +143,11 @@ class DownloadManager(DownloadCore, ThreadManager):
                 self.global_slots.remove_slot()
                 self.next_download()
                 if status == cons.STATUS_FINISHED:
-                    events.trigger_download_complete(download_item)
+                    events.download_complete.emit(download_item)
                 if not self.active_downloads and status != cons.STATUS_STOPPED:
-                    events.trigger_all_downloads_complete()
+                    events.all_downloads_complete.emit()
                 if limit_exceeded and self.active_downloads and status == cons.STATUS_ERROR:
-                    events.trigger_limit_exceeded()
+                    events.limit_exceeded.emit()
 
     def downloader_init(self, item_list, path):
         """

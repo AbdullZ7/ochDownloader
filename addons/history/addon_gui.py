@@ -21,7 +21,6 @@ class Addon(AddonCore):
         """"""
         AddonCore.__init__(self)
         self.name = _("History")
-        self.event_id = None
         self.parent = parent
         self.history = History()
         self.history_tab = HistoryTab(self.history)
@@ -42,11 +41,11 @@ class Addon(AddonCore):
             self.connect()
         else:
             conf.set_addon_option(OPTION_HISTORY_ACTIVE, "False")
-            events.disconnect(cons.EVENT_DL_COMPLETE, self.event_id)
+            events.download_complete.disconnect(self.trigger)
 
     def connect(self):
         """"""
-        self.event_id = events.connect(cons.EVENT_DL_COMPLETE, self.trigger)
+        events.download_complete.connect(self.trigger)
     
     #def on_history(self, widget):
         #HistoryDlg(self.history, self.parent)

@@ -48,4 +48,4 @@ class ShutdownDialog(QMessageBox):
         else:
             shutdown = Shutdown()
             if shutdown.start_shutting():
-                events.trigger_quit()
+                events.quit.emit()

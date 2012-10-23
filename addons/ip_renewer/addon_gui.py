@@ -24,7 +24,6 @@ class Addon(AddonCore):
         """"""
         AddonCore.__init__(self)
         self.name = _("IP renewer")
-        self.event_id = None
         self.parent = parent
         self.ip_renewer = IPRenewer()
 
@@ -46,11 +45,11 @@ class Addon(AddonCore):
             self.connect()
         else:
             conf.set_addon_option(OPTION_IP_RENEW_ACTIVE, "False")
-            events.disconnect(cons.EVENT_LIMIT_EXCEEDED, self.event_id)
+            events.limit_exceeded.disconnect(self.trigger)
     
     def connect(self):
         """"""
-        self.event_id = events.connect(cons.EVENT_LIMIT_EXCEEDED, self.trigger)
+        events.limit_exceeded.connect(self.trigger)
     
     def trigger(self, *args, **kwargs):
         """"""

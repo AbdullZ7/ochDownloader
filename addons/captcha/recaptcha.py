@@ -36,7 +36,7 @@ class Recaptcha:
         """"""
         self.captcha_challenge = None
         if idle_queue.register_event(self.event):
-            events.trigger_captcha_dialog(self.service_name, self.get_captcha, self.set_solution)
+            events.captcha_dialog.emit(self.service_name, self.get_captcha, self.set_solution)
             self.event.wait()
             self.event.clear() #re-use.
             idle_queue.remove_event(self.event)

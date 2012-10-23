@@ -146,7 +146,7 @@ class List(gtk.VBox): #DownloadsList
             pwd = entry.get_text().strip()
             
             if m.accepted and pwd:
-                events.trigger_pwd(pwd)
+                events.add_password.emit(pwd)
     
     def on_delete(self, widget=None):
         """"""

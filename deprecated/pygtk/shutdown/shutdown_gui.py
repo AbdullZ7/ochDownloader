@@ -59,7 +59,7 @@ class ShutdownDlg(Dialog):
             shutdown = Shutdown()
             if shutdown.start_shutting():
                 #self.quit()
-                events.trigger_quit()
+                events.quit.emit()
             return False
     
     def on_close(self, widget=None, other=None):

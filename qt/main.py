@@ -159,7 +159,7 @@ class Gui(QMainWindow):
         self.dispacher.start()
 
         #quit event
-        events.connect(cons.EVENT_QUIT, self.event_close)
+        events.quit.connect(self.event_close)
 
         #custom qt signals
         signals.switch_tab.connect(self.switch_tab)

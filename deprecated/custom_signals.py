@@ -2,7 +2,7 @@ import time
 import pygtk
 import gobject
 
-#from core.events import Events
+#from core.events import events
 
 
 #DEPRECATED

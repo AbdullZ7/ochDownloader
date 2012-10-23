@@ -22,10 +22,9 @@ class Addon(AddonCore):
         """"""
         AddonCore.__init__(self)
         self.name = _("Auto extraction")
-        self.event_id = None
         self.parent = parent
         self.unrar_gui = UnRARGUI(parent)
-        events.connect(cons.EVENT_PASSWORD, passwords_handler.add)
+        events.add_password.connect(passwords_handler.add)
         #self.ip_renewer_cls = IPRenewer()
 
     def get_preferences(self):
@@ -49,11 +48,11 @@ class Addon(AddonCore):
             self.connect()
         else:
             conf.set_addon_option(OPTION_UNRAR_ACTIVE, "False")
-            events.disconnect(cons.EVENT_DL_COMPLETE, self.event_id)
+            events.download_complete.disconnect(self.trigger)
     
     def connect(self):
         """"""
-        self.event_id = events.connect(cons.EVENT_DL_COMPLETE, self.trigger)
+        events.download_complete.connect(self.trigger)
     
     def trigger(self, download_item, *args, **kwargs):
         """"""

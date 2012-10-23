@@ -61,8 +61,8 @@ class Tray:
         self.tray_icon.showMessage(title, msg, icon, duration * 1000)
 
     def connect_messages(self):
-        events.connect(cons.EVENT_CAPTCHA_DLG, self.show_catpcha_message)
-        events.connect(cons.EVENT_ALL_COMPLETE, self.show_all_downloads_complete_message)
+        events.captcha_dialog.connect(self.show_catpcha_message)
+        events.all_downloads_complete.connect(self.show_all_downloads_complete_message)
         signals.captured_links_count.connect(self.show_captured_links_message)
 
     def show_captured_links_message(self, count):

@@ -14,7 +14,6 @@ class Addon(AddonCore):
     def __init__(self, parent, *args, **kwargs):
         """"""
         AddonCore.__init__(self)
-        self.event_id = None
         self.parent = parent
         self.connect()
     
@@ -24,7 +23,7 @@ class Addon(AddonCore):
     
     def connect(self):
         """"""
-        self.event_id = events.connect(cons.EVENT_CAPTCHA_DLG, self.trigger) #connect event
+        events.captcha_dialog.connect(self.trigger) #connect event
     
     #def disconnect(self):
         #""""""

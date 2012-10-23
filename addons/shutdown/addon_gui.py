@@ -19,7 +19,6 @@ class Addon(AddonCore):
         """"""
         AddonCore.__init__(self)
         self.name = _("Shutdown")
-        self.event_id = None
         self.parent = parent
         self.old_retries_count = conf.get_retries_limit()
         if self.old_retries_count == RETRIES_LIMIT:
@@ -33,11 +32,11 @@ class Addon(AddonCore):
     def on_toggle(self):
         if self.action.isChecked(): #se activo
             #self.config.set_shutdown_active("True")
-            self.event_id = events.connect(cons.EVENT_ALL_COMPLETE, self.trigger)
+            events.all_downloads_complete.connect(self.trigger)
             conf.set_retries_limit(str(RETRIES_LIMIT))
         else:
             #self.config.set_shutdown_active("False")
-            events.disconnect(cons.EVENT_ALL_COMPLETE, self.event_id)
+            events.all_downloads_complete.disconnect(self.trigger)
             conf.set_retries_limit(str(self.old_retries_count))
     
     def trigger(self, *args, **kwargs):
