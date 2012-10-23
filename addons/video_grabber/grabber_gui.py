@@ -19,6 +19,8 @@ class GrabberDialog(QDialog):
         self.setWindowTitle(_('Video Grabber'))
         self.resize(340, 200)
 
+        self.parent = parent
+
         vbox = QVBoxLayout()
         vbox.setSpacing(20)
         self.setLayout(vbox)
@@ -58,6 +60,7 @@ class GrabberDialog(QDialog):
             w = WaitDialog(self.parent, links_list)
             if w.video_links:
                 signals.add_downloads_to_check.emit(w.video_links)
+                signals.switch_tab.emit(1)
         self.accept()
 
 
