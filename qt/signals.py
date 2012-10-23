@@ -1,64 +1,7 @@
-import threading
-import weakref
-import logging
-logger = logging.getLogger(__name__)
-
-from core import idle_queue
+from core.dispatch import Event
 
 
-class _BoundMethodWeakref:
-    def __init__(self, func):
-        self.func_name = func.__name__
-        self.wref = weakref.ref(func.__self__) #__self__ returns the class http://docs.python.org/reference/datamodel.html
-
-    def __call__(self):
-        func_cls = self.wref()
-        if func_cls is None: #lost reference
-            return None
-        else:
-            func = getattr(func_cls, self.func_name)
-            return func
-
-def weak_ref(callback):
-    if hasattr(callback, '__self__') and callback.__self__ is not None: #is a bound method?
-        return _BoundMethodWeakref(callback)
-    else:
-        return weakref.ref(callback)
-
-
-class Event:
-    def __init__(self, name):
-        self.name = name
-        self.callbacks = []
-        self.lock = threading.Lock()
-
-    def connect(self, callback):
-        with self.lock:
-            callback = weak_ref(callback)
-            self.callbacks.append(callback)
-
-    def disconnect(self, callback):
-        with self.lock:
-            for index, weakref_callback in enumerate(self.callbacks):
-                if callback == weakref_callback():
-                    del self.callbacks[index]
-                    break
-
-    def emit(self, *args, **kwargs):
-        with self.lock:
-            #connected_methods = [callback.__name__ for callback in self.callbacks]
-            logger.debug("Event emitted: {}".format(self.name))
-            for weakref_callback in self.callbacks[:]:
-                callback = weakref_callback()
-                if callback is not None:
-                    idle_queue.idle_add(callback, *args, **kwargs)
-                else: #lost reference
-                    self.callbacks.remove(weakref_callback)
-            if not self.callbacks:
-                logger.debug("No signals assosiated to: {}".format(self.name))
-
-
-class Signals:
+class _Signals:
     switch_tab = Event('switch_tab')
     store_items = Event('store_items')
     add_downloads_to_check = Event('add_downloads_to_check')
@@ -67,4 +10,4 @@ class Signals:
     status_bar_push_msg = Event('status_bar_push_msg')
     captured_links_count = Event('captured_links_count')
 
-signals = Signals()
+signals = _Signals()

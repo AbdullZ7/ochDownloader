@@ -190,7 +190,7 @@ class Downloads(QTreeView):
             #pwd = entry.get_text().strip()
             
             #if m.accepted and pwd:
-                #events.trigger_pwd(pwd)
+                #events.add_password.emit(pwd)
     
     def on_delete(self):
         rows = self.get_selected_rows()
