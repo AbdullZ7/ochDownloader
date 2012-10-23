@@ -81,9 +81,10 @@ def open_folder_window(path):
     """"""
     try:
         if cons.OS_WIN:
-            subprocess_popen(["explorer", path], shell=True)
+            os.startfile(os.path.normpath(path), "explore")
+            #subprocess_popen(["explorer", "/select,", os.path.join(path, file_name)], shell=True) #bug: the process never exits
         elif cons.OS_UNIX:
-            subprocess_popen(["gnome-open", path], shell=True)
+            subprocess_popen(["xdg-open", path], shell=True)
         else: #mac
             subprocess_popen(["open", path], shell=True)
     except OSError as err:
