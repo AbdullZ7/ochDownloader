@@ -77,15 +77,6 @@ ACCOUNT_FAIL= "Fail" #login fail
 ACCOUNT_ERROR = "Error" #cant connect
 ACCOUNT_CHECKING = "Checking"
 
-#gui signals/events
-EVENT_QUIT = "quit-app"
-EVENT_ALL_COMPLETE = "all-downloads-complete"
-EVENT_CAPTCHA_DLG = "captcha-dialog"
-EVENT_LIMIT_EXCEEDED = "limit-exceeded"
-EVENT_DL_COMPLETE = "download-complete"
-EVENT_PASSWORD = "add-password"
-EVENT_CAPTURED_LINKS_COUNT = "captured-links-count"
-
 #unavailable names
 UNKNOWN = "Unknown"
 UNSUPPORTED = "unsupported"
