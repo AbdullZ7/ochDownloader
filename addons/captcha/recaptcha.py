@@ -2,7 +2,6 @@ import threading
 import logging
 logger = logging.getLogger(__name__)
 
-import core.cons as cons
 import core.idle_queue as idle_queue
 from core.events import events
 from core.network.connection import request
@@ -41,7 +40,7 @@ class Recaptcha:
             self.event.clear() #re-use.
             idle_queue.remove_event(self.event)
             if not self.solution:
-                logger.warning("No response for {0} event".format(cons.EVENT_CAPTCHA_DLG))
+                logger.warning("No captcha response")
 
     def get_captcha(self):
         """"""
