@@ -18,7 +18,9 @@ class Downloads(QTreeView):
     def __init__(self, parent=None):
         #TODO: Create wrapper or subclass list to append and remove from items and rows_buffer.
         QTreeView.__init__(self, parent)
-        
+
+        self.parent = parent
+
         #listview look
         self.setWordWrap(True) #search textElideMode
         self.setRootIsDecorated(False)
@@ -160,6 +162,30 @@ class Downloads(QTreeView):
         [menu.addAction(title, callback) for title, callback in generic_items]
         
         menu.exec_(event.globalPos())
+
+    def selectionChanged(self, current, previous):
+        BTN = 0
+        rows = self.get_selected_rows()
+
+        self.parent.stop[BTN].setEnabled(False)
+        self.parent.start[BTN].setEnabled(False)
+
+        if len(rows) == 1: #single selection.
+            items = self.items
+            row = rows[0]
+            id_item = items[row][0]
+            self.parent.stop[BTN].setEnabled(True)
+            self.parent.start[BTN].setEnabled(False)
+            stopped_downloads = api.get_stopped_downloads()
+            try:
+                item = stopped_downloads[id_item]
+                self.parent.stop[BTN].setEnabled(False)
+                self.parent.start[BTN].setEnabled(True)
+            except KeyError:
+                pass
+        elif rows: #multi selection
+            self.parent.stop[BTN].setEnabled(True)
+            self.parent.start[BTN].setEnabled(True)
     
     def on_open_folder(self):
         rows = self.get_selected_rows()
