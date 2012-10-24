@@ -28,7 +28,7 @@ class ShutdownDialog(QMessageBox):
         
         self.timeout = TIME_OUT
         
-        self.timer = parent.idle_timeout(1000, self.update)
+        self.timer = parent.idle_timeout(1000, self.update_)
 
         #Flash if the window is in the background.
         if cons.OS_WIN:
@@ -36,12 +36,12 @@ class ShutdownDialog(QMessageBox):
 
         self.exec_()
 
-    def reject(self):
+    def reject(self, *args, **kwargs):
         self.timer.stop()
         self.hide()
-        return QDialog.Rejected
+        QDialog.reject(self, *args, **kwargs)
 
-    def update(self):
+    def update_(self):
         if self.timeout > 0:
             self.timeout -= 1
             self.setInformativeText("{} {}".format(_("Shutting in"), self.timeout))
