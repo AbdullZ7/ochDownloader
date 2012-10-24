@@ -135,14 +135,12 @@ class CaptchaDialog(QDialog):
                 row[1] = stopped_icon
         self.reject()
     
-    def accept(self):
+    def accept(self, *args, **kwargs):
         self.timer.stop()
         self.hide()
-        return QDialog.Accepted
+        QDialog.accept(self, *args, **kwargs)
     
-    def reject(self):
+    def reject(self, *args, **kwargs):
         self.timer.stop()
         self.hide()
-        return QDialog.Rejected
-    
-    
+        QDialog.reject(self, *args, **kwargs)
