@@ -84,7 +84,7 @@ class Downloads(QTreeView):
         signals.on_stop_all.connect(self.on_stop_all)
 
         #update list
-        parent.idle_timeout(1000, self.update)
+        parent.idle_timeout(1000, self.update_)
 
     def remove_row(self, id_item):
         item = self.rows_buffer.pop(id_item)
@@ -163,7 +163,10 @@ class Downloads(QTreeView):
         
         menu.exec_(event.globalPos())
 
-    def selectionChanged(self, current, previous):
+    def selectionChanged(self, selected, deselected):
+        #overridden slot
+        QTreeView.selectionChanged(self, selected, deselected)
+
         BTN = 0
         rows = self.get_selected_rows()
 
@@ -271,7 +274,7 @@ class Downloads(QTreeView):
             self.__model.append(item)
             self.rows_buffer[item[0]] = item
 
-    def update(self):
+    def update_(self):
         active_downloads = api.get_active_downloads()
         api.update_active_downloads()
         for download_item in active_downloads.itervalues():
