@@ -84,24 +84,24 @@ class WaitDialog(QDialog):
 
         self.th_plugin = Plugin(links_list)
         self.th_plugin.start()
-        self.timer = parent.idle_timeout(1000, self.update)
+        self.timer = parent.idle_timeout(1000, self.update_)
 
         self.exec_()
 
-    def update(self):
+    def update_(self):
         if not self.th_plugin.is_alive():
             self.video_links = list(self.th_plugin.video_deque)
             self.accept()
 
-    def accept(self):
+    def accept(self, *args, **kwargs):
         self.timer.stop()
         self.hide()
-        return QDialog.Accepted
+        QDialog.accept(self, *args, **kwargs)
 
-    def reject(self):
+    def reject(self, *args, **kwargs):
         self.timer.stop()
         self.hide()
-        return QDialog.Rejected
+        QDialog.reject(self, *args, **kwargs)
 
 
 import threading
