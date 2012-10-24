@@ -134,7 +134,7 @@ class ConfigAccounts(QDialog):
         
         self.load_accounts()
         
-        self.timer = parent.idle_timeout(1000, self.update)
+        self.timer = parent.idle_timeout(1000, self.update_)
         
         #self.show()
         self.exec_()
@@ -184,16 +184,16 @@ class ConfigAccounts(QDialog):
         row = self.get_selected_row()
         host_accounts.start_checking(self.items[row][HOST], self.items[row][ACCOUNT_ID])
     
-    def update(self):
+    def update_(self):
         account_list = host_accounts.get_checking_update()
         for account_item in account_list:
             for row in self.items:
                 if row[ACCOUNT_ID] == account_item.id_account:
                     row[STATUS] = account_item.status
 
-    def reject(self):
+    def reject(self, *args, **kwargs):
         #reimplemented.
         host_accounts.revert_changes()
         self.timer.stop()
         self.hide()
-        return QDialog.Rejected
+        return QDialog.reject(self, *args, **kwargs)

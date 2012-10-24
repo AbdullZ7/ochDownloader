@@ -121,9 +121,9 @@ class UnRARTab(QVBoxLayout):
             self.rows_buffer[item[0]] = item
         if not self.running:
             self.running = True
-            self.timer = self.parent.idle_timeout(1000, self.update)
+            self.timer = self.parent.idle_timeout(1000, self.update_)
     
-    def update(self):
+    def update_(self):
         status = self.unrar.get_status()
         if status:
             id_item, complete, err_msg = status

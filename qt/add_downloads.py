@@ -113,7 +113,7 @@ class AddDownloads(QVBoxLayout):
         signals.add_downloads_to_check.connect(self.add_downloads_to_check)
         
         #update list
-        parent.idle_timeout(1000, self.update)
+        parent.idle_timeout(1000, self.update_)
     
     def context_menu(self, position):
         menu = QMenu()
@@ -227,7 +227,7 @@ class AddDownloads(QVBoxLayout):
             self.rows_buffer[item[0]] = item
         api.start_checking()
     
-    def update(self):
+    def update_(self):
         checking_downloads = api.get_checking_downloads()
         api.update_checking_downloads()
         for download_item in checking_downloads.itervalues():
