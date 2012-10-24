@@ -95,6 +95,7 @@ class DownloadManager(DownloadCore, ThreadManager):
                     try:
                         download_item = self.queue_downloads.pop(id_item)
                     except KeyError:
+                        #bug: error on remove complete item from the gui.
                         raise
             th = None
             if is_active:
@@ -144,7 +145,7 @@ class DownloadManager(DownloadCore, ThreadManager):
                 self.next_download()
                 if status == cons.STATUS_FINISHED:
                     events.download_complete.emit(download_item)
-                if not self.active_downloads and status != cons.STATUS_STOPPED:
+                if not self.active_downloads and not self.queue_downloads and status != cons.STATUS_STOPPED:
                     events.all_downloads_complete.emit()
                 if limit_exceeded and self.active_downloads and status == cons.STATUS_ERROR:
                     events.limit_exceeded.emit()
