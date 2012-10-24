@@ -1,4 +1,3 @@
-
 from PySide.QtGui import *
 from PySide.QtCore import *
 
@@ -6,10 +5,10 @@ from PySide.QtCore import *
 class SimpleListModel(QAbstractItemModel):
     def __init__(self, headers, items, bool_cols=None):
         QAbstractItemModel.__init__(self)
-        #self.setSupportedDragActions(Qt.MoveAction)
         self.__bool_cols = bool_cols or []
         self.__items = items #or [] wont keep the binding to the same list when its empty.
         self.__headers = headers
+        self.__len_columns = len(headers)
 
     #Reimplemented virtual functions below.
     def rowCount(self, parent=QModelIndex()):
@@ -28,18 +27,14 @@ class SimpleListModel(QAbstractItemModel):
         """
         if not index.isValid():
             return None
-        elif index.column() in self.__bool_cols:
-            if role == Qt.CheckStateRole:
-                row = self.__items[index.row()]
-                item = row[index.column()] #index = iter
-                value = Qt.Checked if item else Qt.Unchecked
-                return value
-            else:
-                return None
         elif role == Qt.DisplayRole:
             row = self.__items[index.row()]
-            #return index.internalPointer()[index.column()]
             return row[index.column()] #index = iter
+        elif role == Qt.CheckStateRole and index.column() in self.__bool_cols:
+            row = self.__items[index.row()]
+            item = row[index.column()] #index = iter
+            value = Qt.Checked if item else Qt.Unchecked
+            return value
         else:
             return None
     
@@ -49,7 +44,7 @@ class SimpleListModel(QAbstractItemModel):
         """
         if not index.isValid():
             return False
-        elif index.column() in self.__bool_cols and role == Qt.CheckStateRole:
+        elif role == Qt.CheckStateRole and index.column() in self.__bool_cols:
             item = True if value == Qt.Checked else False
             row = self.__items[index.row()]
             row[index.column()] = item
@@ -70,7 +65,7 @@ class SimpleListModel(QAbstractItemModel):
             return Qt.ItemIsUserCheckable | Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsDragEnabled | Qt.ItemIsDropEnabled
         else:
             return Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsDragEnabled | Qt.ItemIsDropEnabled #| Qt.ItemIsEditable
-    
+
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         """
             returns column header title
@@ -80,16 +75,15 @@ class SimpleListModel(QAbstractItemModel):
         return None
     
     def columnCount(self, parent=QModelIndex()):
-        return len(self.__headers)
+        return self.__len_columns
     
     def index(self, row, column=1, parent=QModelIndex()):
         """
         Returns the index of the item in the model
         specified by the given row, column and parent index.
         """
-        if parent == QModelIndex() and row < len(self.__items):
-            pointer = self.__items[row]
-            index = self.createIndex(row, column, pointer)
+        if parent == QModelIndex(): # and row < len(self.__items)
+            index = self.createIndex(row, column)
         else:
             index = QModelIndex()
         return index
@@ -126,8 +120,3 @@ class SimpleListModel(QAbstractItemModel):
             #first_index = self.index(0, 0)
             #last_index = self.index(len(self.__items) - 1, len(self.__headers) - 1)
             self.dataChanged.emit(QModelIndex(), QModelIndex())
-
-
-
-
-
