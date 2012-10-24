@@ -130,7 +130,7 @@ class Gui(QMainWindow):
         self.tab.currentChanged.connect(self.on_tab_switch)
         #
         self.setCentralWidget(self.tab)
-        
+
         #status bar
         self.status_bar = StatusBar(self)
         self.setStatusBar(self.status_bar)
@@ -147,9 +147,6 @@ class Gui(QMainWindow):
         else:
             self.can_close = True
 
-        #on select button state
-        self.downloads.selectionModel().selectionChanged.connect(self.on_selected)
-
         #load session.
         self.load_session()
 
@@ -163,7 +160,7 @@ class Gui(QMainWindow):
 
         #custom qt signals
         signals.switch_tab.connect(self.switch_tab)
-        
+
         self.show()
 
     def customEvent(self, event):
@@ -266,29 +263,6 @@ class Gui(QMainWindow):
             tab = self.previous_tab.layout()
             tab.on_close()
         self.previous_tab = current_widget
-    
-    def on_selected(self, current, previous):
-        rows = self.downloads.get_selected_rows()
-        
-        self.stop[BTN].setEnabled(False)
-        self.start[BTN].setEnabled(False)
-        
-        if len(rows) == 1: #single selection.
-            items = self.downloads.items
-            row = rows[0]
-            id_item = items[row][0]
-            self.stop[BTN].setEnabled(True)
-            self.start[BTN].setEnabled(False)
-            stopped_downloads = api.get_stopped_downloads()
-            try:
-                item = stopped_downloads[id_item]
-                self.stop[BTN].setEnabled(False)
-                self.start[BTN].setEnabled(True)
-            except KeyError:
-                pass
-        elif rows: #multi selection
-            self.stop[BTN].setEnabled(True)
-            self.start[BTN].setEnabled(True)
     
     def load_addon_tabs(self):
         for tab, addon in [(addon.get_tab(), addon) for addon in self.addons_list]:
