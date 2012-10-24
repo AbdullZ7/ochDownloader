@@ -196,4 +196,4 @@ class ConfigAccounts(QDialog):
         host_accounts.revert_changes()
         self.timer.stop()
         self.hide()
-        return QDialog.reject(self, *args, **kwargs)
+        QDialog.reject(self, *args, **kwargs)
