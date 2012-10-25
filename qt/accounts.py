@@ -129,8 +129,8 @@ class ConfigAccounts(QDialog):
         vbox.addLayout(hbox_btns)
         
         # ####################### #
-        
-        self.tree_view.selectionModel().selectionChanged.connect(self.on_selected)
+
+        #self.tree_view.selectionModel().selectionChanged.connect(self.on_selected)
         
         self.load_accounts()
         
@@ -144,11 +144,12 @@ class ConfigAccounts(QDialog):
         selected_row = self.tree_view.selectionModel().selectedRows()[0].row()
         return selected_row
     
-    def on_selected(self, selected, unselected):
-        """"""
-        row = self.get_selected_row()
-        self.btn_remove.setEnabled(True)
-        self.btn_check.setEnabled(True)
+    #def on_selected(self, selected, unselected):
+        #""""""
+        #todo: heredar treeView y subclass selectionChanged
+        #row = self.get_selected_row()
+        #self.btn_remove.setEnabled(True)
+        #self.btn_check.setEnabled(True)
     
     def load_accounts(self):
         accounts_list = [account
