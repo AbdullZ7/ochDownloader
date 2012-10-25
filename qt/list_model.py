@@ -24,19 +24,19 @@ class SimpleListModel(QAbstractItemModel):
         index: QModelIndex
         Returns the data stored under the given role
         for the item referred to by the index.
+        #note: every item gets called for every role.
         """
         if not index.isValid():
             return None
+        elif index.column() in self.__bool_cols:
+            if role == Qt.CheckStateRole:
+                row = self.__items[index.row()]
+                item = row[index.column()] #index = iter
+                value = Qt.Checked if item else Qt.Unchecked
+                return value
         elif role == Qt.DisplayRole:
             row = self.__items[index.row()]
             return row[index.column()] #index = iter
-        elif role == Qt.CheckStateRole and index.column() in self.__bool_cols:
-            row = self.__items[index.row()]
-            item = row[index.column()] #index = iter
-            value = Qt.Checked if item else Qt.Unchecked
-            return value
-        else:
-            return None
     
     def setData(self, index, value, role=Qt.EditRole):
         """
