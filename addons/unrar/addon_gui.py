@@ -31,10 +31,6 @@ class Addon(AddonCore):
         """"""
         return Preferences()
 
-    def save(self):
-        """"""
-        passwords_handler.save()
-
     def set_menu_item(self):
         self.action = self.parent.menu.addAction(self.name, self.on_toggle) #can toggle
         self.action.setCheckable(True)

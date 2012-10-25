@@ -19,9 +19,6 @@ class AddonCore:
     
     def get_preferences(self):
         pass
-    
-    def save(self):
-        pass
 
 
 class AddonsManager:

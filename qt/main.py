@@ -2,12 +2,10 @@ import traceback
 import gettext
 import locale
 import os
-import Queue
 import logging
 logger = logging.getLogger(__name__)
 #Libs
 #from core.Container_Extractor import Container
-from core.idle_queue import idle_loop
 from core.conf_parser import conf
 from core.events import events
 from core.api import api
@@ -272,10 +270,6 @@ class Gui(QMainWindow):
                 self.tab.addTab(tab_widget, addon.name)
                 self.addon_tab_widgets.append(tab_widget)
 
-    def addons_save(self):
-        """"""
-        [addon.save() for addon in self.addons_list]
-
     def load_session(self):
         """"""
         ordered_list = api.load_session()
@@ -311,7 +305,6 @@ class Gui(QMainWindow):
             x, y, w, h = self.geometry().getRect()
             self.hide()
             self.save_session()
-            self.addons_save()
             self.preferences.on_close()
             conf.set_window_settings(x, y, w, h)
             conf.save()
