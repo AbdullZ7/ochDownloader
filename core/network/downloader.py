@@ -197,18 +197,16 @@ class Downloader(threading.Thread, MultiDownload):
     
     def get_speed(self):
         """"""
-        speed = 0
-        if self.start_time:
-            size_complete = self.size_complete #todo: use lock.
-            speed = float((size_complete - self.sp_size)) / (time.time() - self.sp_time) #size / elapsed_time
-            self.sp_size = size_complete
-            self.sp_time = time.time()
-            self.sp_deque.append(speed)
-            deque_speeds = [last_speed for last_speed in self.sp_deque if int(last_speed) > 0]
-            try:
-                speed = sum(deque_speeds) / len(deque_speeds)
-            except ZeroDivisionError:
-                return 0
+        size_complete = self.size_complete #todo: use lock.
+        speed = float((size_complete - self.sp_size)) / (time.time() - self.sp_time) #size / elapsed_time
+        self.sp_size = size_complete
+        self.sp_time = time.time()
+        self.sp_deque.append(speed)
+        deque_speeds = [last_speed for last_speed in self.sp_deque if int(last_speed) > 0]
+        try:
+            speed = sum(deque_speeds) / len(deque_speeds)
+        except ZeroDivisionError:
+            return 0
         if self.status == cons.STATUS_FINISHED or self.stop_flag or self.error_flag:
             return 0
         return speed
