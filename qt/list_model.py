@@ -37,6 +37,7 @@ class SimpleListModel(QAbstractItemModel):
         elif role == Qt.DisplayRole:
             row = self.__items[index.row()]
             return row[index.column()] #index = iter
+        return None
     
     def setData(self, index, value, role=Qt.EditRole):
         """
