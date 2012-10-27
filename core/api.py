@@ -66,6 +66,7 @@ class _Api(DownloadManager, AddDownloadsManager):
             ordered_list = []
             download_list = self.session_parser.load()
             for item in download_list:
+                #todo: add save_as
                 FILE_NAME, FILE_PATH, LINK, HOST, SIZE, STATUS_MSG, PROGRESS, TIME, TIME_REMAIN, CHUNCKS = range(10) #cool stuff
                 download_item = DownloadItem(item[FILE_NAME], item[HOST], item[SIZE], item[LINK], item[FILE_PATH])
                 download_item.status = cons.STATUS_STOPPED
