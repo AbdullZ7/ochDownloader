@@ -66,10 +66,10 @@ class AddDownloadsManager:
         self.__thread_checking_downloads.clear()
         self.__slots.set_slots(slots=0)
 
-    def create_download_item(self, file_name, size, link, copy_link=True):
+    def create_download_item(self, file_name, size, link, save_as=None, copy_link=True):
         """"""
         host = misc.get_host(link)
-        download_item = DownloadItem(file_name, host, size, link, can_copy_link=copy_link)
+        download_item = DownloadItem(file_name, host, size, link, save_as=save_as, can_copy_link=copy_link)
         self.__pending_downloads[download_item.id] = download_item
         return download_item
     

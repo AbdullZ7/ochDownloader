@@ -9,7 +9,7 @@ import cons
 
 class DownloadItem:
     """"""
-    def __init__(self, name, host, size, link, path=cons.DLFOLDER_PATH, can_copy_link=True): #ile_name, host, size, link
+    def __init__(self, name, host, size, link, path=cons.DLFOLDER_PATH, save_as=None, can_copy_link=True): #ile_name, host, size, link
         """"""
         self.id = str(uuid.uuid1()) #id unico.
         self.path = path
@@ -31,6 +31,7 @@ class DownloadItem:
         self.can_resume = False
         self.is_premium = False
         self.can_copy_link = can_copy_link
+        self.save_as = save_as
 
     def update(self, name, status, progress, size, size_complete, speed, time,
                time_remain, chunks, status_msg, can_resume, is_premium):
