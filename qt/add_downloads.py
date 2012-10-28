@@ -108,10 +108,6 @@ class AddDownloads(QVBoxLayout):
         
         
         self.addLayout(hbox)
-
-        #custom signals
-        signals.add_downloads_to_check.connect(self.add_downloads_to_check)
-        signals.add_videos_to_check.connect(self.add_videos_to_check)
         
         #update list
         parent.idle_timeout(1000, self.update_)
@@ -218,15 +214,6 @@ class AddDownloads(QVBoxLayout):
 
         if conf.get_auto_switch_tab():
             signals.switch_tab.emit(0)
-
-    def add_videos_to_check(self, video_list):
-        #called by video grabber addon.
-        for f_name, url in video_list:
-            download_item = api.create_download_item(f_name, 0, url, save_as=f_name) #return download_item object
-            item = [download_item.id, True, cons.LINK_CHECKING, f_name, None, None, None]
-            self.__model.append(item)
-            self.rows_buffer[item[0]] = item
-        api.start_checking()
 
     def add_downloads_to_check(self, links_list, copy_link=True):
         for link in links_list:

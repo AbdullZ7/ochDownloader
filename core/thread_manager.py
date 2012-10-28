@@ -18,9 +18,9 @@ class ThreadManager:
         """"""
         return self.thread_downloads[id_item]
 
-    def add_thread(self, id_item, file_name, path, link, host, chunks, save_as):
+    def add_thread(self, id_item, file_name, path, link, host, chunks):
         """"""
-        th = Downloader(file_name, path, link, host, self.bucket, chunks, save_as)
+        th = Downloader(file_name, path, link, host, self.bucket, chunks)
         self.thread_downloads[id_item] = th
         th.start()
 

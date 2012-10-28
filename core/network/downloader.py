@@ -19,12 +19,12 @@ class StatusStopped(Exception): pass
 
 class Downloader(threading.Thread, MultiDownload):
     """"""
-    def __init__(self, file_name, path, link, host, bucket, chunks, save_as):
+    def __init__(self, file_name, path, link, host, bucket, chunks):
         """"""
         threading.Thread.__init__(self)
         MultiDownload.__init__(self, file_name, path, link, host, bucket, chunks)
 
-        self.save_as = save_as
+        self.f_name = None
 
     def run(self):
         """"""
@@ -75,6 +75,7 @@ class Downloader(threading.Thread, MultiDownload):
         elif self.source:
             self.link_file = pb.dl_link
             self.cookie = pb.cookie
+            self.f_name = pb.f_name
         else:
             self.limit_exceeded = pb.limit_exceeded
             raise StatusError(pb.err_msg)
@@ -82,8 +83,8 @@ class Downloader(threading.Thread, MultiDownload):
     def __set_filename_n_size(self):
         info = self.source.info()
         old_file_name = self.file_name
-        if self.save_as:
-            self.file_name = self.save_as
+        if self.f_name:
+            self.file_name = self.f_name
         else:
             self.file_name = self.__get_filename_from_source(info)
         if self.file_exists and old_file_name != self.file_name:

@@ -23,6 +23,7 @@ class PluginBridge:
         self.err_msg = None
         self.premium = False
         self.limit_exceeded = False
+        self.f_name = None
 
     def plugin_download(self):
         account_item = host_accounts.get_account(self.host)
@@ -39,7 +40,12 @@ class PluginBridge:
             module = importlib.import_module("plugins.{0}.{1}".format(self.host, plugin_download))
             p = module.PluginDownload(self.link, self.content_range, self.wait_func, account_item)
             p.parse()
-            self.source, self.dl_link, self.cookie, self.err_msg, self.limit_exceeded = p.source, p.dl_link, p.cookie, p.err_msg, p.limit_exceeded
+            self.source = p.source
+            self.dl_link = p.dl_link
+            self.cookie = p.cookie
+            self.err_msg = p.err_msg
+            self.limit_exceeded = p.limit_exceeded
+            self.f_name = p.f_name
             if not self.source and account_item is not None:
                 account_status = p.get_account_status()
                 self.disable_account(account_item, account_status)
