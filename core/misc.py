@@ -3,6 +3,7 @@ import ctypes
 import re
 import htmlentitydefs
 import subprocess
+import urllib
 
 import cons
 import logging
@@ -195,6 +196,15 @@ def strip(input, to_strip=None):
     for x in to_strip or []:
         input = input.replace(x, '')
     return input
+
+
+def normalize_file_name(name):
+    name = html_entities_parser(name)
+    name = urllib.unquote_plus(name)
+    name = smart_decode(name)
+    name = strip(name, to_strip='/\\:*?"<>|')
+    name = name.strip('.')
+    return name
 
 
 def tail(fh, lines_limit=20):
