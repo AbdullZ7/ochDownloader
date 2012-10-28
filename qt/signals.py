@@ -5,7 +5,7 @@ class _Signals:
     switch_tab = Event('switch_tab')
     store_items = Event('store_items')
     add_downloads_to_check = Event('add_downloads_to_check')
-    add_single_download_to_check = Event('add_single_download_to_check')
+    add_videos_to_check = Event('add_videos_to_check')
     on_stop_all = Event('on_stop_all')
     status_bar_pop_msg = Event('status_bar_pop_msg')
     status_bar_push_msg = Event('status_bar_push_msg')
