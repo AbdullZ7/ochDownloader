@@ -8,5 +8,6 @@ class _Events:
     quit = Event('quit')
     limit_exceeded = Event('limit_exceeded')
     add_password = Event('add_password') #args: password
+    quality_choice_dialog = Event('quality_choice_dialog') #args:
 
 events = _Events()
