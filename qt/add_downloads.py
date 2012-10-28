@@ -108,6 +108,9 @@ class AddDownloads(QVBoxLayout):
         
         
         self.addLayout(hbox)
+
+        #custom signals
+        signals.add_downloads_to_check.connect(self.add_downloads_to_check)
         
         #update list
         parent.idle_timeout(1000, self.update_)
