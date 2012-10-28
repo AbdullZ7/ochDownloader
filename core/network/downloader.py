@@ -84,7 +84,7 @@ class Downloader(threading.Thread, MultiDownload):
         info = self.source.info()
         old_file_name = self.file_name
         if self.f_name:
-            self.file_name = self.f_name
+            self.file_name = misc.normalize_file_name(self.f_name)
         else:
             self.file_name = self.__get_filename_from_source(info)
         if self.file_exists and old_file_name != self.file_name:
