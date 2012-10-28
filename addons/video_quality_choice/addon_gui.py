@@ -26,7 +26,7 @@ class Addon(AddonCore):
     #def disconnect(self):
         #events.quality_choice_dialog.disconnect(self.trigger)
 
-    def trigger(self, f_name, choices_list, set_solution, *args, **kwargs):
-        choice_dlg = QualityChoiceDialog(f_name, choices_list, self.parent)
+    def trigger(self, f_name, choices_dict, set_solution, *args, **kwargs):
+        choice_dlg = QualityChoiceDialog(f_name, choices_dict, self.parent)
         solution = choice_dlg.get_solution()
         set_solution(solution)

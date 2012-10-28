@@ -76,9 +76,10 @@ class PluginDownload(PluginsCore):
         video_title = urllib.unquote_plus(video_info['title'][0])
         video_title = video_title.decode('utf-8')
 
-        choice_list = [(id_, quality) for id_, quality in self.video_dimensions.iteritems() if id_ in url_map]
+        #choice_list = [(id_, quality) for id_, quality in self.video_dimensions.iteritems() if id_ in url_map]
+        choices_dict = {id_: quality for id_, quality in self.video_dimensions.iteritems() if id_ in url_map}
 
-        c = QualityChoice(video_title, choice_list)
+        c = QualityChoice(video_title, choices_dict, self.wait_func)
         c.run_choice()
         choice = c.solution
 

@@ -10,10 +10,11 @@ _thread_lock = threading.Lock()
 
 class QualityChoice:
     """"""
-    def __init__(self, f_name, choices_list):
+    def __init__(self, f_name, choices_dict, wait_func):
         """"""
         self.f_name = f_name
-        self.choices_list = choices_list
+        self.choices_dict = choices_dict
+        self.wait_func = wait_func
         self.solution = None
         self.event = threading.Event()
 
@@ -25,11 +26,14 @@ class QualityChoice:
     def run_choice(self):
         #must be called from a child thread
         with _thread_lock: #one at the time please
-            self.make_choice()
+            if not self.wait_func(): #dl stopped?
+                self.make_choice()
+            else: #reset solution.
+                self.solution = None
 
     def make_choice(self):
         if idle_queue.register_event(self.event):
-            events.quality_choice_dialog.emit(self.f_name, self.choices_list, self.set_solution)
+            events.quality_choice_dialog.emit(self.f_name, self.choices_dict, self.set_solution)
             self.event.wait()
             self.event.clear() #re-use.
             idle_queue.remove_event(self.event)
