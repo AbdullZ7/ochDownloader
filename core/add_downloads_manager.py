@@ -31,6 +31,8 @@ class LinkChecker(threading.Thread):
         """"""
         try:
             module = importlib.import_module("plugins.{0}.link_checker".format(self.host))
+            self.link_status, file_name, self.size, self.status_msg = module.LinkChecker().check(self.link)
+            self.file_name = misc.smart_decode(misc.html_entities_parser(file_name))
         except ImportError as err:
             logger.debug(err)
             self.file_name = misc.get_filename_from_url(self.link) or cons.UNKNOWN #may be an empty str
@@ -38,9 +40,6 @@ class LinkChecker(threading.Thread):
         except Exception as err:
             logger.exception(err)
             self.link_status = cons.LINK_ERROR
-        else:
-            self.link_status, file_name, self.size, self.status_msg = module.LinkChecker().check(self.link)
-            self.file_name = misc.smart_decode(misc.html_entities_parser(file_name))
 
 
 class AddDownloadsManager:
