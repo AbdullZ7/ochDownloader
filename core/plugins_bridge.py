@@ -1,6 +1,6 @@
 import importlib
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+logger = logging.getLogger(__name__)
 
 #Libs
 import cons
@@ -23,7 +23,7 @@ class PluginBridge:
         self.err_msg = None
         self.premium = False
         self.limit_exceeded = False
-    
+
     def plugin_download(self):
         account_item = host_accounts.get_account(self.host)
         if account_item is not None:
@@ -33,7 +33,7 @@ class PluginBridge:
             plugin_download = "anonym_download"
         logger.info(plugin_download)
         self.set_data(plugin_download, account_item)
-    
+
     def set_data(self, plugin_download, account_item):
         try:
             module = importlib.import_module("plugins.{0}.{1}".format(self.host, plugin_download))
@@ -46,8 +46,7 @@ class PluginBridge:
         except Exception as err:
             self.err_msg = err
             logger.exception(err)
-    
+
     def disable_account(self, account_item, account_status):
         if account_status in (cons.ACCOUNT_FAIL, cons.ACCOUNT_FREE): #login fail or free account.
             idle_add_and_wait(host_accounts.enable_account, account_item.host, account_item.id_account, False, True)
-
