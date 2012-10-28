@@ -1,5 +1,4 @@
 import os
-import urllib
 import threading
 import time
 import logging
