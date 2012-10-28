@@ -105,15 +105,13 @@ def links_parser(text_pasted):
     """
     NOT FOOL PROOF
     """
-    #el primer string al dividir, esta vacio.
-    result_list = []
     #links_list = text_pasted.split("http") #['://www.megaup.com/wawa', 'parte1:', '://www.megaup.com/wawa2']
     links_list = [link
                     for line in text_pasted.splitlines()
                     for link in line.split("http")] #['parte1:http://www....', ]
-    for link in links_list:
-        if link.startswith(("://", "s://")): #http/https
-            result_list.append("".join(("http", link)).strip())
+    result_list = ["".join(("http", link)).strip()
+                   for link in links_list
+                   if link.startswith(("://", "s://"))] #http/https
     return result_list
 
 
