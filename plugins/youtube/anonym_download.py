@@ -7,6 +7,8 @@ from urlparse import parse_qs
 #Libs
 from core.plugins_core import PluginsCore
 
+from addons.video_quality_choice.choice import QualityChoice
+
 
 class PluginDownload(PluginsCore):
     """
@@ -14,10 +16,14 @@ class PluginDownload(PluginsCore):
     https://github.com/rg3/youtube-dl
     """
     video_extensions = {
+        '5': 'video', #unknown
+        '6': 'video', #unknown
         '13': '3gp',
         '17': 'mp4',
         '18': 'mp4',
         '22': 'mp4',
+        '34': 'video', #unknown
+        '35': 'video', #unknown
         '37': 'mp4',
         '38': 'video',
         '43': 'webm',
@@ -27,27 +33,26 @@ class PluginDownload(PluginsCore):
         }
 
     video_dimensions = {
-        '5': '400x240',
-        '6': '???',
-        '13': '???',
-        '17': '176x144',
-        '18': '640x360',
-        '22': '1280x720',
-        '34': '640x360',
-        '35': '854x480',
-        '37': '1920x1080',
-        '38': '4096x3072',
-        '43': '640x360',
-        '44': '854x480',
-        '45': '1280x720',
-        '46': '1920x1080',
+        '5': '400x240 (.???)',
+        '6': '??? (.???)',
+        '13': '??? (.3gp)',
+        '17': '176x144 (.mp4)',
+        '18': '640x360 (.???)',
+        '22': '1280x720 (.mp4)',
+        '34': '640x360 (.??)',
+        '35': '854x480 (.???)',
+        '37': '1920x1080 (.mp4)',
+        '38': '4096x3072 (.video)',
+        '43': '640x360 (.webm)',
+        '44': '854x480 (.webm)',
+        '45': '1280x720 (.webm)',
+        '46': '1920x1080 (.webm)',
         }
 
     def __init__(self, *args, **kwargs):
         PluginsCore.__init__(self, *args, **kwargs)
 
     def parse(self):
-        #todo: emit event to popup a format/quality choise window.
         video_id = self.link.split("=")[-1].split("&")[0]
 
         for el_type in ['&el=embedded', '&el=detailpage', '&el=vevo', '']:
@@ -60,25 +65,30 @@ class PluginDownload(PluginsCore):
                 #print video_info_url
                 break
 
-        format_list = ['38', '37', '46', '22', '45', '35', '44', '34', '18', '43', '6', '5', '17', '13']
-
         url_data_strs = video_info['url_encoded_fmt_stream_map'][0].split(',')
         url_data = [parse_qs(uds) for uds in url_data_strs]
         url_data = filter(lambda ud: 'itag' in ud and 'url' in ud, url_data)
         url_map = dict((ud['itag'][0], ud['url'][0] + '&signature=' + ud['sig'][0]) for ud in url_data)
 
-        existing_formats = [x for x in format_list if x in url_map]
+        #existing_formats = [x for x in format_list if x in url_map]
         #print existing_formats
-        url = url_map[existing_formats[1]]
+
+        video_title = urllib.unquote_plus(video_info['title'][0])
+        video_title = video_title.decode('utf-8')
+
+        choice_list = [(id_, quality) for id_, quality in self.video_dimensions.iteritems() if id_ in url_map]
+
+        c = QualityChoice(video_title, choice_list)
+        c.run_choice()
+        choice = c.solution
+
+        url = url_map[choice]
         #print url
 
         source = self.get_page(url, close=False)
         #print source.headers #Content-Type: video/webm
 
-        video_title = urllib.unquote_plus(video_info['title'][0])
-        video_title = video_title.decode('utf-8')
-
-        self.f_name = video_title
+        self.f_name = '.'.join((video_title, self.video_extensions[choice]))
         self.source = source
 
 
