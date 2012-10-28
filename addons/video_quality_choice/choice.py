@@ -29,7 +29,7 @@ class QualityChoice:
 
     def make_choice(self):
         if idle_queue.register_event(self.event):
-            events.captcha_dialog.emit(self.f_name, self.choices_list, self.set_solution)
+            events.quality_choice_dialog.emit(self.f_name, self.choices_list, self.set_solution)
             self.event.wait()
             self.event.clear() #re-use.
             idle_queue.remove_event(self.event)
