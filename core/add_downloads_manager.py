@@ -8,6 +8,7 @@ import cons
 import misc
 from download_core import DownloadItem
 from slots import Slots
+from plugins_parser import plugins_parser
 
 
 class LinkChecker(threading.Thread):
@@ -34,7 +35,6 @@ class LinkChecker(threading.Thread):
             logger.debug(err)
             self.file_name = misc.get_filename_from_url(self.link) or cons.UNKNOWN #may be an empty str
             self.link_status = cons.LINK_ERROR
-            self.host = cons.UNSUPPORTED
         except Exception as err:
             logger.exception(err)
             self.link_status = cons.LINK_ERROR
@@ -69,6 +69,8 @@ class AddDownloadsManager:
     def create_download_item(self, file_name, size, link, save_as=None, copy_link=True):
         """"""
         host = misc.get_host(link)
+        if not plugins_parser.services_dict.get(host, None):
+            host = cons.UNSUPPORTED
         download_item = DownloadItem(file_name, host, size, link, save_as=save_as, can_copy_link=copy_link)
         self.__pending_downloads[download_item.id] = download_item
         return download_item
@@ -92,7 +94,6 @@ class AddDownloadsManager:
         for id_item, download_item in self.__checking_downloads.items():
             th = self.__thread_checking_downloads[id_item]
             if not th.is_alive():
-                download_item.host = th.host
                 download_item.link_status = th.link_status
                 download_item.size = th.size
                 download_item.status_msg = th.status_msg
