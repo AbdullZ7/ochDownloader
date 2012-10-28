@@ -59,7 +59,7 @@ class GrabberDialog(QDialog):
         if links_list:
             w = WaitDialog(self.parent, links_list)
             if w.video_links:
-                signals.add_downloads_to_check.emit(w.video_links)
+                signals.add_videos_to_check.emit(w.video_links)
                 signals.switch_tab.emit(1)
         self.accept()
 
@@ -142,7 +142,7 @@ class Plugin(threading.Thread):
     def parser(self, link):
         host = misc.get_host(link)
         try:
-            module = importlib.import_module("plugins.{0}".format(host))
+            module = importlib.import_module("addons.video_grabber.plugins.{0}".format(host))
         except ImportError as err:
             logger.debug(err)
             module = unsupported
@@ -153,5 +153,5 @@ class Plugin(threading.Thread):
         except Exception as err:
             logger.exception(err)
         else:
-            for video in p.video_list:
-                self.video_deque.append(video)
+            for f_name, url in p.video_list:
+                self.video_deque.append((f_name, url))

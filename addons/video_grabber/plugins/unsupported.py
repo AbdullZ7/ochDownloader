@@ -35,4 +35,4 @@ class Grab(BasePlugin):
             return
 
         video_url = urllib.unquote(mobj.group(1))
-        self.video_list.append(video_url)
+        self.video_list.append((None, video_url))
