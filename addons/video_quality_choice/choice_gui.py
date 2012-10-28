@@ -28,7 +28,7 @@ class QualityChoiceDialog(QDialog):
 
         #captcha image
         self.cb = QComboBox()
-        [self.cb.addItem(quality) for _, quality in sorted(choices_list)]
+        [self.cb.addItem(quality) for id_, quality in sorted(choices_list)]
         vbox.addWidget(self.cb)
 
         #buttons
@@ -36,6 +36,8 @@ class QualityChoiceDialog(QDialog):
 
         hbox_btns = QHBoxLayout()
         vbox.addLayout(hbox_btns)
+
+        hbox_btns.addStretch()
 
         btn_ok = QPushButton(_('OK'))
         btn_ok.setDefault(True)
