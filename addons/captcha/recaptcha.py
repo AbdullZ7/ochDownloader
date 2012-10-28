@@ -2,7 +2,7 @@ import threading
 import logging
 logger = logging.getLogger(__name__)
 
-import core.idle_queue as idle_queue
+from core import idle_queue
 from core.events import events
 from core.network.connection import request
 

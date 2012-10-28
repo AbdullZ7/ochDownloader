@@ -2,7 +2,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 from core.events import events
-import core.cons as cons
 
 from qt.addons import AddonCore
 
