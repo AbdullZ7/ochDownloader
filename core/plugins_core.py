@@ -33,6 +33,7 @@ class PluginsCore:
         self.err_msg = None
         self.source = None
         self.cookie = cookielib.CookieJar()
+        self.f_name = None #file name for videos
 
     def parse(self):
         raise NotImplementedError()
