@@ -53,7 +53,7 @@ class PluginDownload(PluginsCore):
         PluginsCore.__init__(self, *args, **kwargs)
 
     def parse(self):
-        video_id = self.link.split("=")[-1].split("&")[0]
+        video_id = self.link.split("&")[0].split("=")[-1]
 
         for el_type in ['&el=embedded', '&el=detailpage', '&el=vevo', '']:
             video_info_url = ('http://www.youtube.com/get_video_info?&video_id=%s%s&ps=default&eurl=&gl=US&hl=en'
@@ -74,7 +74,6 @@ class PluginDownload(PluginsCore):
         #print existing_formats
 
         video_title = urllib.unquote_plus(video_info['title'][0])
-        video_title = video_title.decode('utf-8')
 
         #choice_list = [(id_, quality) for id_, quality in self.video_dimensions.iteritems() if id_ in url_map]
         choices_dict = {id_: quality for id_, quality in self.video_dimensions.iteritems() if id_ in url_map}

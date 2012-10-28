@@ -11,7 +11,7 @@ class LinkChecker:
     """"""
     def check(self, link):
         """"""
-        video_id = link.split("=")[-1].split("&")[0]
+        video_id = link.split("&")[0].split("=")[-1]
 
         for el_type in ['&el=embedded', '&el=detailpage', '&el=vevo', '']:
             video_info_url = ('http://www.youtube.com/get_video_info?&video_id=%s%s&ps=default&eurl=&gl=US&hl=en'
@@ -24,6 +24,5 @@ class LinkChecker:
                     break
 
         video_title = urllib.unquote_plus(video_info['title'][0])
-        video_title = video_title.decode('utf-8')
 
         return cons.LINK_ALIVE, video_title, 0, None
