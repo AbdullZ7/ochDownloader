@@ -20,10 +20,12 @@ class StatusStopped(Exception): pass
 
 class Downloader(threading.Thread, MultiDownload):
     """"""
-    def __init__(self, file_name, path, link, host, bucket, chunks):
+    def __init__(self, file_name, path, link, host, bucket, chunks, save_as):
         """"""
         threading.Thread.__init__(self)
         MultiDownload.__init__(self, file_name, path, link, host, bucket, chunks)
+
+        self.save_as = save_as
 
     def run(self):
         """"""
@@ -81,7 +83,10 @@ class Downloader(threading.Thread, MultiDownload):
     def __set_filename_n_size(self):
         info = self.source.info()
         old_file_name = self.file_name
-        self.file_name = self.__get_filename_from_source(info)
+        if self.save_as:
+            self.file_name = self.save_as
+        else:
+            self.file_name = self.__get_filename_from_source(info)
         if self.file_exists and old_file_name != self.file_name:
             #do not rename the file.
             raise StatusError("Cant resume, file name has change. Please retry.")
@@ -104,11 +109,7 @@ class Downloader(threading.Thread, MultiDownload):
             file_name = misc.get_filename_from_url(self.source.url)
         elif file_name.startswith('=?UTF-8?B?'): #base64
             file_name = file_name.lstrip('=?UTF-8?B?').decode('base64')
-        file_name = misc.html_entities_parser(file_name)
-        file_name = urllib.unquote_plus(file_name)
-        file_name = misc.smart_decode(file_name)
-        file_name = misc.strip(file_name, to_strip='/\\:*?"<>|')
-        file_name = file_name.strip('.')
+        file_name = misc.normalize_file_name(file_name)
         return file_name
 
     def __set_can_resume(self):
