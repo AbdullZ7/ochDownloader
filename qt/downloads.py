@@ -149,9 +149,11 @@ class Downloads(QTreeView):
         individual_items = [(_('Open destination folder'), self.on_open_folder),
                             (_('Copy link'), self.on_copy_link),
                             #(_('Add password'), self.on_password),
+                            (None, None),
                             (_('Delete'), self.on_delete)]
         
-        [menu.addAction(title, callback).setEnabled(sensitive) for title, callback in individual_items]
+        [menu.addAction(title, callback).setEnabled(sensitive) if title is not None else menu.addSeparator()
+         for title, callback in individual_items]
 
         menu.addSeparator()
         
@@ -159,7 +161,8 @@ class Downloads(QTreeView):
                         (_('Start all'), self.on_start_all),
                         (_('Stop all'), self.on_stop_all)]
         
-        [menu.addAction(title, callback) for title, callback in generic_items]
+        [menu.addAction(title, callback) if title is not None else menu.addSeparator()
+         for title, callback in generic_items]
         
         menu.exec_(event.globalPos())
 
