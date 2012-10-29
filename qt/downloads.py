@@ -148,7 +148,7 @@ class Downloads(QTreeView):
         
         individual_items = [(_('Open destination folder'), self.on_open_folder),
                             (_('Copy link'), self.on_copy_link),
-                            (_('Add password'), self.on_password),
+                            #(_('Add password'), self.on_password),
                             (_('Delete'), self.on_delete)]
         
         [menu.addAction(title, callback).setEnabled(sensitive) for title, callback in individual_items]
