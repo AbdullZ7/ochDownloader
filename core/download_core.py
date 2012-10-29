@@ -31,9 +31,10 @@ class DownloadItem:
         self.can_resume = False
         self.is_premium = False
         self.can_copy_link = can_copy_link
+        self.video_quality = None
 
     def update(self, name, status, progress, size, size_complete, speed, time,
-               time_remain, chunks, status_msg, can_resume, is_premium):
+               time_remain, chunks, status_msg, can_resume, is_premium, video_quality):
         """"""
         self.name = name
         self.status = status
@@ -47,6 +48,7 @@ class DownloadItem:
         self.chunks = chunks or []
         self.can_resume = can_resume
         self.is_premium = is_premium
+        self.video_quality = video_quality
 
     def reset_fail_count(self):
         """"""

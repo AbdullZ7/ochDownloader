@@ -181,8 +181,8 @@ class DownloadManager(DownloadCore, ThreadManager):
                     slot = False
             if slot:
                 self.global_slots.add_slot()
-                self.add_thread(download_item.id, download_item.name, download_item.path,
-                                download_item.link, download_item.host, download_item.chunks) #threadmanager
+                self.add_thread(download_item.id, download_item.name, download_item.path, download_item.link,
+                                download_item.host, download_item.video_quality, download_item.chunks) #threadmanager
                 self.active_downloads[download_item.id] = download_item
                 del self.queue_downloads[download_item.id]
 

@@ -75,20 +75,19 @@ class PluginDownload(PluginsCore):
 
         video_title = urllib.unquote_plus(video_info['title'][0])
 
-        #choice_list = [(id_, quality) for id_, quality in self.video_dimensions.iteritems() if id_ in url_map]
-        choices_dict = {id_: quality for id_, quality in self.video_dimensions.iteritems() if id_ in url_map}
+        if self.video_quality is None:
+            choices_dict = {id_: quality for id_, quality in self.video_dimensions.iteritems() if id_ in url_map}
+            c = QualityChoice(video_title, choices_dict, self.wait_func)
+            c.run_choice()
+            self.video_quality = c.solution
 
-        c = QualityChoice(video_title, choices_dict, self.wait_func)
-        c.run_choice()
-        choice = c.solution
-
-        url = url_map[choice]
+        url = url_map[self.video_quality]
         #print url
 
         source = self.get_page(url, close=False)
         #print source.headers #Content-Type: video/webm
 
-        self.f_name = '.'.join((video_title, self.video_extensions[choice]))
+        self.f_name = '.'.join((video_title, self.video_extensions[self.video_quality]))
         self.source = source
 
 

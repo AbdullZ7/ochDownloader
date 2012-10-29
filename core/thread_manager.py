@@ -18,9 +18,9 @@ class ThreadManager:
         """"""
         return self.thread_downloads[id_item]
 
-    def add_thread(self, id_item, file_name, path, link, host, chunks):
+    def add_thread(self, id_item, file_name, path, link, host, video_quality, chunks):
         """"""
-        th = Downloader(file_name, path, link, host, self.bucket, chunks)
+        th = Downloader(file_name, path, link, host, video_quality, self.bucket, chunks)
         self.thread_downloads[id_item] = th
         th.start()
 
@@ -58,8 +58,8 @@ class ThreadManager:
         chunks, size_complete = th.get_chunk_n_size()
 
         return th.file_name, status, th.get_progress(), th.size_file, size_complete, th.get_speed(),\
-               th.get_time(), th.get_remain(), chunks, th.status_msg, th.can_resume, th.is_premium
-        #NAME, STATUS, PROGRESS, SIZE, COMPLETE, SPEED, TIME, REMAIN, CHUNKS, MSG, RESUME, PREMIUM = range(12)
+               th.get_time(), th.get_remain(), chunks, th.status_msg, th.can_resume, th.is_premium, th.video_quality
+        #NAME, STATUS, PROGRESS, SIZE, COMPLETE, SPEED, TIME, REMAIN, CHUNKS, MSG, RESUME, PREMIUM, QUALITY = range(13)
 
     def is_limit_exceeded(self, id_item):
         th = self.thread_downloads[id_item]

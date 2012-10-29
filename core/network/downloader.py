@@ -19,10 +19,10 @@ class StatusStopped(Exception): pass
 
 class Downloader(threading.Thread, MultiDownload):
     """"""
-    def __init__(self, file_name, path, link, host, bucket, chunks):
+    def __init__(self, file_name, path, link, host, video_quality, bucket, chunks):
         """"""
         threading.Thread.__init__(self)
-        MultiDownload.__init__(self, file_name, path, link, host, bucket, chunks)
+        MultiDownload.__init__(self, file_name, path, link, host, video_quality, bucket, chunks)
 
         self.f_name = None
 
@@ -67,7 +67,7 @@ class Downloader(threading.Thread, MultiDownload):
     
     def __source(self):
         """"""
-        pb = PluginBridge(self.link, self.host, self.content_range, self.wait_func)
+        pb = PluginBridge(self.link, self.host, self.video_quality, self.content_range, self.wait_func)
         pb.plugin_download()
         self.source = pb.source
         if self.stop_flag:
@@ -76,6 +76,7 @@ class Downloader(threading.Thread, MultiDownload):
             self.link_file = pb.dl_link
             self.cookie = pb.cookie
             self.f_name = pb.f_name
+            self.video_quality = pb.video_quality
         else:
             self.limit_exceeded = pb.limit_exceeded
             raise StatusError(pb.err_msg)
@@ -195,7 +196,7 @@ class Downloader(threading.Thread, MultiDownload):
             return 100
         else:
             return progress
-    
+
     def get_speed(self):
         """"""
         size_complete = self.size_complete #todo: use lock.

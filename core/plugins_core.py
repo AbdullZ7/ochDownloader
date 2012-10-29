@@ -17,7 +17,7 @@ class CaptchaException(Exception): pass
 
 class PluginsCore:
     """"""
-    def __init__(self, link, content_range, wait_func, account_item):
+    def __init__(self, link, content_range, wait_func, account_item, video_quality):
         """"""
         self.link = link #host link
         self.dl_link = link #file ready to download link
@@ -30,6 +30,7 @@ class PluginsCore:
         if account_item is not None:
             self.username = account_item.username
             self.password = account_item.password
+        self.video_quality = video_quality
         self.err_msg = None
         self.source = None
         self.cookie = cookielib.CookieJar()

@@ -5,7 +5,7 @@ import core.cons as cons
 
 class DownloaderCore:
     """"""
-    def __init__(self, file_name, path, link, host, bucket):
+    def __init__(self, file_name, path, link, host, video_quality, bucket):
         """"""
         self.stop_flag = False
         self.error_flag = False
@@ -22,6 +22,7 @@ class DownloaderCore:
         self.start_time = 0
         self.file_exists = False
         self.limit_exceeded = False
+        self.video_quality = video_quality
         
         #get_speed stuff
         self.sp_size = 0

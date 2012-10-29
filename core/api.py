@@ -66,14 +66,14 @@ class _Api(DownloadManager, AddDownloadsManager):
             ordered_list = []
             download_list = self.session_parser.load()
             for item in download_list:
-                #todo: add save_as
-                FILE_NAME, FILE_PATH, LINK, HOST, SIZE, STATUS_MSG, PROGRESS, TIME, TIME_REMAIN, CHUNCKS = range(10) #cool stuff
+                FILE_NAME, FILE_PATH, LINK, HOST, SIZE, PROGRESS, TIME, CHUNCKS, QUALITY = range(9)
                 download_item = DownloadItem(item[FILE_NAME], item[HOST], item[SIZE], item[LINK], item[FILE_PATH])
                 download_item.status = cons.STATUS_STOPPED
                 download_item.progress = item[PROGRESS]
                 download_item.size = item[SIZE]
                 download_item.time = item[TIME]
                 download_item.chunks = item[CHUNCKS]
+                download_item.video_quality = item[QUALITY]
                 self.stopped_downloads[download_item.id] = download_item
                 ordered_list.append(download_item)
         except Exception as err:
@@ -86,8 +86,9 @@ class _Api(DownloadManager, AddDownloadsManager):
         all_downloads = self.active_downloads.values() + self.queue_downloads.values() + self.stopped_downloads.values()
         self.reorder_list(all_downloads, id_order_list) #reorder in-place.
         for download_item in all_downloads:
-            download_list.append([download_item.name, download_item.path, download_item.link, download_item.host, download_item.size, download_item.status_msg, download_item.progress, download_item.time, download_item.time_remain, download_item.chunks]) #lista dentro de lista
-        #download_list = self.get_downloads_list(id_order_list)
+            download_list.append([download_item.name, download_item.path, download_item.link, download_item.host,
+                                  download_item.size, download_item.progress, download_item.time, download_item.chunks,
+                                  download_item.video_quality])
         self.session_parser.save(download_list)
         logger.debug("Session has been saved")
 
