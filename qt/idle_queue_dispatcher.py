@@ -4,7 +4,7 @@ from PySide.QtCore import *
 from core.idle_queue import idle_loop
 
 
-class ThreadDispacher(QThread):
+class ThreadDispatcher(QThread):
     def __init__(self, parent):
         QThread.__init__(self)
         self.parent = parent

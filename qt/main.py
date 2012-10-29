@@ -26,7 +26,7 @@ from about import About
 from preferences.preferences import Preferences
 from addons import AddonsManager
 from tray import Tray
-from idle_queue_dispacher import ThreadDispacher
+from idle_queue_dispatcher import ThreadDispatcher
 
 
 MIN_WIDTH = 550
@@ -150,8 +150,8 @@ class Gui(QMainWindow):
 
         #add core's event loop
         #self.idle_timeout(500, self.queue_loop)
-        self.dispacher = ThreadDispacher(self)
-        self.dispacher.start()
+        self.dispatcher = ThreadDispatcher(self)
+        self.dispatcher.start()
 
         #quit event
         events.quit.connect(self.event_close)
