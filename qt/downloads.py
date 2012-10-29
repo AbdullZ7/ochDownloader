@@ -272,7 +272,8 @@ class Downloads(QTreeView):
             time = misc.time_format(download_item.time) if download_item.time else None
             host_icon = self.get_host_icon(download_item.host)
             
-            item = [download_item.id, self.icons_dict[download_item.status], download_item.name, [host_icon, None, None], size_file, size_complete, download_item.progress, time, None, None, download_item.status_msg]
+            item = [download_item.id, self.icons_dict[download_item.status], download_item.name, [host_icon, None, None],
+                    size_file, size_complete, download_item.progress, time, None, None, download_item.status_msg]
             
             self.__model.append(item)
             self.rows_buffer[item[0]] = item
