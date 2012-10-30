@@ -31,6 +31,10 @@ REFRESH = "view-refresh"
 QUEUE = "queue"
 CHECK = "check"
 X_MARK = "x-mark"
+ALIVE = "alive"
+DEAD = "dead"
+ERROR = "error"
+CHECKING = "checking"
 
 
 def get_icon(img, size):

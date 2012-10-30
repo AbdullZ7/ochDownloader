@@ -35,18 +35,21 @@ class AddDownloads(QVBoxLayout):
         self.tree_view.setIndentation(0)
         self.tree_view.setAlternatingRowColors(True)
         #
+        self.icons_dict = self.get_icons()
         self.items = []
         self.rows_buffer = {} #{id_item: row_obj, }
         #self.items = [[True, "1", "11", "t5est", "t3est"], [True, "1", "11", "t5est", "t3est"], [True, "1", "11", "t5est", "t3est"]]
         bool_cols = [1, ]
-        headers = ["hidden_id_item", "", _("Status"), _("File Name"), _("Host"), _("Size"), _("Status Message")]
+        image_cols = [2, ]
+        headers = ["hidden_id_item", "", "", _("File Name"), _("Host"), _("Size"), _("Status Message")]
         #
-        self.__model = SimpleListModel(headers, self.items, bool_cols)
+        self.__model = SimpleListModel(headers, self.items, bool_cols, image_cols)
         self.tree_view.setModel(self.__model)
         self.addWidget(self.tree_view)
         #
         self.tree_view.setColumnHidden(0, True)
         self.tree_view.setColumnWidth(1, 27)
+        self.tree_view.setColumnWidth(2, 27)
         self.tree_view.header().setResizeMode(1, QHeaderView.Fixed)
         
         hbox = QHBoxLayout()
@@ -221,7 +224,7 @@ class AddDownloads(QVBoxLayout):
     def add_downloads_to_check(self, links_list, copy_link=True):
         for link in links_list:
             download_item = api.create_download_item(cons.UNKNOWN, 0, link, copy_link=copy_link) #return download_item object
-            item = [download_item.id, True, cons.LINK_CHECKING, cons.UNKNOWN, None, None, None]
+            item = [download_item.id, True, self.icons_dict[cons.LINK_CHECKING], cons.UNKNOWN, None, None, None]
             #self.items.append(item)
             self.__model.append(item)
             self.rows_buffer[item[0]] = item
@@ -234,7 +237,7 @@ class AddDownloads(QVBoxLayout):
             try:
                 row = self.rows_buffer[download_item.id]
                 row[1] = True if download_item.link_status != cons.LINK_DEAD else False
-                row[2] = download_item.link_status
+                row[2] = self.icons_dict[download_item.link_status]
                 row[3] = download_item.name
                 row[4] = download_item.host
                 row[5] = misc.size_format(download_item.size)
@@ -243,6 +246,13 @@ class AddDownloads(QVBoxLayout):
                 logger.debug(err)
         self.__model.refresh()
 
+    def get_icons(self):
+        alive = media.get_pixmap(media.ALIVE, media.SMALL)
+        dead = media.get_pixmap(media.DEAD, media.SMALL)
+        error = media.get_pixmap(media.ERROR, media.SMALL)
+        checking = media.get_pixmap(media.CHECKING, media.SMALL)
+        #unavailable = media.get_pixmap(media.ERROR, media.SMALL)
 
-
-
+        return {cons.LINK_ALIVE: alive, cons.LINK_DEAD: dead,
+                cons.LINK_UNAVAILABLE: error, cons.LINK_ERROR: error,
+                cons.LINK_CHECKING: checking}

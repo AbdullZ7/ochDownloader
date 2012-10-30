@@ -3,9 +3,10 @@ from PySide.QtCore import *
 
 
 class SimpleListModel(QAbstractItemModel):
-    def __init__(self, headers, items, bool_cols=None):
+    def __init__(self, headers, items, bool_cols=None, image_cols=None):
         QAbstractItemModel.__init__(self)
         self.__bool_cols = bool_cols or []
+        self.__image_cols = image_cols or []
         self.__items = items #or [] wont keep the binding to the same list when its empty.
         self.__headers = headers
         self.__len_columns = len(headers)
@@ -28,12 +29,14 @@ class SimpleListModel(QAbstractItemModel):
         """
         if not index.isValid():
             return None
-        elif index.column() in self.__bool_cols:
-            if role == Qt.CheckStateRole:
-                row = self.__items[index.row()]
-                item = row[index.column()] #index = iter
-                value = Qt.Checked if item else Qt.Unchecked
-                return value
+        elif role == Qt.CheckStateRole and index.column() in self.__bool_cols:
+            row = self.__items[index.row()]
+            item = row[index.column()] #index = iter
+            value = Qt.Checked if item else Qt.Unchecked
+            return value
+        elif role == Qt.DecorationRole and index.column() in self.__image_cols:
+            row = self.__items[index.row()]
+            return row[index.column()]
         elif role == Qt.DisplayRole:
             row = self.__items[index.row()]
             return row[index.column()] #index = iter
