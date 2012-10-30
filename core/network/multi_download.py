@@ -28,16 +28,16 @@ class IncompleteChunk(Exception): pass
 
 class MultiDownload(DownloaderCore):
     """"""
-    def __init__(self, file_name, path, link, host, video_quality, bucket, chunks):
+    def __init__(self, download_item, bucket):
         """"""
-        DownloaderCore.__init__(self, file_name, path, link, host, video_quality, bucket)
+        DownloaderCore.__init__(self, download_item, bucket)
 
         #Threading stuff
         self.lock1 = threading.Lock() #lock to write file.
         self.lock2 = threading.Lock()
         self.lock3 = threading.Lock()
 
-        self.chunks = chunks[:] if chunks is not None else [] #shallow copy
+        self.chunks = download_item.chunks[:] if download_item.chunks is not None else [] #shallow copy
         self.chunks_control = []
 
         self.first_flag = True

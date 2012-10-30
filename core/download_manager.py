@@ -150,6 +150,9 @@ class DownloadManager(DownloadCore, ThreadManager):
                 if limit_exceeded and self.active_downloads and status == cons.STATUS_ERROR:
                     events.limit_exceeded.emit()
 
+    def update_download_item(self, download_item, th):
+        pass
+
     def downloader_init(self, item_list, path):
         """
         Crea los threads para la descarga de cada archivo.
@@ -181,8 +184,7 @@ class DownloadManager(DownloadCore, ThreadManager):
                     slot = False
             if slot:
                 self.global_slots.add_slot()
-                self.add_thread(download_item.id, download_item.name, download_item.path, download_item.link,
-                                download_item.host, download_item.video_quality, download_item.chunks) #threadmanager
+                self.create_thread(download_item) #threadmanager
                 self.active_downloads[download_item.id] = download_item
                 del self.queue_downloads[download_item.id]
 

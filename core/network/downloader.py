@@ -19,10 +19,10 @@ class StatusStopped(Exception): pass
 
 class Downloader(threading.Thread, MultiDownload):
     """"""
-    def __init__(self, file_name, path, link, host, video_quality, bucket, chunks):
+    def __init__(self, download_item, bucket):
         """"""
         threading.Thread.__init__(self)
-        MultiDownload.__init__(self, file_name, path, link, host, video_quality, bucket, chunks)
+        MultiDownload.__init__(self, download_item, bucket)
 
         self.f_name = None
 

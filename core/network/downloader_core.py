@@ -1,20 +1,21 @@
-import collections #http://docs.python.org/library/collections.html
+import collections
 
 import core.cons as cons
 
 
 class DownloaderCore:
     """"""
-    def __init__(self, file_name, path, link, host, video_quality, bucket):
+    def __init__(self, download_item, bucket):
         """"""
+        self.file_name = download_item.name
+        self.path = download_item.path
+        self.host = download_item.host
+        self.link = download_item.link
+        self.video_quality = download_item.video_quality
         self.stop_flag = False
         self.error_flag = False
-        self.host = host
-        self.link = link
         self.source = None
         self.link_file = None
-        self.file_name = file_name
-        self.path = path
         self.status = cons.STATUS_RUNNING #status: Running, stopped, Queue, finished.
         self.status_msg = "Connecting"
         self.size_file = 0
@@ -22,7 +23,6 @@ class DownloaderCore:
         self.start_time = 0
         self.file_exists = False
         self.limit_exceeded = False
-        self.video_quality = video_quality
         
         #get_speed stuff
         self.sp_size = 0
