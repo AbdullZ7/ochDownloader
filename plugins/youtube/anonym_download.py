@@ -3,6 +3,7 @@ import urllib
 import logging
 logger = logging.getLogger(__name__)
 from urlparse import parse_qs
+from collections import OrderedDict
 
 #Libs
 from core.plugins_core import PluginsCore
@@ -32,22 +33,22 @@ class PluginDownload(PluginsCore):
         '46': 'webm',
         }
 
-    video_dimensions = {
-        '5': '400x240 (.???)',
-        '6': '??? (.???)',
-        '13': '??? (.3gp)',
-        '17': '176x144 (.mp4)',
-        '18': '640x360 (.???)',
-        '22': '1280x720 (.mp4)',
-        '34': '640x360 (.??)',
-        '35': '854x480 (.???)',
-        '37': '1920x1080 (.mp4)',
-        '38': '4096x3072 (.video)',
-        '43': '640x360 (.webm)',
-        '44': '854x480 (.webm)',
-        '45': '1280x720 (.webm)',
-        '46': '1920x1080 (.webm)',
-        }
+    video_dimensions = [
+        ('38', '4096x3072 (.video)'),
+        ('37', '1920x1080 (.mp4)'),
+        ('46', '1920x1080 (.webm)'),
+        ('22', '1280x720 (.mp4)'),
+        ('45', '1280x720 (.webm)'),
+        ('44', '854x480 (.webm)'),
+        ('35', '854x480 (.???)'),
+        ('43', '640x360 (.webm)'),
+        ('34', '640x360 (.??)'),
+        ('18', '640x360 (.???)'),
+        ('13', '??? (.3gp)'),
+        ('6', '??? (.???)'),
+        ('5', '400x240 (.???)'),
+        ('17', '176x144 (.mp4)'),
+        ]
 
     def __init__(self, *args, **kwargs):
         PluginsCore.__init__(self, *args, **kwargs)
@@ -76,7 +77,7 @@ class PluginDownload(PluginsCore):
         video_title = urllib.unquote_plus(video_info['title'][0])
 
         if self.video_quality is None:
-            choices_dict = {id_: quality for id_, quality in self.video_dimensions.iteritems() if id_ in url_map}
+            choices_dict = OrderedDict([(id_, quality) for id_, quality in self.video_dimensions if id_ in url_map])
             c = QualityChoice(video_title, choices_dict, self.wait_func)
             c.run_choice()
             self.video_quality = c.solution

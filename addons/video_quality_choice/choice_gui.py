@@ -28,7 +28,7 @@ class QualityChoiceDialog(QDialog):
 
         #captcha image
         self.cb = QComboBox()
-        [self.cb.addItem(quality) for quality in sorted(self.choices_dict.values(), reverse=True)]
+        [self.cb.addItem(quality) for quality in self.choices_dict.values()]
         vbox.addWidget(self.cb)
 
         #buttons
