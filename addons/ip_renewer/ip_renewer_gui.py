@@ -5,7 +5,7 @@ import core.cons as cons
 from core.api import api
 from core.conf_parser import conf
 
-from qt.signals import signals
+from qt import signals
 
 #Config parser
 OPTION_IP_RENEW_ACTIVE = "ip_renew_active"

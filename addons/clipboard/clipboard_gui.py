@@ -9,7 +9,7 @@ from core.plugins_parser import plugins_parser
 from PySide.QtGui import *
 from PySide.QtCore import *
 
-from qt.signals import signals
+from qt import signals
 
 #Config parser
 OPTION_CLIPBOARD_EXTS = "clipboard_exts"

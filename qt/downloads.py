@@ -10,8 +10,8 @@ from PySide.QtGui import *
 from PySide.QtCore import *
 
 import media
+import signals
 from list_model import SimpleListModel
-from signals import signals
 
 
 class Downloads(QTreeView):

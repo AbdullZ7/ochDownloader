@@ -3,7 +3,7 @@ from core.api import api
 from PySide.QtGui import *
 from PySide.QtCore import *
 
-from signals import signals
+import signals
 
 
 class StatusBar(QStatusBar):

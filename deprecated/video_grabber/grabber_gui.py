@@ -6,7 +6,7 @@ from core import misc
 from PySide.QtGui import *
 from PySide.QtCore import *
 
-from qt.signals import signals
+from qt import signals
 
 
 class GrabberDialog(QDialog):

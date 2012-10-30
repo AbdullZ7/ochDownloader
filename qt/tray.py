@@ -10,7 +10,7 @@ import core.cons as cons
 from core.events import events
 from core.conf_parser import conf
 
-from signals import signals
+import signals
 
 ICON_INFO = QSystemTrayIcon.Information
 ICON_WARN = QSystemTrayIcon.Warning

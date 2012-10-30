@@ -16,7 +16,7 @@ from PySide.QtGui import *
 from PySide.QtCore import *
 
 import media
-from signals import signals
+import signals
 from status_bar import StatusBar
 from downloads import Downloads
 from add_downloads import AddDownloads
