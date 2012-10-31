@@ -18,7 +18,7 @@ def get_swf_dump(content):
     try:
         with tempfile.NamedTemporaryFile(suffix=".swf", delete=False) as fh:
             fh.write(content)
-        p = misc.subprocess_popen([get_path(), '-a', fh.name], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        p = misc.subprocess_popen([get_path(), '-a', fh.name], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         out_put, err = p.communicate()
         if err:
             raise Exception(err)
