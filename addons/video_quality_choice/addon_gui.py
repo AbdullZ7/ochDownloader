@@ -1,7 +1,7 @@
 import logging
 logger = logging.getLogger(__name__)
 
-from core.events import events
+from core import events
 
 from qt.addons import AddonCore
 

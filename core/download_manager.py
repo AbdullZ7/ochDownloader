@@ -4,13 +4,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 import cons
+import events
 from download_core import DownloadCore
 from thread_manager import ThreadManager
 from slots import Slots
 from host_accounts import host_accounts
 from conf_parser import conf
 from plugins_parser import plugins_parser
-from events import events
 
 
 class DownloadManager(DownloadCore, ThreadManager):

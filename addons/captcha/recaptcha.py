@@ -3,7 +3,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 from core import idle_queue
-from core.events import events
+from core import events
 from core.network.connection import request
 
 _thread_lock = threading.Lock()

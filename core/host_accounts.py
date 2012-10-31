@@ -6,10 +6,9 @@ import pickle #permite escribir diccionarios, listas, etc en archivos, preservan
 import importlib
 import copy
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+logger = logging.getLogger(__name__)
 
 import cons
-import events
 
 #COOKIE_CONNECTION_RETRY = 3
 HOST, STATUS, USER, PASSWORD, ENABLE = range(5) #Cool stuff.

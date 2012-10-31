@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 #Libs
 #from core.Container_Extractor import Container
 from core.conf_parser import conf
-from core.events import events
+from core import events
 from core.api import api
 from core import cons
 

@@ -7,7 +7,7 @@ from PySide.QtGui import *
 from PySide.QtCore import *
 
 import core.cons as cons
-from core.events import events
+from core import events
 from core.conf_parser import conf
 
 import signals

@@ -1,8 +1,7 @@
 import logging
 logger = logging.getLogger(__name__)
 
-import core.cons as cons
-from core.events import events
+from core import events
 from core.conf_parser import conf
 
 from qt.addons import AddonCore

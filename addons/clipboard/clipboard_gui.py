@@ -2,7 +2,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 from core import misc
-from core.events import events
 from core.conf_parser import conf
 from core.plugins_parser import plugins_parser
 
