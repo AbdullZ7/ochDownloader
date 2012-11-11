@@ -1,4 +1,6 @@
 import threading
+import logging
+logger = logging.getLogger(__name__)
 
 from qt.addons import AddonCore
 
@@ -15,7 +17,13 @@ class Addon(AddonCore):
     def set_menu_item(self):
         pass
 
+    def starter(self):
+        try:
+            server.start()
+        except Exception as err:
+            logger.exception(err)
+
     def start_server(self):
-        th = threading.Thread(group=None, target=server.start, name=None)
+        th = threading.Thread(group=None, target=self.starter, name=None)
         th.daemon = True
         th.start()
