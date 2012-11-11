@@ -1,5 +1,10 @@
+import os
 import asyncore
 import socket
+
+from core import cons
+
+FILE = os.path.join(cons.ADDONS_GUI_PATH, "flashgot", "port.txt")
 
 
 class ServerHandler(asyncore.dispatcher):
@@ -40,7 +45,12 @@ class Server(asyncore.dispatcher):
 
 def start():
     server = Server('localhost', 0)
+    write_file(str(server.port_))
     asyncore.loop() #blocks
+
+def write_file(port):
+    with open(FILE, "wb") as fh:
+        fh.write(port)
 
 
 if __name__ == "__main__":
