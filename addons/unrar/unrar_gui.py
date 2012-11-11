@@ -1,10 +1,8 @@
 import re
 import os
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+logger = logging.getLogger(__name__)
 
-import core.cons as cons
-from core.conf_parser import conf
 from core.api import api
 
 from unrar import UnRAR
@@ -30,9 +28,6 @@ class UnRARGUI:
         if self.can_extract():
             file_path = os.path.join(download_item.path, self.file_name)
             self.unrar.add(file_path, download_item.path, download_item.id) #file_path, dest_path
-            #todo: check if tab is in the app, add it, add item. Check if tab doesnt get destroyed.
-            #add it to queue, doesnt matter if we r extracting or not.
-            #self.add_msg_box(th_id)
             self.add_tab()
             self.unrar_tab.store_items([download_item, ])
     
@@ -41,43 +36,35 @@ class UnRARGUI:
             index_page = 2
             self.parent.tab.insertTab(index_page, self.tab_widget, _('Extracting'))
             btn_close = QPushButton(self.parent)
-            #btn_close.setIcon(QIcon('stop.png'))
-            #btn_close.setIconSize(QSize(10, 10))
             btn_close.setFixedHeight(12)
             btn_close.setFixedWidth(12)
-            #btn_close.setFlat(True)
             btn_close.clicked.connect(self.on_close_tab)
             self.parent.tab.tabBar().setTabButton(index_page, QTabBar.RightSide, btn_close)
-            #
-            #last_index = self.tab.count() - 1
-            #self.parent.tab.setCurrentIndex(last_index)
     
     def on_close_tab(self):
         index_page = self.parent.tab.indexOf(self.tab_widget)
         if index_page >= 0:
+            self.unrar_tab.clear_list()
             self.parent.tab.removeTab(index_page)
     
     def can_extract(self):
-        NAME, PART, EXT = range(3)
-        pattern = "^(.*?)(\.part\d+)?(\.rar|\.r\d+)$" #capture name
+        pattern = '^(?P<name>.*?)(?P<part>\.part\d+)?(?P<ext>\.rar|\.r\d+)$'
         m = re.match(pattern, self.file_name)
         if m is not None: #is rar file
-            m_tuple = m.groups()
-            if not self.has_segments_left(m_tuple[NAME], pattern): #not segment left.
-                if m_tuple[PART] is not None: #new ext. style
-                    self.file_name = "".join((m_tuple[NAME], ".part1.rar"))
+            if not self.has_segments_left(pattern, m.group('name')):
+                if m.group('part') is not None: #new ext. style
+                    self.file_name = "".join((m.group('name'), ".part1.rar"))
                 else: #single part or old ext. style
-                    self.file_name = "".join((m_tuple[NAME], ".rar"))
+                    self.file_name = "".join((m.group('name'), ".rar"))
                 return True
         return False
     
-    def has_segments_left(self, name, pattern):
+    def has_segments_left(self, pattern, name):
         """"""
-        NAME, PART, EXT = range(3)
         for download_item in api.get_active_downloads().values() + api.get_queue_downloads().values() + api.get_stopped_downloads().values():
-            match_name = re.match(pattern, download_item.name)
-            if match_name is not None:
-                if name == match_name.groups()[NAME]:
+            m = re.match(pattern, download_item.name)
+            if m is not None:
+                if name == m.group('name'):
                     return True
         return False
 
@@ -113,7 +100,11 @@ class UnRARTab(QVBoxLayout):
         self.addWidget(self.tree_view)
         
         self.running = False
-    
+
+    def clear_list(self):
+        self.__model.clear()
+        self.rows_buffer.clear()
+
     def store_items(self, item_list):
         for download_item in item_list:
             item = [download_item.id, download_item.name, None]
@@ -134,5 +125,3 @@ class UnRARTab(QVBoxLayout):
         else:
             self.running = False
             self.timer.stop()
-
-

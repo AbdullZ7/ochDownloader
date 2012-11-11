@@ -1,14 +1,11 @@
-import os
-import uuid
 import threading
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
-
-import core.cons as cons
+logger = logging.getLogger(__name__)
 
 import lib as unrar_lib
 from lib.rar_exceptions import *
 from passwords_handler import passwords_handler
+
 
 class Item:
     def __init__(self, id_item, file_path, dest_path):
@@ -45,8 +42,7 @@ class UnRAR:
                 del self.__item_list[0]
                 if self.__item_list:
                     self.start_extract(self.__item_list[0])
-            return (id_item, th.complete, th.err_msg)
-            #COMPLETE, ERR_MSG = range(2)
+            return id_item, th.complete, th.err_msg
         return None
 
 
@@ -69,16 +65,16 @@ class Extract(threading.Thread):
                 try:
                     unrar_handler = unrar_lib.RarFile(self.file_path, password=pwd)
                     rarinfo_list = unrar_handler.extract(path=self.dest_path, overwrite=True)
-                except IncorrectRARPassword as err:
+                except IncorrectRARPassword:
                     self.err_msg = _("Incorrect rar password")
                 else:
                     self.err_msg = None
                     break
-        except ArchiveHeaderBroken as err:
+        except ArchiveHeaderBroken:
             self.err_msg = _("Archive header broken")
-        except FileOpenError as err:
+        except FileOpenError:
             self.err_msg = _("File open error")
-        except InvalidRARArchiveUsage as err:
+        except InvalidRARArchiveUsage:
             self.err_msg = _("Invalid rar archive usage")
         except Exception as err:
             self.err_msg = _("Unknown error")
@@ -91,6 +87,3 @@ if __name__ == "__main__":
     list_a = []
     for _ in list_a or [None, ]:
         print _
-
-
-
