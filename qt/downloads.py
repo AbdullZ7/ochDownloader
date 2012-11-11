@@ -157,9 +157,9 @@ class Downloads(QTreeView):
 
         menu.addSeparator()
         
-        generic_items = [(_('Clear Completed'), self.on_clear_completed),
-                        (_('Start all'), self.on_start_all),
-                        (_('Stop all'), self.on_stop_all)]
+        generic_items = [(_('Start all'), self.on_start_all),
+                        (_('Stop all'), self.on_stop_all),
+                        (_('Clear Completed'), self.on_clear_completed)]
         
         [menu.addAction(title, callback) if title is not None else menu.addSeparator()
          for title, callback in generic_items]
