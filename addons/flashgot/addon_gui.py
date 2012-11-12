@@ -2,6 +2,8 @@ import threading
 import logging
 logger = logging.getLogger(__name__)
 
+from core import misc
+
 from qt.addons import AddonCore
 
 import server
@@ -12,6 +14,7 @@ class Addon(AddonCore):
     def __init__(self, parent, *args, **kwargs):
         """"""
         AddonCore.__init__(self)
+        misc.register_app_path()
         self.start_server()
 
     def set_menu_item(self):

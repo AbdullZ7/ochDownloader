@@ -4,6 +4,7 @@ import re
 import htmlentitydefs
 import subprocess
 import urllib
+import _winreg
 
 import cons
 import logging
@@ -54,6 +55,16 @@ def get_free_space(folder):
             return s.f_bsize * s.f_bavail
     except Exception as err:
         logger.exception(err)
+
+
+def register_app_path():
+    try:
+        if cons.OS_WIN:
+            key_val = os.path.join('Software', cons.APP_NAME)
+            with _winreg.CreateKeyEx(_winreg.HKEY_CURRENT_USER, key_val, 0, _winreg.KEY_WRITE) as key:
+                _winreg.SetValueEx(key, 'path', 0, _winreg.REG_SZ, cons.APP_PATH)
+    except Exception as err:
+        logger.warning(err)
 
 
 def subprocess_call(*args, **kwargs):
