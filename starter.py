@@ -1,12 +1,11 @@
 import warnings #pygtk warnings are redirected to this module.
 import logging
 import logging.handlers
-import os
 import sys
 import threading
 
 #Libs
-import core.cons as cons
+from core import cons
 
 
 def installThreadExcepthook():
