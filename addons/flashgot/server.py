@@ -4,6 +4,8 @@ import socket
 
 from core import cons
 
+from parser import ParseArgs
+
 FILE = os.path.join(cons.ADDONS_GUI_PATH, "flashgot", "port.txt")
 
 
@@ -17,8 +19,7 @@ class ServerHandler(asyncore.dispatcher):
         self.data.append(data)
 
     def handle_close(self):
-        print ''.join(self.data)
-        print "close serverhandler"
+        ParseArgs(''.join(self.data))
         self.close()
 
 
@@ -37,7 +38,7 @@ class Server(asyncore.dispatcher):
             pass
         else:
             sock, addr = pair
-            print 'Incoming connection from %s' % repr(addr)
+            #print 'Incoming connection from %s' % repr(addr)
             handler = ServerHandler(sock)
 
     def handle_close(self):
