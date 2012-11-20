@@ -47,7 +47,7 @@ class Downloads(QTreeView):
         self.setColumnWidth(1, 27)
         header_view = self.header()
         header_view.setResizeMode(1, QHeaderView.Fixed)
-        header_view.setResizeMode(3, QHeaderView.ResizeToContents)
+        #header_view.setResizeMode(3, QHeaderView.ResizeToContents)
         
         self.im_delegate = ImageDelegate(self)
         self.setItemDelegateForColumn(1, self.im_delegate)
