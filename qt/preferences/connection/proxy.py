@@ -62,8 +62,8 @@ class Proxy(QGroupBox):
         conf.set_proxy(ptype, ip, port)
 
         if self.radio_manual.isChecked():
-            conf.set_proxy_active("True")
+            conf.set_proxy_active(True)
             request.set_proxy(ptype, ip, port)
         else:
-            conf.set_proxy_active("False")
+            conf.set_proxy_active(False)
             request.no_proxy()

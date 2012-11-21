@@ -7,6 +7,7 @@ from ConfigParser import RawConfigParser, NoSectionError, NoOptionError
 #Libs
 import cons
 
+
 #main section
 SECTION_MAIN = "main"
 
@@ -18,7 +19,6 @@ OPTION_CLIPBOARD_ACTIVE = "clipboard_active"
 SECTION_NETWORK = "network"
 
 #network options
-#OPTION_PROXY_TYPE = http
 OPTION_PROXY_ACTIVE = "proxy_active"
 OPTION_PROXY_IP = "proxy_ip"
 OPTION_PROXY_PORT = "proxy_port"
@@ -41,24 +41,27 @@ OPTION_SWITCH_TAB = "switch_tab"
 SECTION_ADDONS = "addons"
 
 
-DEFAULT = {SECTION_MAIN: {OPTION_VERSION: cons.APP_VER, OPTION_CLIPBOARD_ACTIVE: "True"},
-                    SECTION_NETWORK: {OPTION_PROXY_TYPE: cons.PROXY_HTTP, OPTION_PROXY_IP: "",
-                                      OPTION_PROXY_PORT: "0",
-                                      OPTION_PROXY_ACTIVE: "False",
-                                      OPTION_RETRIES_LIMIT: "99",
-                                      OPTION_HTML_DL: "False",
-                                      OPTION_MAX_CONN: "10"},
-                    SECTION_GUI: {OPTION_WINDOW_SETTINGS: "-1,-1,-1,-1",
-                                  OPTION_SAVE_DL_PATHS: pickle.dumps([]),
-                                  OPTION_COLUMNS_WIDTH: "-1, -1, -1, -1, -1, -1, -1",
-                                  OPTION_TRAY_ICON: "False",
-                                  OPTION_SWITCH_TAB: "True"},
-                    SECTION_ADDONS: {}
-                    }
+DEFAULT = {SECTION_MAIN: {OPTION_VERSION: cons.APP_VER,
+                          OPTION_CLIPBOARD_ACTIVE: "True"},
+            SECTION_NETWORK: {OPTION_PROXY_TYPE: cons.PROXY_HTTP,
+                            OPTION_PROXY_IP: "",
+                            OPTION_PROXY_PORT: "0",
+                            OPTION_PROXY_ACTIVE: "False",
+                            OPTION_RETRIES_LIMIT: "99",
+                            OPTION_HTML_DL: "False",
+                            OPTION_MAX_CONN: "10"},
+            SECTION_GUI: {OPTION_WINDOW_SETTINGS: "-1,-1,-1,-1",
+                        OPTION_SAVE_DL_PATHS: pickle.dumps([]),
+                        OPTION_COLUMNS_WIDTH: "-1,-1,-1,-1,-1,-1,-1",
+                        OPTION_TRAY_ICON: "False",
+                        OPTION_SWITCH_TAB: "True"},
+            SECTION_ADDONS: {}
+            }
 
 
 #thread safety
 _thread_lock = threading.Lock()
+
 
 #decorator
 def exception_handler(default=None):
@@ -82,7 +85,6 @@ class _Config(RawConfigParser):
         RawConfigParser.__init__(self)
         self.load()
         self.create()
-        logger.debug("config parser instanced.")
 
     def load(self):
         try:
@@ -91,7 +93,6 @@ class _Config(RawConfigParser):
             logger.warning(err)
 
     def create(self):
-        """"""
         for section, options in DEFAULT.items():
             if not self.has_section(section):
                 self.add_section(section)
@@ -101,18 +102,22 @@ class _Config(RawConfigParser):
 
     @exception_handler()
     def save(self):
-        """"""
         with open(cons.CONFIG_FILE, "wb", cons.FILE_BUFSIZE) as fh:
             self.write(fh)
 
+    def setboolean(self, section, option, value):
+        value = "True" if value else "False"
+        self.set(section, option, value)
+
+    def setint(self, section, option, value):
+        self.set(section, option, str(value))
+
     @exception_handler()
     def set_addon_option(self, option, value):
-        """"""
         self.set(SECTION_ADDONS, option, value)
 
     #@exception_handler(default=...)
     def get_addon_option(self, option, default=None, is_bool=False):
-        """"""
         try:
             if is_bool:
                 return self.getboolean(SECTION_ADDONS, option)
@@ -125,35 +130,29 @@ class _Config(RawConfigParser):
         return default
 
     @exception_handler()
-    def set_clipboard_active(self, clipboard_active="True"):
-        """"""
-        self.set(SECTION_MAIN, OPTION_CLIPBOARD_ACTIVE, clipboard_active)
+    def set_clipboard_active(self, active):
+        self.setboolean(SECTION_MAIN, OPTION_CLIPBOARD_ACTIVE, active)
 
     @exception_handler(default=True)
     def get_clipboard_active(self):
-        """"""
         return self.getboolean(SECTION_MAIN, OPTION_CLIPBOARD_ACTIVE)
 
     @exception_handler()
-    def set_proxy_active(self, proxy_active="False"):
-        """"""
-        self.set(SECTION_NETWORK, OPTION_PROXY_ACTIVE, proxy_active)
+    def set_proxy_active(self, active):
+        self.setboolean(SECTION_NETWORK, OPTION_PROXY_ACTIVE, active)
 
     @exception_handler(default=False)
     def get_proxy_active(self):
-        """"""
         return self.getboolean(SECTION_NETWORK, OPTION_PROXY_ACTIVE)
 
     @exception_handler()
     def set_proxy(self, ptype, ip, port):
-        """"""
         self.set(SECTION_NETWORK, OPTION_PROXY_TYPE, ptype)
         self.set(SECTION_NETWORK, OPTION_PROXY_IP, ip)
-        self.set(SECTION_NETWORK, OPTION_PROXY_PORT, port)
+        self.setint(SECTION_NETWORK, OPTION_PROXY_PORT, port)
 
     @exception_handler(default=None)
-    def get_proxy(self): #proxy_dict
-        """"""
+    def get_proxy(self):
         ptype = self.get(SECTION_NETWORK, OPTION_PROXY_TYPE)
         ip = self.get(SECTION_NETWORK, OPTION_PROXY_IP)
         port = self.getint(SECTION_NETWORK, OPTION_PROXY_PORT)
@@ -161,44 +160,37 @@ class _Config(RawConfigParser):
 
     @exception_handler()
     def set_retries_limit(self, limit):
-        """"""
-        self.set(SECTION_NETWORK, OPTION_RETRIES_LIMIT, limit)
+        self.setint(SECTION_NETWORK, OPTION_RETRIES_LIMIT, limit)
 
     @exception_handler(default=99)
     def get_retries_limit(self):
-        """"""
         return self.getint(SECTION_NETWORK, OPTION_RETRIES_LIMIT)
 
     @exception_handler()
-    def set_html_dl(self, allow):
-        """"""
-        allow = "True" if allow else "False"
-        self.set(SECTION_NETWORK, OPTION_HTML_DL, allow)
+    def set_html_dl(self, active):
+        self.setboolean(SECTION_NETWORK, OPTION_HTML_DL, active)
 
     @exception_handler(default=False)
     def get_html_dl(self):
-        """"""
         return self.getboolean(SECTION_NETWORK, OPTION_HTML_DL)
 
     @exception_handler()
     def set_max_conn(self, max):
-        self.set(SECTION_NETWORK, OPTION_MAX_CONN, max)
+        self.setint(SECTION_NETWORK, OPTION_MAX_CONN, max)
 
     @exception_handler(default=10)
     def get_max_conn(self):
         return self.getint(SECTION_NETWORK, OPTION_MAX_CONN)
 
-    
+
     #//////////////////////// [GUI] ////////////////////////
 
     @exception_handler()
     def set_window_settings(self, x, y, w, h):
-        """"""
         self.set(SECTION_GUI, OPTION_WINDOW_SETTINGS, "{0},{1},{2},{3}".format(x, y, w, h))
 
     @exception_handler(default=(-1, -1, -1, -1))
     def get_window_settings(self):
-        """"""
         tmp = self.get(SECTION_GUI, OPTION_WINDOW_SETTINGS)
         x, y, w, h = tmp.split(",")
         x, y, w, h = int(x), int(y), int(w), int(h)
@@ -206,49 +198,39 @@ class _Config(RawConfigParser):
 
     @exception_handler()
     def set_columns_width(self, columns):
-        """"""
         self.set(SECTION_GUI, OPTION_COLUMNS_WIDTH, "{0},{1},{2},{3},{4},{5},{6}".format(*columns))
 
     @exception_handler(default=None)
     def get_columns_width(self):
-        """"""
         tmp = self.get(SECTION_GUI, OPTION_COLUMNS_WIDTH)
         columns = tuple([int(width) for width in tmp.split(",")])
         return columns
 
     @exception_handler()
-    def set_save_dl_paths(self, paths_list):
-        """"""
-        self.set(SECTION_GUI, OPTION_SAVE_DL_PATHS, pickle.dumps(paths_list))
+    def set_save_dl_paths(self, path_list):
+        self.set(SECTION_GUI, OPTION_SAVE_DL_PATHS, pickle.dumps(path_list))
 
     @exception_handler(default=[])
     def get_save_dl_paths(self):
-        """"""
         return pickle.loads(self.get(SECTION_GUI, OPTION_SAVE_DL_PATHS))
 
     @exception_handler()
-    def set_tray_available(self, allow):
-        """"""
-        allow = "True" if allow else "False"
-        self.set(SECTION_GUI, OPTION_TRAY_ICON, allow)
+    def set_tray_available(self, active):
+        self.setboolean(SECTION_GUI, OPTION_TRAY_ICON, active)
 
     @exception_handler(default=False)
     def get_tray_available(self):
-        """"""
         return self.getboolean(SECTION_GUI, OPTION_TRAY_ICON)
 
     @exception_handler()
-    def set_auto_switch_tab(self, allow):
-        allow = "True" if allow else "False"
-        self.set(SECTION_GUI, OPTION_SWITCH_TAB, allow)
+    def set_auto_switch_tab(self, active):
+        self.setboolean(SECTION_GUI, OPTION_SWITCH_TAB, active)
 
     @exception_handler(default=True)
     def get_auto_switch_tab(self):
-        """"""
         return self.getboolean(SECTION_GUI, OPTION_SWITCH_TAB)
 
 
-#modules are singletons in python :)
 conf = _Config() #make it global.
 
 

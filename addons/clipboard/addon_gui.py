@@ -32,10 +32,10 @@ class Addon(AddonCore):
     
     def on_toggle(self):
         if self.action.isChecked(): #se activo
-            conf.set_clipboard_active("True")
+            conf.set_clipboard_active(True)
             self.clipboard_monitor.enable()
         else:
-            conf.set_clipboard_active("False")
+            conf.set_clipboard_active(False)
             self.clipboard_monitor.disable()
 
 
