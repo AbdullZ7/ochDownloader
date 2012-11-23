@@ -197,7 +197,7 @@ class Downloads(QTreeView):
         rows = self.get_selected_rows()
         if rows:
             items_list = api.get_download_items([self.items[row_index][0] for row_index in rows])
-            paths_list = set([download_item.path for download_item in items_list])
+            paths_list = {download_item.path for download_item in items_list}
             for folder_path in paths_list:
                 misc.open_folder_window(folder_path)
 

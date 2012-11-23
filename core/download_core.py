@@ -33,6 +33,20 @@ class DownloadItem:
         self.can_copy_link = can_copy_link
         self.video_quality = None
 
+    @property
+    def progress_(self):
+        pass
+
+    @property
+    def speed_(self):
+        pass
+
+    @property
+    def time_remain_(self):
+        pass
+
+        #completar... no importa lo que estas pensando.
+
     def update(self, name, status, progress, size, size_complete, speed, time,
                time_remain, chunks, status_msg, can_resume, is_premium, video_quality):
         """"""

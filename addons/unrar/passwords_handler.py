@@ -16,7 +16,7 @@ class _PasswordsHandler:
     """"""
     def __init__(self):
         """"""
-        self.__passwords_set = set([]) #unique elements, unorderer.
+        self.__passwords_set = set() #unique elements, unorderer.
         self.load()
     
     def get_passwords(self):
@@ -34,8 +34,7 @@ class _PasswordsHandler:
     def replace(self, pwd_list):
         """"""
         with _thread_lock:
-            pwd_set = set([pwd.strip() for pwd in pwd_list if pwd.strip()])
-            self.__passwords_set = pwd_set #.copy()
+            self.__passwords_set = {pwd.strip() for pwd in pwd_list if pwd.strip()} #.copy()
     
     def save(self):
         """"""

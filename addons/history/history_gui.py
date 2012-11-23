@@ -102,7 +102,7 @@ class HistoryTab(QVBoxLayout):
     def on_open_folder(self):
         rows = self.get_selected_rows()
         if rows:
-            paths_list = set([self.items[row_index][6] for row_index in rows])
+            paths_list = {self.items[row_index][6] for row_index in rows}
             for folder_path in paths_list:
                 misc.open_folder_window(folder_path)
 
