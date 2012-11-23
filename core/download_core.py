@@ -80,22 +80,6 @@ class DownloadCore:
         else:
             logger.warning("reorder_queue failed")
 
-    def reorder_list(self, download_list, id_order_list):
-        """
-        binding: los cambios en la 'copia' de la lista se reflejan en la lista original.
-        """
-        ordered_items_list = []
-        items_dict = dict([(download_item.id, download_item) for download_item in download_list])
-        for id_item in id_order_list:
-            try:
-                ordered_items_list.append(items_dict[id_item])
-            except KeyError:
-                pass
-        if len(download_list) == len(ordered_items_list):
-            download_list[:] = ordered_items_list #reorder in-place
-        else:
-            logger.warning("reorder_list failed")
-
 
 if __name__ == "__main__":
     pass
