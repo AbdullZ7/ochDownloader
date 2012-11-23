@@ -3,11 +3,6 @@ logger = logging.getLogger(__name__)
 
 #Libs
 import cons
-import events #initialize events.
-from conf_parser import conf #initialize config.
-from plugins_parser import plugins_parser #initialize plugins_parser
-from host_accounts import host_accounts #initialize accounts.
-#
 from download_manager import DownloadManager
 from add_downloads_manager import AddDownloadsManager
 from update_manager import UpdateManager
@@ -50,12 +45,13 @@ class _Api(DownloadManager, AddDownloadsManager):
     def get_stopped_downloads(self):
         return self.stopped_downloads.copy()
     
-    def get_all_downloads(self):
+    def get_all_downloads(self, complete=True):
         all_downloads = {}
         all_downloads.update(self.active_downloads)
         all_downloads.update(self.queue_downloads)
         all_downloads.update(self.stopped_downloads)
-        all_downloads.update(self.complete_downloads)
+        if complete:
+            all_downloads.update(self.complete_downloads)
         return all_downloads
 
     def clear_complete(self):
@@ -81,21 +77,22 @@ class _Api(DownloadManager, AddDownloadsManager):
             return []
         return ordered_list
     
-    def save_session(self, id_order_list):
+    def save_session(self, id_item_list):
         download_list = []
-        all_downloads = self.active_downloads.values() + self.queue_downloads.values() + self.stopped_downloads.values()
-        self.reorder_list(all_downloads, id_order_list) #reorder in-place.
-        for download_item in all_downloads:
+        all_downloads = self.get_all_downloads(complete=False)
+        for download_item in (all_downloads[id_item] for id_item in id_item_list): #generator
             download_list.append([download_item.name, download_item.path, download_item.link, download_item.host,
                                   download_item.size, download_item.progress, download_item.time, download_item.chunks,
                                   download_item.video_quality])
         self.session_parser.save(download_list)
         logger.debug("Session has been saved")
+        if len(all_downloads) != len(download_list):
+            logger.warning("save_session: list len dont match")
 
-    def get_download_items(self, id_items_list):
+    def get_download_items(self, id_item_list):
         """"""
         all_downloads = self.get_all_downloads()
-        return [all_downloads[id_item] for id_item in id_items_list]
+        return [all_downloads[id_item] for id_item in id_item_list]
 
 
 #singleton like.
