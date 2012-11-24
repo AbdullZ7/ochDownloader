@@ -22,6 +22,8 @@ class AddDownloads(QVBoxLayout):
         QVBoxLayout.__init__(self)
         self.setContentsMargins(0, 0, 0, 0)
         self.setSpacing(5)
+
+        self.weak_parent = weakref.ref(parent)
         
         self.tree_view = QTreeView(parent)
         #
@@ -116,6 +118,10 @@ class AddDownloads(QVBoxLayout):
         
         #update list
         parent.idle_timeout(1000, self.update_)
+
+    @property
+    def parent(self):
+        return self.weak_parent()
 
     def context_menu(self, position):
         menu = QMenu()
