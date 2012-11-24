@@ -1,5 +1,5 @@
-import logging #registro de errores, van a consola y al fichero de texto.
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+import logging
+logger = logging.getLogger(__name__)
 
 from PySide.QtGui import *
 from PySide.QtCore import *
@@ -10,7 +10,7 @@ from addons_tab import AddonsTab
 
 
 class Preferences(QTabWidget):
-    def __init__(self, addons_list, parent=None):
+    def __init__(self, addons_list):
         QTabWidget.__init__(self)
         self.setTabPosition(QTabWidget.West)
         #self.setTabShape(QTabWidget.Triangular)

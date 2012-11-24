@@ -1,9 +1,7 @@
-import importlib
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+logger = logging.getLogger(__name__)
 
 #Libs
-import core.cons as cons
 from core.host_accounts import host_accounts
 from core.plugins_parser import plugins_parser
 
@@ -12,7 +10,8 @@ from PySide.QtCore import *
 
 from list_model import SimpleListModel
 
-ACCOUNT_ID, HOST, STATUS, USER, PASSWORD, ENABLE = range(6) #Cool stuff.
+
+ACCOUNT_ID, HOST, STATUS, USER, PASSWORD, ENABLE = range(6)
 
 
 class ConfigAccounts(QDialog):

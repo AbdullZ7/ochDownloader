@@ -4,6 +4,7 @@ import locale
 import os
 import logging
 logger = logging.getLogger(__name__)
+
 #Libs
 #from core.Container_Extractor import Container
 from core.conf_parser import conf
@@ -122,7 +123,7 @@ class Gui(QMainWindow):
         self.tab_log.setLayout(self.log)
         self.tab.addTab(self.tab_log, _('Log'))
         #
-        self.preferences = Preferences(self.addons_list, self)
+        self.preferences = Preferences(self.addons_list)
         #self.tab.addTab(self.preferences, 'Preferences')
         #
         self.tab.currentChanged.connect(self.on_tab_switch)
