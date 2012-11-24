@@ -1,3 +1,5 @@
+import weakref
+
 from PySide.QtGui import *
 from PySide.QtCore import *
 
@@ -7,7 +9,11 @@ from core.idle_queue import idle_loop
 class ThreadDispatcher(QThread):
     def __init__(self, parent):
         QThread.__init__(self)
-        self.parent = parent
+        self.weak_parent = weakref.ref(parent)
+
+    @property
+    def parent(self):
+        return self.weak_parent()
 
     def run(self):
         while True:
