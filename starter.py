@@ -89,9 +89,9 @@ class Starter:
         set_events() #quit pending events.
         api.stop_all_threads()
 
-    def exit(self, arg=0):
-        self.logger.debug("Exit: {0}".format(arg))
-        sys.exit(0)
+    def exit(self, value=0):
+        self.logger.debug("Exit: {0}".format(value))
+        sys.exit(value)
 
 
 if __name__ == "__main__":
