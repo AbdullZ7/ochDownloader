@@ -8,6 +8,12 @@ import threading
 from core import cons
 
 
+def python_version_check():
+    ver = sys.version_info
+    if not (ver[0], ver[1]) == (2, 7):
+        sys.exit("%s needs Python 2.7 to run. Yours is %s" % (cons.APP_NAME, sys.version))
+
+
 def installThreadExcepthook():
     """
     Workaround for sys.excepthook thread bug
@@ -90,6 +96,7 @@ class Starter:
 
 if __name__ == "__main__":
     #sign_in = SingleAppInstance()
+    python_version_check()
     starter = Starter()
     try:
         installThreadExcepthook() #This allows to log exceptions in threads.
