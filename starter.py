@@ -69,7 +69,7 @@ class Starter:
         #Gui, create logger first
         from PySide.QtGui import QApplication
         from qt.main import Gui, excepthook, halt, init_gettext
-        
+
         sys.excepthook = excepthook #capturar exceptiones unhandled.
         warnings.showwarning = self.redirect_warnings #capturar pygtk warnings.
         init_gettext() #internacionalization
