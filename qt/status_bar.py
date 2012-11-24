@@ -7,10 +7,9 @@ import signals
 
 
 class StatusBar(QStatusBar):
-    def __init__(self, parent=None):
+    def __init__(self, parent):
         QStatusBar.__init__(self, parent)
 
-        self.parent = parent
         self.update_manager = api.start_update_manager()
 
         hbox = QHBoxLayout()

@@ -1,3 +1,4 @@
+import weakref
 import logging
 logger = logging.getLogger(__name__)
 
@@ -17,12 +18,10 @@ from add_links_dlg import AddLinks
 
 
 class AddDownloads(QVBoxLayout):
-    def __init__(self, parent=None):
+    def __init__(self, parent):
         QVBoxLayout.__init__(self)
         self.setContentsMargins(0, 0, 0, 0)
         self.setSpacing(5)
-
-        self.parent = parent
         
         self.tree_view = QTreeView(parent)
         #
@@ -117,7 +116,7 @@ class AddDownloads(QVBoxLayout):
         
         #update list
         parent.idle_timeout(1000, self.update_)
-    
+
     def context_menu(self, position):
         menu = QMenu()
         #indexes = self.selectedIndexes()

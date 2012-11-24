@@ -1,4 +1,5 @@
 import os
+import weakref
 import logging
 logger = logging.getLogger(__name__)
 
@@ -15,11 +16,11 @@ from list_model import SimpleListModel
 
 
 class Downloads(QTreeView):
-    def __init__(self, parent=None):
+    def __init__(self, parent):
         #TODO: Create wrapper or subclass list to append and remove from items and rows_buffer.
         QTreeView.__init__(self, parent)
 
-        self.parent = parent
+        self.weak_parent = weakref.ref(parent)
 
         #listview look
         self.setWordWrap(True) #search textElideMode
@@ -85,6 +86,10 @@ class Downloads(QTreeView):
 
         #update list
         parent.idle_timeout(1000, self.update_)
+
+    @property
+    def parent(self):
+        return self.weak_parent()
 
     def remove_row(self, id_item):
         item = self.rows_buffer.pop(id_item)

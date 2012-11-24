@@ -1,4 +1,5 @@
 import os
+import weakref
 import logging
 logger = logging.getLogger(__name__)
 
@@ -19,7 +20,7 @@ ICON_CRITICAL = QSystemTrayIcon.Critical
 
 class Tray:
     def __init__(self, parent):
-        self.parent = parent
+        self.weak_parent = weakref.ref(parent)
         self.available = False
         if QSystemTrayIcon.isSystemTrayAvailable():
             self.tray_icon = QSystemTrayIcon(parent)
@@ -32,6 +33,10 @@ class Tray:
                 self.available = True
                 self.tray_icon.show()
                 self.connect_messages()
+
+    @property
+    def parent(self):
+        return self.weak_parent()
 
     def restore(self, reason):
         if reason == QSystemTrayIcon.DoubleClick:

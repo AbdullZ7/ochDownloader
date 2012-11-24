@@ -1,3 +1,4 @@
+import weakref
 import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
@@ -14,7 +15,7 @@ class Log(QVBoxLayout):
         self.setContentsMargins(0, 0, 0, 0)
         self.setSpacing(5)
 
-        self.parent = parent
+        self.weak_parent = weakref.ref(parent)
         
         self.text_view = QPlainTextEdit()
         self.text_view.setReadOnly(True)
@@ -26,6 +27,10 @@ class Log(QVBoxLayout):
         btn_view_log.setFixedHeight(35)
         btn_view_log.setMaximumWidth(180)
         self.addWidget(btn_view_log)
+
+    @property
+    def parent(self):
+        return self.weak_parent()
     
     def on_load(self):
         """
