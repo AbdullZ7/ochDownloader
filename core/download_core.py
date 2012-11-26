@@ -10,7 +10,7 @@ import cons
 
 class DownloadItem:
     """"""
-    def __init__(self, name, host, size, link, path=cons.DLFOLDER_PATH, can_copy_link=True): #ile_name, host, size, link
+    def __init__(self, name, host, size, link, path=cons.DLFOLDER_PATH, can_copy_link=True):
         """"""
         self.id = str(uuid.uuid1()) #id unico.
         self.path = path
@@ -52,7 +52,7 @@ class DownloadItem:
     @property
     def speed(self):
         """"""
-        if not self.start_time:
+        if not self.start_time or self.status in (cons.STATUS_FINISHED, cons.STATUS_STOPPED, cons.STATUS_ERROR):
             return 0
         size_complete = self.size_complete
         speed = float((size_complete - self.sp_size)) / (time.time() - self.sp_time) #size / elapsed_time
@@ -63,8 +63,6 @@ class DownloadItem:
         try:
             speed = sum(deque_speeds) / len(deque_speeds)
         except ZeroDivisionError:
-            return 0
-        if self.status in (cons.STATUS_FINISHED, cons.STATUS_STOPPED, cons.STATUS_ERROR):
             return 0
         return speed
 
