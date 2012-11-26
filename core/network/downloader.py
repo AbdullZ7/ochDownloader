@@ -48,7 +48,20 @@ class Downloader(threading.Thread, MultiDownload):
         finally:
             if self.source:
                 self.source.close()
-    
+
+    def wait_func(self, wait=0):
+        """
+        Non-blocking wait (thread-sleep).
+        """
+        while True:
+            if self.stop_flag or self.error_flag:
+                return True
+            elif not wait:
+                return False
+            time.sleep(1)
+            wait -= 1
+            self.status_msg = "{}: {}".format("Wait:", misc.time_format(wait))
+
     def __file_existence_check(self):
         """"""
         START, END = range(2)
@@ -120,20 +133,6 @@ class Downloader(threading.Thread, MultiDownload):
         elif info.getheader("Accept-Ranges", None):
             if info["Accept-Ranges"].lower() == "bytes":
                 self.can_resume = True
-    
-    def wait_func(self, wait=0):
-        """
-        Non-blocking wait (thread-sleep).
-        """
-        while True:
-            if self.stop_flag or self.error_flag:
-                return True
-            elif not wait:
-                return False
-            time.sleep(1) #segundos
-            wait -= 1
-            status = "{0}: {1}".format("Wait", misc.time_format(wait))
-            self.status_msg = status
     
     def __validate_source(self):
         """"""
