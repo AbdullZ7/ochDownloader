@@ -78,7 +78,7 @@ class DownloadItem:
             remain_time = ((time.time() - self.start_time) / (self.size_complete - self.size_resume)) * (self.size - self.size_complete)
         except ZeroDivisionError:
             return 0
-        if remain_time < 0:
+        if not self.start_time or remain_time < 0:
             return 0
         else:
             return remain_time
