@@ -80,10 +80,11 @@ class _Api(DownloadManager, AddDownloadsManager):
     def save_session(self, id_item_list):
         download_list = []
         all_downloads = self.get_all_downloads(complete=False)
-        for download_item in (all_downloads[id_item] for id_item in id_item_list): #generator
-            download_list.append([download_item.name, download_item.path, download_item.link, download_item.host,
-                                  download_item.size, download_item.progress, download_item.time, download_item.chunks,
-                                  download_item.video_quality])
+        for download_item in (all_downloads.get(id_item, None) for id_item in id_item_list): #generator
+            if download_item is not None:
+                download_list.append([download_item.name, download_item.path, download_item.link, download_item.host,
+                                      download_item.size, download_item.progress, download_item.time, download_item.chunks,
+                                      download_item.video_quality])
         self.session_parser.save(download_list)
         logger.debug("Session has been saved")
         if len(all_downloads) != len(download_list):
