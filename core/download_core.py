@@ -37,8 +37,13 @@ class DownloadItem:
         self.sp_time = 0
         self.sp_deque = deque([], 5)
 
+        self.progress = 0
+        self.speed = 0
+        self.time_remain = 0
+        self.time = 0
+
     @property
-    def progress(self):
+    def _progress(self):
         """"""
         try:
             progress = int((self.size_complete * 100) / self.size) #porcentaje completado
@@ -50,7 +55,7 @@ class DownloadItem:
             return progress
 
     @property
-    def speed(self):
+    def _speed(self):
         """"""
         if not self.start_time or self.status in (cons.STATUS_FINISHED, cons.STATUS_STOPPED, cons.STATUS_ERROR):
             return 0
@@ -67,7 +72,7 @@ class DownloadItem:
         return speed
 
     @property
-    def time_remain(self):
+    def _time_remain(self):
         """"""
         try:
             remain_time = ((time.time() - self.start_time) / (self.size_complete - self.size_resume)) * (self.size - self.size_complete)
@@ -79,7 +84,7 @@ class DownloadItem:
             return remain_time
 
     @property
-    def time(self):
+    def _time(self):
         """"""
         if self.start_time:
             return time.time() - self.start_time #elapsed time
@@ -100,6 +105,11 @@ class DownloadItem:
         self.can_resume = can_resume
         self.is_premium = is_premium
         self.video_quality = video_quality
+
+        self.progress = self._progress
+        self.speed = self._speed
+        self.time_remain = self._time_remain
+        self.time = self._time
 
     def reset_fail_count(self):
         """"""

@@ -298,12 +298,9 @@ class Downloads(QTreeView):
                 row[4] = misc.size_format(download_item.size) if download_item.size else None
                 row[5] = misc.size_format(download_item.size_complete) if download_item.size_complete else None
                 row[6] = download_item.progress
-                time = download_item.time
-                row[7] = misc.time_format(time) if time else None
-                time_remain = download_item.time_remain
-                row[8] = misc.time_format(time_remain) if time_remain else None
-                speed = download_item.speed
-                row[9] = misc.speed_format(speed) if speed else None
+                row[7] = misc.time_format(download_item.time) if download_item.time else None
+                row[8] = misc.time_format(download_item.time_remain) if download_item.time_remain else None
+                row[9] = misc.speed_format(download_item.speed) if download_item.speed else None
                 row[10] = self.get_status_msg(download_item)
             except KeyError as err:
                 logger.debug(err)
