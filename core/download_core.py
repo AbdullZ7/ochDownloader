@@ -1,7 +1,8 @@
 import uuid
+import time
 import logging
 logger = logging.getLogger(__name__)
-from collections import OrderedDict
+from collections import OrderedDict, deque
 
 #Libs
 import cons
@@ -20,12 +21,8 @@ class DownloadItem:
         self.link_status_msg = None
         self.status = cons.STATUS_QUEUE #download status
         self.status_msg = None
-        self.progress = 0
         self.size = size
         self.size_complete = 0
-        self.speed = 0
-        self.time = 0
-        self.time_remain = 0
         self.chunks = []
         self.fail_count = 0
         self.can_resume = False
@@ -33,32 +30,74 @@ class DownloadItem:
         self.can_copy_link = can_copy_link
         self.video_quality = None
 
-    @property
-    def progress_(self):
-        pass
+        self.start_time = 0
+        self.size_resume = 0
+
+        self.sp_size = 0
+        self.sp_time = 0
+        self.sp_deque = deque([], 5)
 
     @property
-    def speed_(self):
-        pass
+    def progress(self):
+        """"""
+        try:
+            progress = int((self.size_complete * 100) / self.size) #porcentaje completado
+        except ZeroDivisionError:
+            return 0
+        if progress > 100:
+            return 100
+        else:
+            return progress
 
     @property
-    def time_remain_(self):
-        pass
+    def speed(self):
+        """"""
+        if not self.start_time:
+            return 0
+        size_complete = self.size_complete
+        speed = float((size_complete - self.sp_size)) / (time.time() - self.sp_time) #size / elapsed_time
+        self.sp_size = size_complete
+        self.sp_time = time.time()
+        self.sp_deque.append(speed)
+        deque_speeds = [last_speed for last_speed in self.sp_deque if int(last_speed) > 0]
+        try:
+            speed = sum(deque_speeds) / len(deque_speeds)
+        except ZeroDivisionError:
+            return 0
+        if self.status in (cons.STATUS_FINISHED, cons.STATUS_STOPPED, cons.STATUS_ERROR):
+            return 0
+        return speed
 
-        #completar... no importa lo que estas pensando.
+    @property
+    def time_remain(self):
+        """"""
+        try:
+            remain_time = ((time.time() - self.start_time) / (self.size_complete - self.size_resume)) * (self.size - self.size_complete)
+        except ZeroDivisionError:
+            return 0
+        if remain_time < 0:
+            return 0
+        else:
+            return remain_time
 
-    def update(self, name, status, progress, size, size_complete, speed, time,
-               time_remain, chunks, status_msg, can_resume, is_premium, video_quality):
+    @property
+    def time(self):
+        """"""
+        if self.start_time:
+            return time.time() - self.start_time #elapsed time
+        else:
+            return 0
+
+    def update(self, name, status, size, size_complete, start_time,
+               size_resume, chunks, status_msg, can_resume, is_premium, video_quality):
         """"""
         self.name = name
         self.status = status
         self.status_msg = status_msg
-        self.progress = progress
         self.size = size
         self.size_complete = size_complete
-        self.speed = speed
-        self.time = time
-        self.time_remain = time_remain
+        self.start_time = start_time
+        self.size_resume = size_resume
         self.chunks = chunks or []
         self.can_resume = can_resume
         self.is_premium = is_premium

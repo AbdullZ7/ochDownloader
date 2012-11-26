@@ -23,15 +23,9 @@ class DownloaderCore:
         self.start_time = 0
         self.file_exists = False
         self.limit_exceeded = False
-        
-        #get_speed stuff
-        self.sp_size = 0
-        self.sp_time = 0
-        self.sp_deque = collections.deque([], 5) #deque = ring_list-like, inicializado con lista/iterable vacia.
-        self.old_rate = bucket.fill_rate
 
         #get_remain time
-        self.size_tmp = 0
+        self.size_tmp = 0 #size_resume
         
         self.cookie = None
         self.is_premium = False

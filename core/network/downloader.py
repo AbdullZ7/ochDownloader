@@ -168,51 +168,6 @@ class Downloader(threading.Thread, MultiDownload):
             logger.exception(err)
             raise StatusError(err)
 
-    def get_remain(self):
-        """"""
-        try:
-            remain_time = ((time.time() - self.start_time) / (self.size_complete - self.size_tmp)) * (self.size_file - self.size_complete)
-        except ZeroDivisionError:
-            return 0
-        if remain_time < 0:
-            return 0
-        else:
-            return remain_time
-    
-    def get_time(self):
-        """"""
-        if self.start_time:
-            return time.time() - self.start_time #elapsed time
-        else:
-            return 0
-    
-    def get_progress(self):
-        """"""
-        try:
-            progress = int((self.size_complete * 100) / self.size_file) #porcentaje completado
-        except ZeroDivisionError:
-            return 0
-        if progress > 100:
-            return 100
-        else:
-            return progress
-
-    def get_speed(self):
-        """"""
-        size_complete = self.size_complete #todo: use lock.
-        speed = float((size_complete - self.sp_size)) / (time.time() - self.sp_time) #size / elapsed_time
-        self.sp_size = size_complete
-        self.sp_time = time.time()
-        self.sp_deque.append(speed)
-        deque_speeds = [last_speed for last_speed in self.sp_deque if int(last_speed) > 0]
-        try:
-            speed = sum(deque_speeds) / len(deque_speeds)
-        except ZeroDivisionError:
-            return 0
-        if self.status == cons.STATUS_FINISHED or self.stop_flag or self.error_flag:
-            return 0
-        return speed
-
 
 if __name__ == "__main__":
     pass
