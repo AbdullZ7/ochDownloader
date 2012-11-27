@@ -81,7 +81,7 @@ class DownloadManager(DownloadCore, ThreadManager):
             self.stop_thread(id_item)
             return True
 
-    def delete_download(self, id_items_list):
+    def delete_download(self, id_items_list, remove_file=False):
         """"""
         for id_item in id_items_list:
             is_active = False
@@ -95,17 +95,23 @@ class DownloadManager(DownloadCore, ThreadManager):
                     try:
                         download_item = self.queue_downloads.pop(id_item)
                     except KeyError:
-                        #bug: error on remove complete item from the gui.
-                        raise
-            th = None
+                        try:
+                            download_item = self.complete_downloads.pop(id_item)
+                        except KeyError:
+                            #bug: error on remove complete item from the gui.
+                            raise
+
             if is_active:
                 th = self.get_thread(id_item)
                 self.stop_thread(id_item)
                 self.delete_thread(id_item)
                 self.global_slots.remove_slot()
                 self.next_download()
-                
-            threading.Thread(group=None, target=self.remove_file, name=None, args=(download_item, th)).start()
+            else:
+                th = None
+
+            if remove_file:
+                threading.Thread(group=None, target=self.remove_file, name=None, args=(download_item, th)).start()
 
     def remove_file(self, download_item, th):
         """"""
