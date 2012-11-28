@@ -16,9 +16,8 @@ class Addon(AddonCore):
     """"""
     def __init__(self, parent, *args, **kwargs):
         """"""
-        AddonCore.__init__(self)
+        AddonCore.__init__(self, parent)
         self.name = _("Shutdown")
-        self.parent = parent
         self.old_retries_count = conf.get_retries_limit()
         if self.old_retries_count == RETRIES_LIMIT:
             conf.set_retries_limit(str(99))

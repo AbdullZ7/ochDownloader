@@ -13,7 +13,7 @@ class Addon(AddonCore):
     """"""
     def __init__(self, parent, *args, **kwargs):
         """"""
-        AddonCore.__init__(self)
+        AddonCore.__init__(self, parent)
         misc.register_app_path()
         self.start_server()
 

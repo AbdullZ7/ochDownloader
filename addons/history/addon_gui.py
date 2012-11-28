@@ -18,9 +18,8 @@ class Addon(AddonCore):
     """"""
     def __init__(self, parent, *args, **kwargs):
         """"""
-        AddonCore.__init__(self)
+        AddonCore.__init__(self, parent)
         self.name = _("History")
-        self.parent = parent
         self.history = History()
         self.history_tab = HistoryTab(self.history)
 

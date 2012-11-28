@@ -19,10 +19,9 @@ class Addon(AddonCore):
     """"""
     def __init__(self, parent, *args, **kwargs):
         """"""
-        AddonCore.__init__(self)
+        AddonCore.__init__(self, parent)
         self.name = _("Auto extraction")
-        self.parent = parent
-        self.unrar_gui = UnRARGUI(parent)
+        self.unrar_gui = UnRARGUI(self.parent)
         events.add_password.connect(passwords_handler.add)
         #self.ip_renewer_cls = IPRenewer()
 

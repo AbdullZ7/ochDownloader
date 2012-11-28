@@ -21,9 +21,8 @@ class Addon(AddonCore):
     """"""
     def __init__(self, parent, *args, **kwargs):
         """"""
-        AddonCore.__init__(self)
+        AddonCore.__init__(self, parent)
         self.name = _("IP renewer")
-        self.parent = parent
         self.ip_renewer = IPRenewer()
 
     def get_preferences(self):

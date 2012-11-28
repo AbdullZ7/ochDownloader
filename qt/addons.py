@@ -1,15 +1,21 @@
 import pkgutil
 import importlib
+import weakref
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+logger = logging.getLogger(__name__)
 
-import core.cons as cons
+from core import cons
 
 
 class AddonCore:
     """"""
-    def __init__(self):
+    def __init__(self, parent):
+        self.weak_parent = weakref.ref(parent)
         self.name = None
+
+    @property
+    def parent(self):
+        return self.weak_parent()
     
     def set_menu_item(self):
         raise NotImplementedError()

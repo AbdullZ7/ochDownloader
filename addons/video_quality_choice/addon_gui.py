@@ -12,8 +12,7 @@ class Addon(AddonCore):
     """"""
     def __init__(self, parent, *args, **kwargs):
         """"""
-        AddonCore.__init__(self)
-        self.parent = parent
+        AddonCore.__init__(self, parent)
         self.connect()
 
     def set_menu_item(self):

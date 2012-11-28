@@ -13,11 +13,10 @@ class Addon(AddonCore):
     """"""
     def __init__(self, parent, *args, **kwargs):
         """"""
-        AddonCore.__init__(self)
+        AddonCore.__init__(self, parent)
         self.name = _("Clipboard")
         self.event_id = None
         self.clipboard_monitor = Clipboard()
-        self.parent = parent
     
     def set_menu_item(self):
         self.action = self.parent.menu.addAction(_("Clipboard watcher"), self.on_toggle) #can toggle
