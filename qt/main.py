@@ -141,10 +141,7 @@ class Gui(QMainWindow):
 
         #system tray icon
         self.tray = Tray(self)
-        if self.tray.available:
-            self.can_close = False
-        else:
-            self.can_close = True
+        self.show_or_hide_tray()
 
         #load session.
         self.load_session()
@@ -159,6 +156,7 @@ class Gui(QMainWindow):
 
         #custom qt signals
         signals.switch_tab.connect(self.switch_tab)
+        signals.show_or_hide_tray.connect(self.show_or_hide_tray)
 
         self.show()
 
@@ -262,7 +260,17 @@ class Gui(QMainWindow):
             tab = self.previous_tab.layout()
             tab.on_close()
         self.previous_tab = current_widget
-    
+
+    def show_or_hide_tray(self):
+        if self.tray.is_available() and conf.get_tray_available():
+            self.tray.show()
+            self.tray.connect_messages()
+            self.can_close = False
+        else:
+            self.tray.hide()
+            self.tray.disconnect_messages()
+            self.can_close = True
+
     def load_addon_tabs(self):
         for tab, addon in [(addon.get_tab(), addon) for addon in self.addons_list]:
             if tab is not None:

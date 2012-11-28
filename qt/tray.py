@@ -18,25 +18,25 @@ ICON_WARN = QSystemTrayIcon.Warning
 ICON_CRITICAL = QSystemTrayIcon.Critical
 
 
-class Tray:
+class Tray(QSystemTrayIcon):
     def __init__(self, parent):
+        QSystemTrayIcon.__init__(self, parent)
         self.weak_parent = weakref.ref(parent)
-        self.available = False
-        if QSystemTrayIcon.isSystemTrayAvailable():
-            self.tray_icon = QSystemTrayIcon(parent)
-            self.tray_icon.setIcon(QIcon(os.path.join(cons.MEDIA_PATH, "misc", "ochd.ico")))
-            self.tray_icon.setToolTip(cons.APP_TITLE)
-            self.tray_icon.activated.connect(self.restore)
+        if self.is_available():
+            self.setIcon(QIcon(os.path.join(cons.MEDIA_PATH, "misc", "ochd.ico")))
+            self.setToolTip(cons.APP_TITLE)
+            self.activated.connect(self.restore)
             self.context_menu()
             #QApplication.setQuitOnLastWindowClosed(False)
-            if conf.get_tray_available():
-                self.available = True
-                self.tray_icon.show()
-                self.connect_messages()
 
     @property
     def parent(self):
         return self.weak_parent()
+
+    def is_available(self):
+        if QSystemTrayIcon.isSystemTrayAvailable():
+            return True
+        return False
 
     def restore(self, reason):
         if reason == QSystemTrayIcon.DoubleClick:
@@ -60,15 +60,20 @@ class Tray:
         [self.menu.addAction(title, callback) if title is not None else self.menu.addSeparator()
          for title, callback in items]
 
-        self.tray_icon.setContextMenu(self.menu)
+        self.setContextMenu(self.menu)
 
     def show_message(self, title, msg, icon=ICON_INFO, duration=15):
-        self.tray_icon.showMessage(title, msg, icon, duration * 1000)
+        self.showMessage(title, msg, icon, duration * 1000)
 
     def connect_messages(self):
         events.captcha_dialog.connect(self.show_catpcha_message)
         events.all_downloads_complete.connect(self.show_all_downloads_complete_message)
         signals.captured_links_count.connect(self.show_captured_links_message)
+
+    def disconnect_messages(self):
+        events.captcha_dialog.disconnect(self.show_catpcha_message)
+        events.all_downloads_complete.disconnect(self.show_all_downloads_complete_message)
+        signals.captured_links_count.disconnect(self.show_captured_links_message)
 
     def show_captured_links_message(self, count):
         self.show_message('{} {}'.format(count, _('link(s) were captured')), None)
