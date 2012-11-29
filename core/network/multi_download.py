@@ -35,7 +35,6 @@ class MultiDownload(DownloaderCore):
         #Threading stuff
         self.lock1 = threading.Lock() #lock to write file.
         self.lock2 = threading.Lock()
-        self.lock3 = threading.Lock()
 
         self.chunks = download_item.chunks[:] if download_item.chunks is not None else [] #shallow copy
         self.chunks_control = []
@@ -47,11 +46,7 @@ class MultiDownload(DownloaderCore):
 
     def get_chunk_n_size(self):
         with self.lock2:
-            return self.chunks[:], self.size_complete
-
-    def get_conn_count(self):
-        with self.lock3:
-            return self.conn_count
+            return self.chunks[:], self.size_complete #, self.conn_count
 
     def spawn_thread(self, fh, i, chunk):
         th = threading.Thread(group=None, target=self.thread_download, name=None, args=(fh, i, chunk, self.first_flag))
@@ -116,20 +111,19 @@ class MultiDownload(DownloaderCore):
             return request.get(self.link_file, cookie=self.cookie, range=(chunk[START], None))
 
     def dl_next_chunk(self, chunk, i):
-        with self.lock2: #safe.
-            with self.lock3:
-                try:
-                    if self.chunks_control[i] and chunk[END] == self.chunks[i][START]: #on resume, end from the current segment must be equal to start from the next one.
-                        self.chunks_control[i] = False
-                        chunk = (chunk[START], self.chunks[i][END]) #in case chunk[START] > self.chunks[i_][START] ?
-                        return chunk
-                    elif not self.chunks_control[i]:
-                        raise CanNotRun('Next chunk is downloading')
-                    else:
-                        #chunks completeness will be checked later.
-                        raise CanNotRun('Can not resume next chunk')
-                except IndexError:
-                    raise CanNotRun('No more chunks left')
+        with self.lock2:
+            try:
+                if self.chunks_control[i] and chunk[END] == self.chunks[i][START]: #on resume, end from the current segment must be equal to start from the next one.
+                    self.chunks_control[i] = False
+                    chunk = (chunk[START], self.chunks[i][END]) #in case chunk[START] > self.chunks[i_][START] ?
+                    return chunk
+                elif not self.chunks_control[i]:
+                    raise CanNotRun('Next chunk is downloading')
+                else:
+                    #chunks completeness will be checked later.
+                    raise CanNotRun('Can not resume next chunk')
+            except IndexError:
+                raise CanNotRun('No more chunks left')
 
     def set_err(self, err):
         logger.exception(err)
@@ -163,7 +157,7 @@ class MultiDownload(DownloaderCore):
                 if not is_first and not self.is_valid_range(s, chunk[START]):
                     raise BadSource('Link expired, or cant download the requested range.')
 
-                with self.lock3:
+                with self.lock2:
                     if self.chunks_control[i]:
                         self.chunks_control[i] = False
                         self.conn_count += 1
