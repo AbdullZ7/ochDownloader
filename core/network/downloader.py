@@ -60,7 +60,7 @@ class Downloader(threading.Thread, MultiDownload):
                 return False
             time.sleep(1)
             wait -= 1
-            self.status_msg = "{}: {}".format("Wait:", misc.time_format(wait))
+            self.status_msg = "{}: {}".format("Wait", misc.time_format(wait))
 
     def __file_existence_check(self):
         """"""
