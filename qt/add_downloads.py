@@ -165,6 +165,8 @@ class AddDownloads(QVBoxLayout):
         menu.exec_(self.tree_view.viewport().mapToGlobal(position))
 
     def on_save_as(self):
+        #TODO: set save_as on the text field if it's setted, otherwise, set the file name if not Unknown
+        #do not set save_as on cancel, change file_name to save_as text.
         rows = self.get_selected_rows()
         row = self.items[rows[0]]
         item_id = row[0]
