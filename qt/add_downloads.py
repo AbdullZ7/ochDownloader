@@ -15,6 +15,7 @@ import media
 import signals
 from list_model import SimpleListModel
 from add_links_dlg import AddLinks
+from generic_dialog import Dialog
 
 
 class AddDownloads(QVBoxLayout):
@@ -123,14 +124,28 @@ class AddDownloads(QVBoxLayout):
     def parent(self):
         return self.weak_parent()
 
+    def get_selected_rows(self):
+        """"""
+        selected_rows = [index.row() for index in self.tree_view.selectionModel().selectedRows()]
+        selected_rows.sort()
+        return selected_rows
+
     def context_menu(self, position):
         menu = QMenu()
-        #indexes = self.selectedIndexes()
+        rows = self.get_selected_rows()
+
+        sensitive = True if len(rows) == 1 else False
         
-        #sensitive = True if indexes else False
+        individual_items = [(_('Save as...'), self.on_save_as), ]
         
-        #individual_items = [('Open destination folder', self.on_open_folder),]
-        
+        [menu.addAction(title, callback).setEnabled(sensitive) for title, callback in individual_items]
+
+        menu.addSeparator()
+
+        #sensitive = True if rows else False
+
+        #global_items = [('Open folder', self.on_open_folder), ]
+
         #[menu.addAction(title, callback).setEnabled(sensitive) for title, callback in individual_items]
 
         #menu.addSeparator()
@@ -148,7 +163,16 @@ class AddDownloads(QVBoxLayout):
         for title, callback in generic_items]
         
         menu.exec_(self.tree_view.viewport().mapToGlobal(position))
-    
+
+    def on_save_as(self):
+        rows = self.get_selected_rows()
+        row = self.items[rows[0]]
+        item_id = row[0]
+        widget = QLineEdit(self.parent)
+        dialog = Dialog(self.parent, "Save as", widget)
+        save_as = widget.text()
+        api.save_download_as(item_id, save_as)
+
     def on_clear_list(self):
         self.__model.clear()
         self.rows_buffer.clear()

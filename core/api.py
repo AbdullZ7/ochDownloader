@@ -56,6 +56,11 @@ class _Api(DownloadManager, AddDownloadsManager):
 
     def clear_complete(self):
         self.complete_downloads.clear()
+
+    def save_download_as(self, item_id, save_as):
+        all_downloads = self.get_all_checking_downloads()
+        download_item = all_downloads[item_id]
+        download_item.save_as = save_as
     
     def load_session(self):
         try:

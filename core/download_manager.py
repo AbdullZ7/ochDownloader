@@ -131,11 +131,11 @@ class DownloadManager(DownloadCore, ThreadManager):
             item_data = self.get_thread_update(id_item) #threadmanager
             download_item.update(*item_data)
             limit_exceeded = self.is_limit_exceeded(id_item) #threadmanager
-            status = download_item.status
-            if status in (cons.STATUS_STOPPED, cons.STATUS_FINISHED, cons.STATUS_ERROR):
-                if status == cons.STATUS_STOPPED:
+            old_status = download_item.status
+            if old_status in (cons.STATUS_STOPPED, cons.STATUS_FINISHED, cons.STATUS_ERROR):
+                if old_status == cons.STATUS_STOPPED:
                     self.stopped_downloads[id_item] = download_item
-                elif status == cons.STATUS_FINISHED:
+                elif old_status == cons.STATUS_FINISHED:
                     self.complete_downloads[id_item] = download_item
                 else: #status == cons.STATUS_ERROR
                     download_item.fail_count += 1
@@ -149,14 +149,14 @@ class DownloadManager(DownloadCore, ThreadManager):
                 del self.active_downloads[id_item]
                 self.global_slots.remove_slot()
                 self.next_download()
-                if status == cons.STATUS_FINISHED:
+                if old_status == cons.STATUS_FINISHED:
                     events.download_complete.emit(download_item)
-                if not self.active_downloads and not self.queue_downloads and status != cons.STATUS_STOPPED:
+                if not self.active_downloads and old_status != cons.STATUS_STOPPED:
                     events.all_downloads_complete.emit()
-                if limit_exceeded and self.active_downloads and status == cons.STATUS_ERROR:
+                if limit_exceeded and self.active_downloads and old_status == cons.STATUS_ERROR:
                     events.limit_exceeded.emit()
 
-    def update_download_item(self, download_item, th):
+    def update_download_item(self, download_item):
         pass
 
     def downloader_init(self, item_list, path):
@@ -167,7 +167,7 @@ class DownloadManager(DownloadCore, ThreadManager):
             #events.trigger_downloading_process_pre_start()
         for download_item in item_list:
             download_item.path = path
-            download_item.reset_fail_count()
+            download_item.fail_count = 0
             self.queue_downloads[download_item.id] = download_item
             self.download_starter(download_item)
 

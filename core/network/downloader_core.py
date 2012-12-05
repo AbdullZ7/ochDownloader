@@ -12,6 +12,7 @@ class DownloaderCore:
         self.host = download_item.host
         self.link = download_item.link
         self.video_quality = download_item.video_quality
+        self.save_as = download_item.save_as
         self.stop_flag = False
         self.error_flag = False
         self.source = None

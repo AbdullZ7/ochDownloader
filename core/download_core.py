@@ -29,6 +29,7 @@ class DownloadItem:
         self.is_premium = False
         self.can_copy_link = can_copy_link
         self.video_quality = None
+        self.save_as = None
 
         self.start_time = 0
         self.size_resume = 0
@@ -110,10 +111,6 @@ class DownloadItem:
         self.speed = self._speed
         self.time_remain = self._time_remain
         self.time = self._time
-
-    def reset_fail_count(self):
-        """"""
-        self.fail_count = 0
 
 
 class DownloadCore:

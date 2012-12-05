@@ -88,7 +88,7 @@ class Downloader(threading.Thread, MultiDownload):
         elif self.source:
             self.link_file = pb.dl_link
             self.cookie = pb.cookie
-            self.f_name = pb.f_name
+            self.f_name = self.save_as or pb.f_name
             self.video_quality = pb.video_quality
         else:
             self.limit_exceeded = pb.limit_exceeded

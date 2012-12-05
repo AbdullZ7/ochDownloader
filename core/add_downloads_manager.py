@@ -55,6 +55,13 @@ class AddDownloadsManager:
     def get_checking_downloads(self):
         return self.__checking_downloads.copy()
 
+    def get_all_checking_downloads(self):
+        all_downloads = {}
+        all_downloads.update(self.__pending_downloads)
+        all_downloads.update(self.__checking_downloads)
+        all_downloads.update(self.__ready_downloads)
+        return all_downloads
+
     def clear_pending(self):
         """
         Erase pending_downloads dicts
