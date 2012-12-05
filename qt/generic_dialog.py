@@ -10,8 +10,6 @@ class Dialog(QDialog):
         self.setWindowTitle(title)
         self.resize(340, 200)
 
-        self.parent = parent
-
         vbox = QVBoxLayout()
         vbox.setSpacing(20)
         self.setLayout(vbox)
