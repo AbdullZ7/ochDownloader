@@ -135,19 +135,13 @@ class AddDownloads(QVBoxLayout):
         rows = self.get_selected_rows()
 
         sensitive = True if len(rows) == 1 else False
-        
         individual_items = [(_('Save as...'), self.on_save_as), ]
-        
         [menu.addAction(title, callback).setEnabled(sensitive) for title, callback in individual_items]
-
         menu.addSeparator()
 
         #sensitive = True if rows else False
-
         #global_items = [('Open folder', self.on_open_folder), ]
-
         #[menu.addAction(title, callback).setEnabled(sensitive) for title, callback in individual_items]
-
         #menu.addSeparator()
         
         generic_items = [(_('Download Selected'), self.on_download_selected),
@@ -158,7 +152,6 @@ class AddDownloads(QVBoxLayout):
                         (None, None),
                         (_('Re-check'), self.on_recheck),
                         (_('Clear list'), self.on_clear_list)]
-        
         [menu.addAction(title, callback) if title is not None else menu.addSeparator()
         for title, callback in generic_items]
         
