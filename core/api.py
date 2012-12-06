@@ -45,21 +45,20 @@ class _Api(DownloadManager, AddDownloadsManager):
     def get_stopped_downloads(self):
         return self.stopped_downloads.copy()
     
-    def get_all_downloads(self, complete=True):
+    def get_all_downloads(self):
         all_downloads = {}
         all_downloads.update(self.active_downloads)
         all_downloads.update(self.queue_downloads)
         all_downloads.update(self.stopped_downloads)
-        if complete:
-            all_downloads.update(self.complete_downloads)
+        all_downloads.update(self.complete_downloads)
         return all_downloads
 
     def clear_complete(self):
         self.complete_downloads.clear()
 
     def save_download_as(self, item_id, save_as):
-        all_downloads = self.get_all_checking_downloads()
-        download_item = all_downloads[item_id]
+        all_checking_downloads = self.get_all_checking_downloads()
+        download_item = all_checking_downloads[item_id]
         download_item.save_as = save_as
     
     def load_session(self):
@@ -85,16 +84,14 @@ class _Api(DownloadManager, AddDownloadsManager):
     
     def save_session(self, id_item_list):
         download_list = []
-        all_downloads = self.get_all_downloads(complete=False)
-        for download_item in (all_downloads.get(id_item, None) for id_item in id_item_list): #generator
-            if download_item is not None:
+        all_downloads = self.get_all_downloads()
+        for download_item in (all_downloads[id_item] for id_item in id_item_list): #generator
+            if download_item.status != cons.STATUS_FINISHED:
                 download_list.append([download_item.name, download_item.path, download_item.link, download_item.host,
                                       download_item.size, download_item.progress, download_item.time, download_item.chunks,
                                       download_item.video_quality, download_item.save_as])
         self.session_parser.save(download_list)
         logger.debug("Session has been saved")
-        if len(all_downloads) != len(download_list):
-            logger.warning("save_session: list len dont match")
 
     def get_download_items(self, id_item_list):
         """"""
