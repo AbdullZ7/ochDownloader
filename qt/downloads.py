@@ -147,18 +147,26 @@ class Downloads(QTreeView):
     
     def contextMenuEvent(self, event):
         menu = QMenu()
-        indexes = self.selectedIndexes()
+        rows = self.get_selected_rows()
+
+        #sensitive = True if len(rows) == 1 else False
+
+        #individual_items = [(_('Properties'), self.on_properties), ]
+
+        #[menu.addAction(title, callback).setEnabled(sensitive) for title, callback in individual_items]
+
+        #menu.addSeparator()
         
-        sensitive = True if indexes else False
-        
-        individual_items = [(_('Open destination folder'), self.on_open_folder),
+        sensitive = True if rows else False
+
+        global_items = [(_('Open destination folder'), self.on_open_folder),
                             (_('Copy link'), self.on_copy_link),
                             #(_('Add password'), self.on_password),
                             (None, None),
                             (_('Delete'), self.on_delete)]
         
         [menu.addAction(title, callback).setEnabled(sensitive) if title is not None else menu.addSeparator()
-         for title, callback in individual_items]
+         for title, callback in global_items]
 
         menu.addSeparator()
         
