@@ -1,11 +1,15 @@
 import hashlib
-import os, random, struct
-from Crypto.Cipher import AES
-
+import struct
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+logger = logging.getLogger(__name__)
 
-import core.cons as cons
+try:
+    from Crypto.Cipher import AES
+except ImportError as err:
+    logger.warning(err)
+    AES = None
+
+from core import cons
 
 
 class Container:
@@ -29,6 +33,9 @@ class Container:
     
     def decodificar_file(self, key, chunksize=24*1024):
         """"""
+        if AES is None:
+            return ""
+
         links = ""
         
         try:
