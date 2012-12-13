@@ -26,6 +26,7 @@ class Tray(QSystemTrayIcon):
             self.setIcon(QIcon(os.path.join(cons.MEDIA_PATH, "misc", "ochd.ico")))
             self.setToolTip(cons.APP_TITLE)
             self.activated.connect(self.restore)
+            self.messageClicked.connect(self.show_window)
             self.context_menu()
             #QApplication.setQuitOnLastWindowClosed(False)
 
@@ -45,10 +46,15 @@ class Tray(QSystemTrayIcon):
     def show_or_hide(self):
         if self.parent.isVisible():
             self.parent.hide()
-        elif self.parent.isMaximized():
+        else:
+            self.show_window()
+
+    def show_window(self):
+        if self.parent.isMaximized():
             self.parent.showMaximized()
         else:
             self.parent.showNormal()
+        self.parent.activateWindow()
 
     def context_menu(self):
         self.menu = QMenu()
