@@ -6,7 +6,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Libs
-#from core.Container_Extractor import Container
 from core.conf_parser import conf
 from core import events
 from core.api import api
@@ -264,12 +263,8 @@ class Gui(QMainWindow):
     def show_or_hide_tray(self):
         if self.tray.is_available() and conf.get_tray_available():
             self.tray.show()
-            self.tray.connect_messages()
-            self.can_close = False
         else:
             self.tray.hide()
-            self.tray.disconnect_messages()
-            self.can_close = True
 
     def load_addon_tabs(self):
         for tab, addon in [(addon.get_tab(), addon) for addon in self.addons_list]:
@@ -294,23 +289,16 @@ class Gui(QMainWindow):
         timer.timeout.connect(func)
         timer.start(interval)
         return timer
-    
-    #def queue_loop(self):
-        #try:
-            #callback = idle_loop.get_nowait()
-            #callback()
-        #except Queue.Empty:
-            #pass
 
     def event_close(self):
-        self.can_close = True
+        self.tray.hide()
         self.close()
 
     def closeEvent(self, event): #overloaded method
         """
         also useful for any QWidget
         """
-        if self.can_close: #if self.canExit():
+        if self.tray.can_close(): #if self.canExit():
             x, y, w, h = self.geometry().getRect()
             self.hide()
             self.save_session()

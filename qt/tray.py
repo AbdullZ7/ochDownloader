@@ -7,9 +7,8 @@ logger = logging.getLogger(__name__)
 from PySide.QtGui import *
 from PySide.QtCore import *
 
-import core.cons as cons
+from core import cons
 from core import events
-from core.conf_parser import conf
 
 import signals
 
@@ -28,7 +27,6 @@ class Tray(QSystemTrayIcon):
             self.activated.connect(self.restore)
             self.messageClicked.connect(self.show_window)
             self.context_menu()
-            #QApplication.setQuitOnLastWindowClosed(False)
 
     @property
     def parent(self):
@@ -38,6 +36,21 @@ class Tray(QSystemTrayIcon):
         if QSystemTrayIcon.isSystemTrayAvailable():
             return True
         return False
+
+    def show(self):
+        #overriden
+        QApplication.setQuitOnLastWindowClosed(False)
+        QSystemTrayIcon.show(self)
+        self.connect_messages()
+
+    def hide(self):
+        #overriden
+        QApplication.setQuitOnLastWindowClosed(True)
+        self.disconnect_messages()
+        QSystemTrayIcon.hide(self)
+
+    def can_close(self):
+        return QApplication.quitOnLastWindowClosed()
 
     def restore(self, reason):
         if reason == QSystemTrayIcon.DoubleClick:
