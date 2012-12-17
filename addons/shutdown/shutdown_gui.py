@@ -8,6 +8,8 @@ from PySide.QtCore import *
 
 if cons.OS_WIN:
     from qt.misc import flash_wnd
+else:
+    flash_wnd = None
 
 TIME_OUT = 60
 
@@ -31,7 +33,7 @@ class ShutdownDialog(QMessageBox):
         self.timer = parent.idle_timeout(1000, self.update_)
 
         #Flash if the window is in the background.
-        if cons.OS_WIN:
+        if flash_wnd is not None:
             flash_wnd.flash_taskbar_icon(parent.winId())
 
         self.exec_()
@@ -49,3 +51,4 @@ class ShutdownDialog(QMessageBox):
             shutdown = Shutdown()
             if shutdown.start_shutting():
                 events.quit.emit()
+            self.timer.stop()

@@ -8,6 +8,8 @@ from PySide.QtCore import *
 
 if cons.OS_WIN:
     from qt.misc import flash_wnd
+else:
+    flash_wnd = None
 
 
 class QualityChoiceDialog(QDialog):
@@ -18,7 +20,6 @@ class QualityChoiceDialog(QDialog):
         self.setWindowTitle("{f_name}".format(f_name=f_name))
         self.resize(340, 200)
 
-        self.parent = parent
         self.choices_dict = choices_dict
         self.solution = None
 
@@ -49,7 +50,7 @@ class QualityChoiceDialog(QDialog):
         self.cb.setFocus() #call after creating all of the other widgets.
 
         #Flash if the window is in the background.
-        if cons.OS_WIN:
+        if flash_wnd is not None:
             flash_wnd.flash_taskbar_icon(parent.winId())
 
         self.exec_()

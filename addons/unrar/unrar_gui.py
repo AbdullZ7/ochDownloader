@@ -1,3 +1,4 @@
+import weakref
 import re
 import os
 import logging
@@ -17,11 +18,15 @@ COMPLETE, ERR_MSG = range(2)
 
 class UnRARGUI:
     def __init__(self, parent):
-        self.parent = parent
+        self.weak_parent = weakref.ref(parent)
         self.unrar = UnRAR()
-        self.unrar_tab = UnRARTab(self.unrar, self.parent)
+        self.unrar_tab = UnRARTab(self.unrar, parent)
         self.tab_widget = QWidget()
         self.tab_widget.setLayout(self.unrar_tab)
+
+    @property
+    def parent(self):
+        return self.weak_parent()
     
     def add_file(self, download_item):
         self.file_name = download_item.name
@@ -77,7 +82,7 @@ class UnRARTab(QVBoxLayout):
         self.setSpacing(0)
         
         self.unrar = unrar
-        self.parent = parent
+        self.weak_parent = weakref.ref(parent)
         
         self.tree_view = QTreeView()
         #
@@ -100,6 +105,10 @@ class UnRARTab(QVBoxLayout):
         self.addWidget(self.tree_view)
         
         self.running = False
+
+    @property
+    def parent(self):
+        return self.weak_parent()
 
     def clear_list(self):
         self.__model.clear()

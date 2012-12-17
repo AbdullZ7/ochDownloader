@@ -1,3 +1,4 @@
+import weakref
 import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
@@ -9,6 +10,8 @@ from PySide.QtCore import *
 
 if cons.OS_WIN:
     from qt.misc import flash_wnd
+else:
+    flash_wnd = None
 
 TIMEOUT = 55
 
@@ -21,8 +24,8 @@ class CaptchaDialog(QDialog):
         #self.set_icon(self.render_icon(gtk.STOCK_DIALOG_QUESTION, gtk.ICON_SIZE_MENU))
         self.setWindowTitle("{service_name} captcha".format(service_name=service))
         self.resize(340, 200)
-        
-        self.parent = parent
+
+        self.weak_parent = weakref.ref(parent)
         self.get_captcha = get_captcha
         self.solution = None
         self.timeout = TIMEOUT
@@ -83,10 +86,14 @@ class CaptchaDialog(QDialog):
         self.entry_input.setFocus() #call after creating all of the other widgets.
 
         #Flash if the window is in the background.
-        if cons.OS_WIN:
+        if flash_wnd is not None:
             flash_wnd.flash_taskbar_icon(parent.winId())
         
         self.exec_()
+
+    @property
+    def parent(self):
+        return self.weak_parent()
 
     def get_solution(self):
         return self.solution

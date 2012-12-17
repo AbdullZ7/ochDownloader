@@ -1,3 +1,4 @@
+import weakref
 import logging
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,7 @@ class IPRenewerGUI:
     def __init__(self, parent, ip_renewer):
         """"""
         self.ip_renewer = ip_renewer
-        self.parent = parent
+        self.weak_parent = weakref.ref(parent)
         
         self.id_item_list = []
         self.is_working = True
@@ -36,6 +37,10 @@ class IPRenewerGUI:
             self.timer = self.parent.idle_timeout(1000, self.update)
         else:
             self.is_working = False
+
+    @property
+    def parent(self):
+        return self.weak_parent()
     
     def can_change_ip(self):
         """"""
