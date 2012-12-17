@@ -56,10 +56,11 @@ class _Api(DownloadManager, AddDownloadsManager):
     def clear_complete(self):
         self.complete_downloads.clear()
 
-    def save_download_as(self, item_id, save_as):
-        all_checking_downloads = self.get_all_checking_downloads()
-        download_item = all_checking_downloads[item_id]
+    def save_download_as(self, download_item, save_as):
         download_item.save_as = save_as
+
+    def set_download_name(self, download_item, name):
+        download_item.name = name
     
     def load_session(self):
         try:
@@ -97,6 +98,10 @@ class _Api(DownloadManager, AddDownloadsManager):
         """"""
         all_downloads = self.get_all_downloads()
         return [all_downloads[id_item] for id_item in id_item_list]
+
+    def get_checking_download_item(self, id_item):
+        all_checking_downloads = self.get_all_checking_downloads()
+        return all_checking_downloads[id_item]
 
 
 #singleton like.

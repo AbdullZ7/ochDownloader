@@ -158,15 +158,24 @@ class AddDownloads(QVBoxLayout):
         menu.exec_(self.tree_view.viewport().mapToGlobal(position))
 
     def on_save_as(self):
-        #TODO: set save_as on the text field if it's setted, otherwise, set the file name if not Unknown
-        #do not set save_as on cancel, change file_name to save_as text.
         rows = self.get_selected_rows()
         row = self.items[rows[0]]
         item_id = row[0]
+        download_item = api.get_checking_download_item(item_id)
         widget = QLineEdit(self.parent)
+        # set the line entry file name if we have one.
+        if download_item.save_as:
+            widget.setText(download_item.save_as)
+        elif download_item.name != cons.UNKNOWN:
+            widget.setText(download_item.name)
         dialog = Dialog(self.parent, "Save as", widget)
-        save_as = widget.text()
-        api.save_download_as(item_id, save_as)
+        if dialog.result() == QDialog.Accepted:
+            save_as = widget.text()
+            # change the file name in treeview and DownloadItem
+            if save_as:
+                api.save_download_as(download_item, save_as)
+                api.set_download_name(download_item, save_as)
+                row[3] = save_as
 
     def on_clear_list(self):
         self.__model.clear()
