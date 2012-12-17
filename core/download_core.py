@@ -30,6 +30,7 @@ class DownloadItem:
         self.can_copy_link = can_copy_link
         self.video_quality = None
         self.save_as = None
+        self.cookie = None
 
         self.start_time = 0
         self.size_resume = 0

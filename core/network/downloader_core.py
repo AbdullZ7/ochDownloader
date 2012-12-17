@@ -13,6 +13,7 @@ class DownloaderCore:
         self.link = download_item.link
         self.video_quality = download_item.video_quality
         self.save_as = download_item.save_as
+        self.cookie = download_item.cookie
         self.stop_flag = False
         self.error_flag = False
         self.source = None
@@ -27,8 +28,7 @@ class DownloaderCore:
 
         #get_remain time
         self.size_tmp = 0 #size_resume
-        
-        self.cookie = None
+
         self.is_premium = False
         
         #rate limit

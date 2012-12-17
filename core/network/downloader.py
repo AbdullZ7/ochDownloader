@@ -87,7 +87,7 @@ class Downloader(threading.Thread, MultiDownload):
             raise StatusStopped("Stopped")
         elif self.source:
             self.link_file = pb.dl_link
-            self.cookie = pb.cookie
+            self.cookie = self.cookie or pb.cookie
             self.f_name = self.save_as or pb.f_name
             self.video_quality = pb.video_quality
         else:
@@ -137,9 +137,8 @@ class Downloader(threading.Thread, MultiDownload):
     def __validate_source(self):
         """"""
         info = self.source.info()
-        if not conf.get_html_dl() and info.getheader("Content-Type", None): #Content-Type: text/html; charset=ISO-8859-4
-            if "text/html" in info['Content-Type']:
-                raise StatusError("HTML detected.")
+        if not conf.get_html_dl() and "text/html" in info.getheader("Content-Type", ""): #Content-Type: text/html; charset=ISO-8859-4
+            raise StatusError("HTML detected.")
     
     def __download(self):
         """"""
