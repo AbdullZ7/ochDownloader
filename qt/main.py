@@ -146,7 +146,6 @@ class Gui(QMainWindow):
         self.load_session()
 
         #add core's event loop
-        #self.idle_timeout(500, self.queue_loop)
         self.dispatcher = ThreadDispatcher(self)
         self.dispatcher.start()
 
@@ -162,6 +161,13 @@ class Gui(QMainWindow):
     def customEvent(self, event):
         #process idle_queue_dispacher events
         event.callback()
+
+    def hideEvent(self, event):
+        QMainWindow.hideEvent(self, event)
+        #TODO: emitir siempre si el tray esta activo o si se minimizo
+        #if event.spontaneous(): # user hide it
+        print 'im hidden'
+        #signals.window_hide.emit()
 
     def switch_tab(self, index):
         self.tab.setCurrentIndex(index)
@@ -181,37 +187,32 @@ class Gui(QMainWindow):
             self.setGeometry(x, y, w, h)
         else: #resize only
             self.resize(w, h)
-    
+
     def on_stop_download(self):
         rows = self.downloads.get_selected_rows()
         if rows:
             for row in rows:
                 items = self.downloads.items
                 id_item = items[row][0]
-                stopped = api.stop_download(id_item) #return true or false
+                stopped = api.stop_download(id_item)
                 if stopped:
                     if items[row][1] == self.downloads.icons_dict[cons.STATUS_QUEUE]:
                         items[row][1] = self.downloads.icons_dict[cons.STATUS_STOPPED]
-                    self.stop[BTN].setEnabled(False) #deshabilitar el boton de stop ya que acaban de detener la descarga.
+                    self.stop[BTN].setEnabled(False)
                     self.start[BTN].setEnabled(True)
-    
+
     def on_start_download(self):
         rows = self.downloads.get_selected_rows()
         if rows:
-            #id_item = model[row][0]
             for row in rows:
                 items = self.downloads.items
                 id_item = items[row][0]
-
-                #TODO: Implementar lo mismo pero para stopped (buscar en lista stopped y finished para comparar)
-                started = api.start_download(id_item) #return true or false
+                started = api.start_download(id_item)
                 if started:
                     items[row][1] = self.downloads.icons_dict[cons.STATUS_QUEUE] #status
                     items[row][10] = None #status_msg
-                    self.stop[BTN].setEnabled(True) #deshabilitar el boton de stop ya que acaban de detener la descarga.
+                    self.stop[BTN].setEnabled(True)
                     self.start[BTN].setEnabled(False)
-                
-            #self.downloads.get_status() #iniciar update de lista.
             id_item_list = [row[0] for row in items]
             api.reorder_queue(id_item_list)
     

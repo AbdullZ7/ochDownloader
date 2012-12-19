@@ -31,15 +31,7 @@ class Downloads(QTreeView):
         self.icons_dict = self.get_icons()
         self.items = []
         self.rows_buffer = {} #{id_item: row_obj, }
-        
-        #self.ico = QPixmap('stop.png')
-        
-        #self.items = [[[], "1", "11", "t5est", "t3est"], [[self.ico, self.ico], "22", "22", "t5ests", "as3est"],
-        #[[self.ico, self.ico], "33", "24", "t5edd", "t3edd"], [[self.ico, self.ico], "44", "24", "t5edd", "t3edd"]]
-        
-        #for item in range(10000):
-            #self.items.append([[QIcon('stop.png'), QIcon('stop.png')], "22", "24", "t5edd", "t3edd"])
-        
+
         headers = ["hidden_id_item", "", _("File Name"), _("Host"), _("Size"), _("Complete"), _("Progress"), _("Time"), _("Remain"), _("Speed"), _("Status Message")]
         
         self.__model = SimpleListModel(headers, self.items)
@@ -183,9 +175,8 @@ class Downloads(QTreeView):
         self.parent.start[BTN].setEnabled(False)
 
         if len(rows) == 1: #single selection.
-            items = self.items
-            row = rows[0]
-            id_item = items[row][0]
+            row_index = rows[0]
+            id_item = self.items[row_index][0]
             self.parent.stop[BTN].setEnabled(True)
             self.parent.start[BTN].setEnabled(False)
             stopped_downloads = api.get_stopped_downloads()
