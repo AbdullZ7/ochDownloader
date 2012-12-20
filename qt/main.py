@@ -162,13 +162,6 @@ class Gui(QMainWindow):
         #process idle_queue_dispacher events
         event.callback()
 
-    def hideEvent(self, event):
-        QMainWindow.hideEvent(self, event)
-        #TODO: emitir siempre si el tray esta activo o si se minimizo
-        #if event.spontaneous(): # user hide it
-        print 'im hidden'
-        #signals.window_hide.emit()
-
     def switch_tab(self, index):
         self.tab.setCurrentIndex(index)
 
@@ -299,7 +292,7 @@ class Gui(QMainWindow):
         """
         also useful for any QWidget
         """
-        if self.tray.can_close(): #if self.canExit():
+        if not self.tray.isVisible():
             x, y, w, h = self.geometry().getRect()
             self.hide()
             self.save_session()

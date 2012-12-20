@@ -21,12 +21,11 @@ class Tray(QSystemTrayIcon):
     def __init__(self, parent):
         QSystemTrayIcon.__init__(self, parent)
         self.weak_parent = weakref.ref(parent)
-        if self.is_available():
-            self.setIcon(QIcon(os.path.join(cons.MEDIA_PATH, "misc", "ochd.ico")))
-            self.setToolTip(cons.APP_TITLE)
-            self.activated.connect(self.restore)
-            self.messageClicked.connect(self.show_window)
-            self.context_menu()
+        self.setIcon(QIcon(os.path.join(cons.MEDIA_PATH, "misc", "ochd.ico")))
+        self.setToolTip(cons.APP_TITLE)
+        self.activated.connect(self.restore)
+        self.messageClicked.connect(self.show_window)
+        self.context_menu()
 
     @property
     def parent(self):
@@ -39,18 +38,13 @@ class Tray(QSystemTrayIcon):
 
     def show(self):
         #overriden
-        QApplication.setQuitOnLastWindowClosed(False)
         QSystemTrayIcon.show(self)
         self.connect_messages()
 
     def hide(self):
         #overriden
-        QApplication.setQuitOnLastWindowClosed(True)
-        self.disconnect_messages()
         QSystemTrayIcon.hide(self)
-
-    def can_close(self):
-        return QApplication.quitOnLastWindowClosed()
+        self.disconnect_messages()
 
     def restore(self, reason):
         if reason == QSystemTrayIcon.DoubleClick:
