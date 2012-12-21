@@ -1,13 +1,21 @@
-import argparse
+import logging
+logger = logging.getLogger(__name__)
+
+from argparse import ArgumentParser
 
 
-class ParseArgs:
+class ParseArgs(ArgumentParser):
     def __init__(self, args):
-        parser = argparse.ArgumentParser()
-        parser.add_argument('-l', '--links', dest='links', required=True)
-        p = parser.parse_args(args=args)
-        print p.links
+        ArgumentParser.__init__(self)
+        self.add_argument('-l', '--links', dest='links', required=True)
+        self.send_downloads(args)
 
-    def send_downloads(self):
+    def send_downloads(self, args):
         #TODO emit signal, passing all links
-        pass
+        print args
+        try:
+            p = self.parse_args(args=args)
+        except Exception as err:
+            logger.exception(err)
+        else:
+            print p.links
