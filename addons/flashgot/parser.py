@@ -1,3 +1,4 @@
+import cookielib
 import logging
 logger = logging.getLogger(__name__)
 
@@ -26,3 +27,6 @@ class ParseArgs(ArgumentParser):
             logger.warning(err)
         else:
             print p.links
+            cj = cookielib.MozillaCookieJar()
+            cj.magic_re = '' # fixes LoadError, netscape header comment checking.
+            cj.load(p.cookie)
