@@ -19,14 +19,36 @@ class ParseArgs(ArgumentParser):
 
     def send_downloads(self, args):
         #TODO emit signal, passing all links
-        #join http: links
-        print args
+        args = self.re_parse(args)
         try:
             p = self.parse_args(args=args)
         except Exception as err:
             logger.warning(err)
         else:
             print p.links
-            cj = cookielib.MozillaCookieJar()
-            cj.magic_re = '' # fixes LoadError, netscape header comment checking.
-            cj.load(p.cookie)
+            cj = self.load_cookie(p.cookie)
+
+    def re_parse(self, args):
+        # fixes links list
+        new_args = []
+        links = []
+        for arg in args:
+            if arg.startswith("http"):
+                links.append(arg)
+            elif arg != "--links":
+                new_args.append(arg)
+        new_args.append("--links")
+        links_ = " ".join(links)
+        new_args.append(links_)
+        return new_args
+
+    def load_cookie(self, path):
+        cj = cookielib.MozillaCookieJar()
+        cj.magic_re = '' # fixes LoadError, netscape header comment checking.
+        try:
+            cj.load(path)
+        except Exception as err:
+            logger.warning(err)
+            return None
+        else:
+            return cj

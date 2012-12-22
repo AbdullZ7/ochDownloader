@@ -21,6 +21,7 @@ class ServerHandler(asyncore.dispatcher):
     def handle_close(self):
         args = ''.join(self.data).strip().split(' ')
         ParseArgs(args)
+        self.data = []
         self.close()
 
 
