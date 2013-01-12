@@ -10,24 +10,24 @@ import cons
 
 class DownloadItem:
     """"""
-    def __init__(self, name, host, size, link, path=cons.DLFOLDER_PATH, can_copy_link=True):
+    def __init__(self, name, host, link, path=cons.DLFOLDER_PATH, can_copy_link=True):
         """"""
         self.id = str(uuid.uuid1()) #id unico.
-        self.path = path
         self.name = name
-        self.link = link
         self.host = host
+        self.link = link
+        self.path = path
+        self.can_copy_link = can_copy_link
+        self.status = cons.STATUS_QUEUE
+        self.status_msg = None
         self.link_status = cons.LINK_CHECKING
         self.link_status_msg = None
-        self.status = cons.STATUS_QUEUE #download status
-        self.status_msg = None
-        self.size = size
+        self.size = 0
         self.size_complete = 0
         self.chunks = []
         self.fail_count = 0
         self.can_resume = False
         self.is_premium = False
-        self.can_copy_link = can_copy_link
         self.video_quality = None
         self.save_as = None
         self.cookie = None

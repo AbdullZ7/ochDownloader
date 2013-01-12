@@ -256,7 +256,7 @@ class AddDownloads(QVBoxLayout):
 
     def add_downloads_to_check(self, links_list, copy_link=True):
         for link in links_list:
-            download_item = api.create_download_item(cons.UNKNOWN, 0, link, copy_link=copy_link) #return download_item object
+            download_item = api.create_download_item(cons.UNKNOWN, link, copy_link=copy_link) #return download_item object
             item = [download_item.id, True, self.icons_dict[cons.LINK_CHECKING], cons.UNKNOWN, None, None, None]
             #self.items.append(item)
             self.__model.append(item)

@@ -63,23 +63,24 @@ class _Api(DownloadManager, AddDownloadsManager):
         download_item.name = name
     
     def load_session(self):
+        FILE_NAME, FILE_PATH, LINK, HOST, SIZE, PROGRESS, TIME, CHUNKS, QUALITY, SAVE_AS = xrange(10)
+        ordered_list = []
+        download_list = self.session_parser.load()
         try:
-            ordered_list = []
-            download_list = self.session_parser.load()
             for item in download_list:
-                FILE_NAME, FILE_PATH, LINK, HOST, SIZE, PROGRESS, TIME, CHUNCKS, QUALITY, SAVE_AS = range(10)
-                download_item = DownloadItem(item[FILE_NAME], item[HOST], item[SIZE], item[LINK], item[FILE_PATH])
+                download_item = DownloadItem(item[FILE_NAME], item[HOST], item[LINK], item[FILE_PATH])
                 download_item.status = cons.STATUS_STOPPED
                 download_item.progress = item[PROGRESS]
                 download_item.size = item[SIZE]
                 download_item.time = item[TIME]
-                download_item.chunks = item[CHUNCKS]
+                download_item.chunks = item[CHUNKS]
                 download_item.video_quality = item[QUALITY]
                 download_item.save_as = item[SAVE_AS]
                 self.stopped_downloads[download_item.id] = download_item
                 ordered_list.append(download_item)
         except Exception as err:
             logger.exception(err)
+            self.stopped_downloads.clear()
             return []
         return ordered_list
     
