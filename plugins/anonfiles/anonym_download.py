@@ -1,5 +1,4 @@
 #python libs
-import cookielib
 import logging
 logger = logging.getLogger(__name__)
 
@@ -7,7 +6,6 @@ logger = logging.getLogger(__name__)
 from core.plugins_core import PluginsCore
 
 BASE_URL = "http://anonfiles.com"
-COOKIE = cookielib.CookieJar()
 
 
 class PluginDownload(PluginsCore):
