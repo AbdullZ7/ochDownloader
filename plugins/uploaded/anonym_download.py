@@ -26,7 +26,7 @@ class PluginDownload(PluginsCore):
             js_url = BASE_URL + "/js/download.js"
             page = self.get_page(js_url)
             c_pattern = 'Recaptcha\.create\(.*?"(?P<key>[^"]+)'
-            self.next_link = BASE_URL + "/io/ticket/captcha/" + file_id
+            self.recaptcha_post_link = BASE_URL + "/io/ticket/captcha/" + file_id
             page = self.recaptcha(c_pattern, page)
             #resume fix
             self.content_range = None
@@ -34,20 +34,16 @@ class PluginDownload(PluginsCore):
         else: #link not found
             pass
 
-    def recaptcha_post(self, pattern, page, challenge, response, extra_fields=None):
-        #overrided method
-        form_list = [("recaptcha_challenge_field", challenge), ("recaptcha_response_field", response)]
-        if extra_fields:
-            form_list.extend(extra_fields)
-        page = self.get_page(self.next_link, form_list, page)
+    def recaptcha_success(self, pattern, page):
+        #overriden
         if "Sie haben die max." in page:
             self.err_msg = "Limit Exceeded"
             self.limit_exceeded = True
-            return ("Limit Exceeded", page)
+            return True
         elif "download" in page:
-            return (None, page)
+            return True
         else: #{err:"captcha"}
-            return ("Wrong captcha", page)
+            return False
 
     def get_file_id(self):
         if "/ul.to/" in self.link:

@@ -28,7 +28,7 @@ class PluginDownload(PluginsCore):
             #this can be skipped
             c_pattern = 'challenge\?k=(?P<key>[^"]+)'
             extra_fields = [("request", "validateCaptcha"), ("ajaxid", m.group('ajaxid'))]
-            self.next_link = ajax_url
+            self.recaptcha_post_link = ajax_url
             page_ = self.recaptcha(c_pattern, page, extra_fields)
             #
             form = [("request", "getDownloadURL"), ("ajaxid", m.group('ajaxid'))]

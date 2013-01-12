@@ -24,7 +24,7 @@ class PluginDownload(PluginsCore):
         if m is not None:
             c_pattern = 'Recaptcha\.create[^"]+"(?P<key>[^"]+)'
             extra_fields = [("check", m.group('check')), ]
-            self.next_link = "%s/file/checkCaptcha.php" % BASE_URL
+            self.recaptcha_post_link = "%s/file/checkCaptcha.php" % BASE_URL
             page = self.recaptcha(c_pattern, page, extra_fields)
             #
             m_pattern = '"path":"(?P<path>.*?)"'
@@ -45,16 +45,12 @@ class PluginDownload(PluginsCore):
         else: #captcha not found
             pass
 
-    def recaptcha_post(self, pattern, page, challenge, response, extra_fields=None):
-        #POST
-        form_list = [("recaptcha_challenge_field", challenge), ("recaptcha_response_field", response)]
-        if extra_fields:
-            form_list.extend(extra_fields)
-        page = self.get_page(self.next_link, form_list, page)
+    def recaptcha_success(self, pattern, page):
+        #overriden
         if '"status":"ok"' in page:
-            return (None, page)
+            return True
         else:
-            return ("some error", page)
+            return False
 
 
 if __name__ == "__main__":

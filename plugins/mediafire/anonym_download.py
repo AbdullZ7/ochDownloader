@@ -1,11 +1,10 @@
 #python libs
 import cookielib
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+logger = logging.getLogger(__name__)
 
 #Libs
 from core.plugins_core import PluginsCore
-#from addons.captcha.recaptcha import Recaptcha
 
 BASE_URL = "http://mediafire.com"
 COOKIE = cookielib.CookieJar()
@@ -18,7 +17,7 @@ class PluginDownload(PluginsCore):
     def parse(self):
         self.cookie = COOKIE
         link = self.link.replace("download.php", "")
-        self.next_link = link
+        self.recaptcha_post_link = link
         c_pattern = 'http://www.google.com/recaptcha/api/challenge\?k=(?P<key>[^"]+)'
         page = self.recaptcha(c_pattern, self.get_page(link))
         file_id = self.link.split('?')[-1]

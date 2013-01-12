@@ -19,26 +19,23 @@ class PluginDownload(PluginsCore):
         self.recaptcha_post_link = link + "/rest/captcha/test"
         self.recaptcha_challenge_field = "challenge"
         self.recaptcha_response_field = "response"
-        self.recaptcha_extra_fields = []
 
         page = self.get_page(self.link)
         m = self.get_match('shortencode: \'(?P<shortencode>[^\']+)', page)
-        shortencode = ("shortencode", m.group('shortencode'))
-        self.recaptcha_extra_fields.append(shortencode)
+        recaptcha_extra_fields = [("shortencode", m.group('shortencode')), ]
         c_pattern = 'Recaptcha\.create\("(?P<key>[^"]+)'
-        page_ = self.recaptcha(c_pattern, page)
+        page_ = self.recaptcha(c_pattern, page, extra_fields=recaptcha_extra_fields)
         s_pattern = '(?P<path>[^\']+/%s/[^\']+)' % m.group('shortencode')
         m = self.get_match(s_pattern, page)
         dl_link = link + m.group('path')
         self.source = self.get_page(dl_link, close=False)
 
-    def recaptcha_post(self, pattern, page, challenge, response, extra_fields=None):
+    def recaptcha_success(self, pattern, page):
         #overriden
-        form_list = [(self.recaptcha_challenge_field, challenge), (self.recaptcha_response_field, response)]
-        form_list.extend(self.recaptcha_extra_fields)
-        page = self.get_page(self.recaptcha_post_link, form=form_list, default=page)
-        m = self.get_match('false', page) # failure_pattern
-        return m, page
+        if 'true' in page:
+            return True
+        else:
+            return False
 
     # Deprecated
     def parse2(self, link, page):

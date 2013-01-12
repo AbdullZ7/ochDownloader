@@ -21,7 +21,6 @@ class PluginsCore:
         """"""
         self.link = link #host link
         self.dl_link = link #file ready to download link
-        self.next_link = link #go to next link
         self.content_range = content_range
         self.wait_func = wait_func
         self.limit_exceeded = False
@@ -35,6 +34,11 @@ class PluginsCore:
         self.source = None
         self.cookie = cookielib.CookieJar()
         self.f_name = None #file name for videos
+
+        # recaptcha
+        self.recaptcha_post_link = link
+        self.recaptcha_challenge_field = "recaptcha_challenge_field"
+        self.recaptcha_response_field = "recaptcha_response_field"
 
     def parse(self):
         raise NotImplementedError()
@@ -70,12 +74,18 @@ class PluginsCore:
 
     def recaptcha_post(self, pattern, page, challenge, response, extra_fields=None):
         #POST
-        form_list = [("recaptcha_challenge_field", challenge), ("recaptcha_response_field", response)]
+        form_list = [(self.recaptcha_challenge_field, challenge), (self.recaptcha_response_field, response)]
         if extra_fields:
             form_list.extend(extra_fields)
-        page = self.get_page(self.next_link, form=form_list, default=page)
+        page = self.get_page(self.recaptcha_post_link, form=form_list, default=page)
+        return page
+
+    def recaptcha_success(self, pattern, page):
         m = self.get_match(pattern, page)
-        return m, page
+        if m is None:
+            return True
+        else:
+            return False
 
     def recaptcha(self, pattern, page, extra_fields=None):
         #find catpcha and prompt captcha window
@@ -91,8 +101,8 @@ class PluginsCore:
                           c = Recaptcha(misc.get_host(self.link), link, self.wait_func)
                           c.run_captcha()
                           if c.solution is not None:
-                             m, page = self.recaptcha_post(pattern, page, c.captcha_challenge, c.solution, extra_fields)
-                             if not self.is_running() or m is None:
+                             page = self.recaptcha_post(pattern, page, c.captcha_challenge, c.solution, extra_fields)
+                             if self.recaptcha_success(pattern, page) or not self.is_running():
                                   return page
                           else:
                               raise CaptchaException("No response from the user")
