@@ -75,7 +75,7 @@ class AddDownloadsManager:
     def create_download_item(self, file_name, link, copy_link=True):
         """"""
         host = misc.get_host(link)
-        if not plugins_parser.services_dict.get(host, None):
+        if plugins_parser.services_dict.get(host, None) is None:
             host = cons.UNSUPPORTED
         download_item = DownloadItem(file_name, host, link, can_copy_link=copy_link)
         self.__pending_downloads[download_item.id] = download_item
@@ -120,10 +120,10 @@ class AddDownloadsManager:
                 del self.__ready_downloads[id_item]
                 self.start_checking()
 
-    def get_added_items(self, id_add_list):
+    def pop_checking_items(self, id_item_list):
         """"""
         result_list = []
-        for id_item in id_add_list: #add this items.
+        for id_item in id_item_list: # add this items.
             try:
                 download_item = self.__checking_downloads.pop(id_item)
             except KeyError:
