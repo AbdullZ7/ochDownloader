@@ -1,8 +1,7 @@
 import os
-import datetime
-import threading
+import weakref
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+logger = logging.getLogger(__name__)
 
 from core import misc
 
@@ -10,17 +9,19 @@ from PySide.QtGui import *
 from PySide.QtCore import *
 
 from qt.list_model import SimpleListModel
+from qt.context_menu import Menu
 
 
 class HistoryTab(QVBoxLayout):
     """"""
-    def __init__(self, history_cls):
+    def __init__(self, parent, history_cls):
         """"""
         #TODO: cargar solo la lista al cambiar de pestania. no destruir todo.
         QVBoxLayout.__init__(self)
         self.setContentsMargins(0, 0, 0, 0)
         self.setSpacing(0)
-        
+
+        self.weak_parent = weakref.ref(parent)
         self.history_cls = history_cls
         
         self.limit = 50
@@ -79,6 +80,10 @@ class HistoryTab(QVBoxLayout):
         
         #self.on_load_items()
 
+    @property
+    def parent(self):
+        return self.weak_parent()
+
     def get_selected_rows(self):
         """"""
         selected_rows = [index.row() for index in self.tree_view.selectionModel().selectedRows()]
@@ -86,17 +91,13 @@ class HistoryTab(QVBoxLayout):
         return selected_rows
 
     def context_menu(self, position):
-        menu = QMenu()
         indexes = self.tree_view.selectedIndexes()
-        sensitive = True if indexes else False
-        individual_items = [(_('Open destination folder'), self.on_open_folder),
-                            (_('Copy link'), self.on_copy_link),
-                            (None, None),
-                            (_('Remove'), self.on_remove)]
-        
-        [menu.addAction(title, callback).setEnabled(sensitive) if title is not None else menu.addSeparator()
-        for title, callback in individual_items]
-        
+        is_selection = True if indexes else False
+        options = [(_('Open destination folder'), self.on_open_folder, is_selection),
+                    (_('Copy link'), self.on_copy_link, is_selection),
+                    None,
+                    (_('Remove'), self.on_remove, is_selection)]
+        menu = Menu(self.parent, options)
         menu.exec_(self.tree_view.viewport().mapToGlobal(position))
     
     def on_open_folder(self):

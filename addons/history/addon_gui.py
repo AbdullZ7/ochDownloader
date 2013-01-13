@@ -21,7 +21,7 @@ class Addon(AddonCore):
         AddonCore.__init__(self, parent)
         self.name = _("History")
         self.history = History()
-        self.history_tab = HistoryTab(self.history)
+        self.history_tab = HistoryTab(parent, self.history)
 
     def get_tab(self):
         return self.history_tab

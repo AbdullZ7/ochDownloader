@@ -13,6 +13,7 @@ from PySide.QtCore import *
 import media
 import signals
 from list_model import SimpleListModel
+from context_menu import Menu
 
 
 class Downloads(QTreeView):
@@ -138,29 +139,21 @@ class Downloads(QTreeView):
             #self.on_delete()
     
     def contextMenuEvent(self, event):
-        menu = QMenu()
         rows = self.get_selected_rows()
 
-        #sensitive = True if len(rows) == 1 else False
-        #individual_items = [(_('Properties'), self.on_properties), ]
-        #[menu.addAction(title, callback).setEnabled(sensitive) for title, callback in individual_items]
-        #menu.addSeparator()
-        
-        sensitive = True if rows else False
-        global_items = [(_('Open destination folder'), self.on_open_folder),
-                            (_('Copy link'), self.on_copy_link),
-                            #(_('Add password'), self.on_password),
-                            (None, None),
-                            (_('Delete'), self.on_delete)]
-        [menu.addAction(title, callback).setEnabled(sensitive) if title is not None else menu.addSeparator()
-         for title, callback in global_items]
-        menu.addSeparator()
-        
-        generic_items = [(_('Start all'), self.on_start_all),
-                        (_('Stop all'), self.on_stop_all),
-                        (_('Clear Completed'), self.on_clear_completed)]
-        [menu.addAction(title, callback) if title is not None else menu.addSeparator()
-         for title, callback in generic_items]
+        is_selection = True if rows else False
+
+        options = [(_('Open destination folder'), self.on_open_folder, is_selection),
+                    (_('Copy link'), self.on_copy_link, is_selection),
+                    #(_('Add password'), self.on_password, is_selection),
+                    None,
+                    (_('Delete'), self.on_delete, is_selection),
+                    None,
+                    (_('Start all'), self.on_start_all, True),
+                    (_('Stop all'), self.on_stop_all, True),
+                    (_('Clear Completed'), self.on_clear_completed, True)]
+
+        menu = Menu(self.parent, options)
         
         menu.exec_(event.globalPos())
 

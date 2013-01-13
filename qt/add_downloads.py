@@ -14,6 +14,7 @@ from PySide.QtCore import *
 import media
 import signals
 from list_model import SimpleListModel
+from context_menu import Menu
 from add_links_dlg import AddLinks
 from generic_dialog import Dialog
 
@@ -131,29 +132,22 @@ class AddDownloads(QVBoxLayout):
         return selected_rows
 
     def context_menu(self, position):
-        menu = QMenu()
         rows = self.get_selected_rows()
 
-        sensitive = True if len(rows) == 1 else False
-        individual_items = [(_('Save as...'), self.on_save_as), ]
-        [menu.addAction(title, callback).setEnabled(sensitive) for title, callback in individual_items]
-        menu.addSeparator()
+        is_single_row = True if len(rows) == 1 else False
 
-        #sensitive = True if rows else False
-        #global_items = [('Open folder', self.on_open_folder), ]
-        #[menu.addAction(title, callback).setEnabled(sensitive) for title, callback in individual_items]
-        #menu.addSeparator()
-        
-        generic_items = [(_('Download Selected'), self.on_download_selected),
-                        (None, None),
-                        (_('Select all'), self.on_select_all),
-                        (_('Select none'), self.on_select_none),
-                        (_('Select inverse'), self.on_select_inverse),
-                        (None, None),
-                        (_('Re-check'), self.on_recheck),
-                        (_('Clear list'), self.on_clear_list)]
-        [menu.addAction(title, callback) if title is not None else menu.addSeparator()
-        for title, callback in generic_items]
+        options = [(_('Save as...'), self.on_save_as, is_single_row),
+                    None,
+                    (_('Download Selected'), self.on_download_selected, True),
+                    None,
+                    (_('Select all'), self.on_select_all, True),
+                    (_('Select none'), self.on_select_none, True),
+                    (_('Select inverse'), self.on_select_inverse, True),
+                    None,
+                    (_('Re-check'), self.on_recheck, True),
+                    (_('Clear list'), self.on_clear_list, True)]
+
+        menu = Menu(self.parent, options)
         
         menu.exec_(self.tree_view.viewport().mapToGlobal(position))
 
@@ -247,7 +241,7 @@ class AddDownloads(QVBoxLayout):
                 del self.rows_buffer[id_item]
         [self.__model.remove(self.items.index(iter)) for iter in iters]
         
-        item_list = api.get_added_items(id_items_list)
+        item_list = api.pop_checking_items(id_items_list)
         api.downloader_init(item_list, current_path)
         signals.store_items.emit(item_list)
 
