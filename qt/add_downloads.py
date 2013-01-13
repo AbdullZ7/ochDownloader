@@ -147,7 +147,7 @@ class AddDownloads(QVBoxLayout):
                     (_('Re-check'), self.on_recheck, True),
                     (_('Clear list'), self.on_clear_list, True)]
 
-        menu = Menu(self.parent, options)
+        menu = Menu(options)
         
         menu.exec_(self.tree_view.viewport().mapToGlobal(position))
 

@@ -153,7 +153,7 @@ class Downloads(QTreeView):
                     (_('Stop all'), self.on_stop_all, True),
                     (_('Clear Completed'), self.on_clear_completed, True)]
 
-        menu = Menu(self.parent, options)
+        menu = Menu(options)
         
         menu.exec_(event.globalPos())
 

@@ -1,5 +1,4 @@
 import os
-import weakref
 import logging
 logger = logging.getLogger(__name__)
 
@@ -14,14 +13,13 @@ from qt.context_menu import Menu
 
 class HistoryTab(QVBoxLayout):
     """"""
-    def __init__(self, parent, history_cls):
+    def __init__(self, history_cls):
         """"""
         #TODO: cargar solo la lista al cambiar de pestania. no destruir todo.
         QVBoxLayout.__init__(self)
         self.setContentsMargins(0, 0, 0, 0)
         self.setSpacing(0)
 
-        self.weak_parent = weakref.ref(parent)
         self.history_cls = history_cls
         
         self.limit = 50
@@ -80,10 +78,6 @@ class HistoryTab(QVBoxLayout):
         
         #self.on_load_items()
 
-    @property
-    def parent(self):
-        return self.weak_parent()
-
     def get_selected_rows(self):
         """"""
         selected_rows = [index.row() for index in self.tree_view.selectionModel().selectedRows()]
@@ -97,7 +91,7 @@ class HistoryTab(QVBoxLayout):
                     (_('Copy link'), self.on_copy_link, is_selection),
                     None,
                     (_('Remove'), self.on_remove, is_selection)]
-        menu = Menu(self.parent, options)
+        menu = Menu(options)
         menu.exec_(self.tree_view.viewport().mapToGlobal(position))
     
     def on_open_folder(self):
