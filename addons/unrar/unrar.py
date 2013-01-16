@@ -2,8 +2,7 @@ import threading
 import logging
 logger = logging.getLogger(__name__)
 
-import lib as unrar_lib
-from lib.rar_exceptions import *
+from unrar_lib.utils import extract_file
 from passwords_handler import passwords_handler
 
 
@@ -60,24 +59,11 @@ class Extract(threading.Thread):
 
     def run(self):
         """"""
+        passwords = self.passwords_list or None
         try:
-            for pwd in self.passwords_list or [None, ]: #if pwd_list is empty, use [None, ]
-                try:
-                    unrar_handler = unrar_lib.RarFile(self.file_path, password=pwd)
-                    rarinfo_list = unrar_handler.extract(path=self.dest_path, overwrite=True)
-                except IncorrectRARPassword:
-                    self.err_msg = _("Incorrect rar password")
-                else:
-                    self.err_msg = None
-                    break
-        except ArchiveHeaderBroken:
-            self.err_msg = _("Archive header broken")
-        except FileOpenError:
-            self.err_msg = _("File open error")
-        except InvalidRARArchiveUsage:
-            self.err_msg = _("Invalid rar archive usage")
+            extract_file(self.file_path, dest_path=self.dest_path, password_list=passwords)
         except Exception as err:
-            self.err_msg = _("Unknown error")
+            self.err_msg = str(err)
             logger.exception(err)
         self.complete =True
 
