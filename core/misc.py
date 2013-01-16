@@ -126,18 +126,19 @@ def links_parser(text_pasted):
     return result_list
 
 
-def smart_decode(s):
-    """
-    Not pretty smart, just try and error. It only covers utf-8 and latin-1
-    """
+def smart_unicode(s, encoding='utf-8', errors='strict'):
+    if isinstance(s, unicode):
+        return s
+    elif not isinstance(s, basestring): #not a string
+        return unicode(s)
     try:
-        s = s.decode('utf-8')
+        s = unicode(s, encoding, errors)
     except UnicodeDecodeError:
         try:
-            s = s.decode('latin-1') #will decode anything, even if it's not latin-1 (with weird characters in that case, tough)
-        except UnicodeDecodeError as err:
+            s = unicode(s, 'latin-1', 'replace')
+        except UnicodeDecodeError as err: # this should never get reached
             logger.exception("{0}: {1}".format(s[:30], err))
-    return s #.encode("utf-8", "replace")
+    return s
 
 
 def time_format(the_time):
@@ -210,7 +211,7 @@ def strip(input, to_strip=None):
 def normalize_file_name(name):
     name = html_entities_parser(name)
     name = urllib.unquote_plus(name)
-    name = smart_decode(name)
+    name = smart_unicode(name)
     name = strip(name, to_strip='/\\:*?"<>|')
     name = name.strip('.')
     return name

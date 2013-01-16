@@ -3,7 +3,7 @@ import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
 import core.cons as cons
-from core.misc import tail, smart_decode #read file from bottom.
+from core.misc import tail, smart_unicode #read file from bottom.
 
 from PySide.QtGui import *
 from PySide.QtCore import *
@@ -44,7 +44,7 @@ class Log(QVBoxLayout):
             last_lines = str(err)
             logger.warning("{0}".format(err))
         
-        self.text_view.setPlainText(smart_decode(last_lines))
+        self.text_view.setPlainText(smart_unicode(last_lines))
 
     def on_view_log(self):
         view_full_log = ViewFullLog(self.parent)
@@ -93,4 +93,4 @@ class ViewFullLog(QDialog):
             lines = str(err)
             #logger.warning("{0}".format(err))
         
-        self.text_view.setPlainText(smart_decode(lines))
+        self.text_view.setPlainText(smart_unicode(lines))
