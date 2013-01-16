@@ -58,9 +58,9 @@ class UnRARGUI:
         if m is not None: #is rar file
             if not self.has_segments_left(pattern, m.group('name')):
                 if m.group('part') is not None: #new ext. style
-                    self.file_name = "".join((m.group('name'), ".part1.rar"))
+                    self.file_name = u"".join((m.group('name'), ".part1.rar"))
                 else: #single part or old ext. style
-                    self.file_name = "".join((m.group('name'), ".rar"))
+                    self.file_name = u"".join((m.group('name'), ".rar"))
                 return True
         return False
     
