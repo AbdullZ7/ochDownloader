@@ -2,6 +2,7 @@
 __author__ = 'Esteban Castro Borsani'
 
 import sys
+import os
 from ctypes import *
 from ctypes.util import find_library
 
@@ -9,10 +10,11 @@ import cons
 from exceptions_ import *
 
 if 'win32' in sys.platform.lower():
-    unrarlib = WinDLL("lib\\unrar.dll")
+    lib_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), "lib", "unrar.dll")
+    unrarlib = WinDLL(lib_path)
     func_type = WINFUNCTYPE
 else: #Unix
-    lib_path = find_library("libunrar") or "lib\\libunrar.so"
+    lib_path = find_library("libunrar") or os.path.join(os.path.abspath(os.path.dirname(__file__)), "lib", "libunrar.so")
     unrarlib = cdll.LoadLibrary(lib_path)
     func_type = CFUNCTYPE
 
