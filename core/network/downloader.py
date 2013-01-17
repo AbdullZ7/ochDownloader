@@ -45,6 +45,9 @@ class Downloader(threading.Thread, MultiDownload):
                 self.status = cons.STATUS_STOPPED
                 logger.info(err)
             self.status_msg = str(err)
+        else:
+            self.status = cons.STATUS_FINISHED
+            self.status_msg = "Finished"
         finally:
             if self.source:
                 self.source.close()
@@ -155,13 +158,10 @@ class Downloader(threading.Thread, MultiDownload):
                 self.threaded_download_manager(fh)
                 fh.flush() #ensures data is write to disk.
                 os.fsync(fh.fileno())
-                if self.stop_flag: #set status
+                if self.stop_flag:
                     raise StatusStopped("Stopped")
-                elif self.error_flag:
+                if self.error_flag:
                     raise StatusError(self.status_msg)
-                else:
-                    self.status = cons.STATUS_FINISHED
-                    self.status_msg = "Finished"
         except EnvironmentError as err:
             logger.exception(err)
             raise StatusError(err)
