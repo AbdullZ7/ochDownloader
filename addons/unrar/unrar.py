@@ -41,8 +41,8 @@ class UnRAR:
                 del self.__item_list[0]
                 if self.__item_list:
                     self.start_extract(self.__item_list[0])
-                return id_item, th.err_msg
-        return None
+            return id_item, th.is_alive(), th.err_msg
+        return
 
 
 class Extract(threading.Thread):

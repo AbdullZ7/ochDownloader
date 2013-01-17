@@ -134,13 +134,14 @@ class UnRARTab(QVBoxLayout):
         # keeps running even if the tab is closed.
         status = self.unrar.get_status()
         if status is not None:
-            id_item, err_msg = status
-            row = self.rows_buffer.get(id_item, None)
-            if row is not None:
-                row[2] = err_msg if err_msg else _("Success")
-                self.__model.refresh()
-            else:
-                logger.debug("id not in the treeview")
+            id_item, running, err_msg = status
+            if not running: # complete
+                row = self.rows_buffer.get(id_item, None)
+                if row is not None:
+                    row[2] = err_msg if err_msg else _("Success")
+                    self.__model.refresh()
+                else:
+                    logger.debug("id not in the treeview")
         else:
             self.running = False
             self.timer.stop()
