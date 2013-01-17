@@ -5,7 +5,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Libs
-from core.plugins_core import PluginsCore
+from core.plugins_core import PluginsCore, ParsingError, LimitExceededError
 
 BASE_URL = "http://rapidgator.net"
 WAITING = 0
@@ -19,10 +19,12 @@ class PluginDownload(PluginsCore):
         page = self.get_page(self.link)
 
         err_list = ('Delay between downloads must be not less than', )
-        self.validate(err_list, page)
-        if self.err_msg and self.err_msg == err_list[0]:
-            self.limit_exceeded = True
-            return
+        try:
+            self.validate(err_list, page)
+        except ParsingError as err:
+            if err == err_list[0]:
+                raise LimitExceededError("Limit Exceeded")
+            raise
 
         file_id = self.link.split("/file/")[-1].split("/")[0]
         ajax_link = BASE_URL + '/download/AjaxStartTimer'
@@ -50,7 +52,7 @@ class PluginDownload(PluginsCore):
                 response = self.get_page(url)
                 return json.loads(response)
             except Exception as err:
-                self.err_msg = err
+                raise ParsingError(err)
         return {}
 
 

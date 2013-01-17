@@ -3,7 +3,7 @@ import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
 #Libs
-from core.plugins_core import PluginsCore
+from core.plugins_core import PluginsCore, LimitExceededError
 
 
 BASE_URL = "http://uploaded.to"
@@ -37,9 +37,7 @@ class PluginDownload(PluginsCore):
     def recaptcha_success(self, pattern, page):
         #overriden
         if "Sie haben die max." in page:
-            self.err_msg = "Limit Exceeded"
-            self.limit_exceeded = True
-            return True
+            raise LimitExceededError("Limit Exceeded")
         elif "download" in page:
             return True
         else: #{err:"captcha"}

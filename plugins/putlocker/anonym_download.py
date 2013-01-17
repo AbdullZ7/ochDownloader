@@ -3,8 +3,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Libs
-from core.plugins_core import PluginsCore
-from core import misc
+from core.plugins_core import PluginsCore, ParsingError, LimitExceededError
 
 BASE_URL = "http://www.putlocker.com"
 WAITING = 10
@@ -27,12 +26,11 @@ class PluginDownload(PluginsCore):
                 http_link = BASE_URL + m.group('link')
                 self.source = self.get_page(http_link, close=False)
             elif self.get_match('exceeded the daily download limit', page, False) is not None:
-                self.err_msg = 'Limit exceeded.'
-                self.limit_exceeded = True
+                raise LimitExceededError('Limit exceeded.')
             else:
-                self.err_msg = 'Link not found.'
+                raise ParsingError('Link not found.')
         else:
-            self.err_msg = 'Link not found.'
+                raise ParsingError('Link not found.')
 
 
 if __name__ == "__main__":

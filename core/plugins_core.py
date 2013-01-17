@@ -13,6 +13,9 @@ BUFF_SZ = 1024 * 1024 #1MB
 
 
 class CaptchaException(Exception): pass
+class StopParsing(Exception): pass
+class ParsingError(Exception): pass
+class LimitExceededError(Exception): pass
 
 
 class PluginsCore:
@@ -23,14 +26,12 @@ class PluginsCore:
         self.dl_link = link #file ready to download link
         self.content_range = content_range
         self.wait_func = wait_func
-        self.limit_exceeded = False
         self.username = None
         self.password = None
         if account_item is not None:
             self.username = account_item.username
             self.password = account_item.password
         self.video_quality = video_quality
-        self.err_msg = None
         self.source = None
         self.cookie = cookielib.CookieJar()
         self.f_name = None #file name for videos
@@ -55,19 +56,17 @@ class PluginsCore:
                         self.dl_link = link
                         return s
             except (urllib2.URLError, httplib.HTTPException, socket.error) as err:
-                self.err_msg = err
-                logger.warning(err)
                 logger.debug(link)
+                raise ParsingError(err)
         return default
 
     def click(self, pattern, page, close=True):
         #find link and return source.
-        if self.is_running():
-            m = self.get_match(pattern, page)
-            if m is not None:
-                link = m.group('link')
-                #default = page if close else None
-                return self.get_page(link, close=close)
+        m = self.get_match(pattern, page)
+        if m is not None:
+            link = m.group('link')
+            #default = page if close else None
+            return self.get_page(link, close=close)
         #not running or pattern not found
         if close:
             return page
@@ -92,27 +91,24 @@ class PluginsCore:
         #return source
         from addons.captcha.recaptcha import Recaptcha
 
-        if self.is_running():
-            try:
-                m = self.get_match(pattern, page)
-                if m is not None:
-                    link = "http://www.google.com/recaptcha/api/challenge?k=%s" % m.group('key')
-                    for retry in range(3):
-                          c = Recaptcha(misc.get_host(self.link), link, self.wait_func)
-                          c.run_captcha()
-                          if c.solution is not None:
-                             page = self.recaptcha_post(pattern, page, c.captcha_challenge, c.solution, extra_fields)
-                             if self.recaptcha_success(pattern, page) or not self.is_running():
-                                  return page
-                          else:
-                              raise CaptchaException("No response from the user")
-                    raise CaptchaException("Captcha, max retries reached")
-                else:
-                    return page
-            except CaptchaException as err:
-                self.err_msg = err
-                logger.debug(err)
-        return page
+        try:
+            m = self.get_match(pattern, page)
+            if m is not None:
+                link = "http://www.google.com/recaptcha/api/challenge?k=%s" % m.group('key')
+                for retry in range(3):
+                    c = Recaptcha(misc.get_host(self.link), link, self.wait_func)
+                    c.run_captcha()
+                    if c.solution is not None:
+                        page = self.recaptcha_post(pattern, page, c.captcha_challenge, c.solution, extra_fields)
+                        if self.recaptcha_success(pattern, page) or not self.is_running():
+                            return page
+                    else:
+                        raise CaptchaException("No response from the user")
+                raise CaptchaException("Captcha, max retries reached")
+            else:
+                return page
+        except CaptchaException as err:
+            raise ParsingError(err)
 
     def get_match(self, pattern, page, warning=True):
         if self.is_running():
@@ -125,30 +121,28 @@ class PluginsCore:
         return None
 
     def countdown(self, pattern, page, limit, default):
-        if self.is_running():
-            m = self.get_match(pattern, page)
-            if m is not None:
-                wait = int(m.group('count'))
-                if wait >= limit:
-                    self.limit_exceeded = True
-                    self.err_msg = "Limit Exceeded"
-                    logger.warning(self.err_msg)
-                else:
-                    self.wait_func(wait)
+        m = self.get_match(pattern, page)
+        if m is not None:
+            wait = int(m.group('count'))
+            if wait >= limit:
+                raise LimitExceededError("Limit Exceeded")
             else:
-                self.wait_func(default)
+                self.wait_func(wait)
+        else:
+            self.wait_func(default)
 
     def validate(self, err_list, page):
-        if self.is_running():
-            for err in err_list:
-                if self.get_match(err, page, False) is not None:
-                    self.err_msg = err
-                    logger.warning(err)
+        for err in err_list:
+            if self.get_match(err, page, False) is not None:
+                raise ParsingError(err)
 
     def is_running(self):
-        if not self.wait_func() and not self.limit_exceeded and self.err_msg is None:
+        if not self.wait_func():
             return True
-        return False
+        else:
+            if self.source is not None:
+                self.source.close()
+            raise StopParsing('Stop parsing')
     
 
 if __name__ == "__main__":

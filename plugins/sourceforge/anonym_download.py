@@ -3,7 +3,7 @@ import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
 #Libs
-from core.plugins_core import PluginsCore
+from core.plugins_core import PluginsCore, ParsingError
 
 
 class PluginDownload(PluginsCore):
@@ -17,4 +17,4 @@ class PluginDownload(PluginsCore):
             http_link = m.group('link').replace("&amp;", "&")
             self.source = self.get_page(http_link, close=False)
         else:
-            self.err_msg = 'Link not found.'
+            raise ParsingError('Link not found.')

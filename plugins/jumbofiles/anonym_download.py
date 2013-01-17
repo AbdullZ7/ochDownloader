@@ -3,7 +3,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Libs
-from core.plugins_core import PluginsCore
+from core.plugins_core import PluginsCore, ParsingError
 
 BASE_URL = "http://jumbofiles.com"
 
@@ -19,7 +19,7 @@ class PluginDownload(PluginsCore):
         page = self.get_page(link, form=form)
         self.source = self.click('METHOD="LINK" ACTION="(?P<link>[^"]+)', page, False)
         if not self.source:
-            self.err_msg = "File not found."
+            raise ParsingError("File not found.")
 
         #m = self.get_match('name="rand" value="(?P<rand>[^"]+)', page)
         #if m is not None:

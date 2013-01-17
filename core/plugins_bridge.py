@@ -6,6 +6,7 @@ logger = logging.getLogger(__name__)
 import cons
 from idle_queue import idle_add_and_wait
 from host_accounts import host_accounts
+from plugins_core import ParsingError, StopParsing, LimitExceededError
 
 
 class PluginBridge:
@@ -41,19 +42,28 @@ class PluginBridge:
             module = importlib.import_module("plugins.{0}.{1}".format(self.host, plugin_download))
             p = module.PluginDownload(self.link, self.content_range, self.wait_func, account_item, self.video_quality)
             p.parse()
+        except (ParsingError, StopParsing, LimitExceededError) as err:
+            if isinstance(err, LimitExceededError):
+                self.limit_exceeded = True
+                self.err_msg = str(err)
+                logger.warning(err)
+            elif isinstance(err, ParsingError):
+                self.err_msg = str(err)
+                logger.warning(err)
+            else:
+                logger.debug(err)
+        except Exception as err:
+            self.err_msg = str(err)
+            logger.exception(err)
+        else:
             self.source = p.source
             self.dl_link = p.dl_link
             self.cookie = p.cookie
-            self.err_msg = p.err_msg
-            self.limit_exceeded = p.limit_exceeded
             self.f_name = p.f_name
             self.video_quality = p.video_quality
             if not self.source and account_item is not None:
                 account_status = p.get_account_status()
                 self.disable_account(account_item, account_status)
-        except Exception as err:
-            self.err_msg = err
-            logger.exception(err)
 
     def disable_account(self, account_item, account_status):
         if account_status in (cons.ACCOUNT_FAIL, cons.ACCOUNT_FREE): #login fail or free account.

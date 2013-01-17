@@ -4,7 +4,7 @@ import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
 #Libs
-from core.plugins_core import PluginsCore
+from core.plugins_core import PluginsCore, LimitExceededError
 from addons.tesseract import tesseract, clean_image
 
 BASE_URL = "http://netload.in"
@@ -53,9 +53,7 @@ class PluginDownload(PluginsCore):
             if m is not None:
                 wait = int(m.group('count')) / 100 #ms
                 if wait >= limit:
-                    self.limit_exceeded = True
-                    self.err_msg = "Limit Exceeded"
-                    logging.warning(self.err_msg)
+                    raise LimitExceededError("Limit Exceeded")
                 else:
                     self.wait_func(wait)
             else:
