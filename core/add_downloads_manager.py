@@ -118,7 +118,7 @@ class AddDownloadsManager:
                 download_item.link_status = cons.LINK_CHECKING #safe
                 self.__pending_downloads[id_item] = download_item
                 del self.__ready_downloads[id_item]
-                self.start_checking()
+        self.start_checking()
 
     def pop_checking_items(self, id_item_list):
         """"""
