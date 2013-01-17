@@ -13,7 +13,9 @@ from PySide.QtCore import *
 
 from qt.list_model import SimpleListModel
 
+
 COMPLETE, ERR_MSG = range(2)
+RAR_FILE_PATTERN = '^(?P<name>.*?)(?P<part>\.part\d+)?(?P<ext>\.rar|\.r\d+)$'
 
 
 class UnRARGUI:
@@ -29,9 +31,9 @@ class UnRARGUI:
         return self.weak_parent()
     
     def add_file(self, download_item):
-        self.file_name = download_item.name
-        if self.can_extract():
-            file_path = os.path.join(download_item.path, self.file_name)
+        file_name = self.get_first_volume_name(download_item.name)
+        if file_name is not None and self.can_extract(download_item.path, file_name):
+            file_path = os.path.join(download_item.path, file_name)
             self.unrar.add(file_path, download_item.path, download_item.id) #file_path, dest_path
             self.add_tab()
             self.unrar_tab.store_items([download_item, ])
@@ -52,22 +54,27 @@ class UnRARGUI:
             self.unrar_tab.clear_list()
             self.parent.tab.removeTab(index_page)
     
-    def can_extract(self):
-        pattern = '^(?P<name>.*?)(?P<part>\.part\d+)?(?P<ext>\.rar|\.r\d+)$'
-        m = re.match(pattern, self.file_name)
+    def can_extract(self, path, file_name):
+        m = re.match(RAR_FILE_PATTERN, file_name)
         if m is not None: #is rar file
-            if not self.has_segments_left(pattern, m.group('name')):
-                if m.group('part') is not None: #new ext. style
-                    self.file_name = u"".join((m.group('name'), ".part1.rar"))
-                else: #single part or old ext. style
-                    self.file_name = u"".join((m.group('name'), ".rar"))
+            if os.path.isfile(os.path.join(path, file_name)) and not self.has_segments_left(m.group('name')):
                 return True
         return False
+
+    def get_first_volume_name(self, file_name):
+        m = re.match(RAR_FILE_PATTERN, file_name)
+        if m is not None: #is rar file
+            if m.group('part') is not None: #new ext. style
+                return u"".join((m.group('name'), ".part1.rar"))
+            else: #single part or old ext. style
+                return u"".join((m.group('name'), ".rar"))
+        else:
+            return
     
-    def has_segments_left(self, pattern, name):
+    def has_segments_left(self, name):
         """"""
         for download_item in api.get_active_downloads().values() + api.get_queue_downloads().values() + api.get_stopped_downloads().values():
-            m = re.match(pattern, download_item.name)
+            m = re.match(RAR_FILE_PATTERN, download_item.name)
             if m is not None:
                 if name == m.group('name'):
                     return True
@@ -124,13 +131,16 @@ class UnRARTab(QVBoxLayout):
             self.timer = self.parent.idle_timeout(1000, self.update_)
     
     def update_(self):
+        # keeps running even if the tab is closed.
         status = self.unrar.get_status()
-        if status:
-            id_item, complete, err_msg = status
-            row = self.rows_buffer[id_item]
-            if complete:
+        if status is not None:
+            id_item, err_msg = status
+            row = self.rows_buffer.get(id_item, None)
+            if row is not None:
                 row[2] = err_msg if err_msg else _("Success")
                 self.__model.refresh()
+            else:
+                logger.debug("id not in the treeview")
         else:
             self.running = False
             self.timer.stop()

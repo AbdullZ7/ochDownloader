@@ -36,12 +36,12 @@ class UnRAR:
     
     def get_status(self):
         for id_item, th in self.__th_dict.items():
-            if th.complete:
+            if not th.is_alive():
                 del self.__th_dict[id_item]
                 del self.__item_list[0]
                 if self.__item_list:
                     self.start_extract(self.__item_list[0])
-            return id_item, th.complete, th.err_msg
+                return id_item, th.err_msg
         return None
 
 
@@ -53,7 +53,6 @@ class Extract(threading.Thread):
         self.file_path = file_path
         self.dest_path = dest_path
         self.passwords_list = passwords_list
-        self.complete = False
         self.err_msg = None
         self.daemon = True #exit even if the thread is alive.
 
@@ -65,7 +64,6 @@ class Extract(threading.Thread):
         except Exception as err:
             self.err_msg = str(err)
             logger.exception(err)
-        self.complete =True
 
 
 if __name__ == "__main__":
