@@ -116,7 +116,7 @@ class PluginsCore:
             err += ", pattern %s" % pattern
             raise ParsingError(err)
         if warning:
-            logger.warning("%s Pattern not found: %s" % (misc.get_host(link), pattern))
+            logger.warning("%s Pattern not found: %s" % (misc.get_host(self.link), pattern))
         return None
 
     def countdown(self, pattern, page, limit, default):
