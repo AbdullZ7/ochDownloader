@@ -140,8 +140,6 @@ class PluginsCore:
         if not self.wait_func():
             return True
         else:
-            if self.source is not None:
-                self.source.close()
             raise StopParsing('Stop parsing')
     
 
