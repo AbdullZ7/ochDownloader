@@ -48,6 +48,7 @@ class AddLinks(QDialog):
         hbox.addWidget(btn_ok)
         
         self.exec_()
+        self.deleteLater()
     
     def on_ok(self):
         self.links_list = links_parser(self.text_view.toPlainText())

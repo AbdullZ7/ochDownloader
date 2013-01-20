@@ -54,6 +54,7 @@ class QualityChoiceDialog(QDialog):
             flash_wnd.flash_taskbar_icon(parent.winId())
 
         self.exec_()
+        self.deleteLater()
 
     def get_solution(self):
         return self.solution

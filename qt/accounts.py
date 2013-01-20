@@ -137,6 +137,7 @@ class ConfigAccounts(QDialog):
         
         #self.show()
         self.exec_()
+        self.deleteLater()
     
     def get_selected_row(self):
         """"""

@@ -41,3 +41,4 @@ class Dialog(QDialog):
             #widget.setFocus() #call after creating all of the other widgets.
 
         self.exec_()
+        self.deleteLater()

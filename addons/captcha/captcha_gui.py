@@ -90,6 +90,7 @@ class CaptchaDialog(QDialog):
             flash_wnd.flash_taskbar_icon(parent.winId())
         
         self.exec_()
+        self.deleteLater()
 
     @property
     def parent(self):

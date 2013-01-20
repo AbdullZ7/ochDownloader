@@ -83,6 +83,7 @@ class ViewFullLog(QDialog):
         self.load_full_log()
         
         self.exec_()
+        self.deleteLater()
         
     def load_full_log(self):
         """"""

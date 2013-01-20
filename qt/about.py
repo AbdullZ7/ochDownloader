@@ -24,3 +24,4 @@ class About(QMessageBox):
         self.setInformativeText(detail)
         
         self.exec_()
+        self.deleteLater()

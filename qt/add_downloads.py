@@ -156,7 +156,7 @@ class AddDownloads(QVBoxLayout):
         row = self.items[rows[0]]
         item_id = row[0]
         download_item = api.get_checking_download_item(item_id)
-        widget = QLineEdit(self.parent)
+        widget = QLineEdit()
         # set the line entry file name if we have one.
         if download_item.save_as:
             widget.setText(download_item.save_as)
@@ -202,9 +202,9 @@ class AddDownloads(QVBoxLayout):
                 self.add_downloads_to_check(links_list, copy_link=False)
     
     def on_add_links(self):
-        add_links = AddLinks(self.parent)
-        result_code = add_links.result()
-        links_list = add_links.links_list
+        dialog = AddLinks(self.parent)
+        result_code = dialog.result()
+        links_list = dialog.links_list
         if result_code == QDialog.Accepted and links_list:
             self.add_downloads_to_check(links_list)
     
