@@ -66,8 +66,6 @@ class PluginsCore:
         link = m.group('link')
         #default = page if close else None
         return self.get_page(link, close=close)
-        if close:
-            return page
 
     def recaptcha_post(self, pattern, page, challenge, response, extra_fields=None):
         #POST

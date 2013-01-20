@@ -19,7 +19,8 @@ class ParseArgs(ArgumentParser):
 
     def send_downloads(self, args):
         #TODO emit signal, passing all links
-        args = self.re_parse(args)
+        if "--links" in args:
+            args = self.re_parse(args)
         try:
             p = self.parse_args(args=args)
         except Exception as err:
@@ -29,7 +30,12 @@ class ParseArgs(ArgumentParser):
             cj = self.load_cookie(p.cookie)
 
     def re_parse(self, args):
-        # fixes links list
+        """
+        converts:
+            ["--links", "http:...", "http:...", "http:...", ...]
+        to:
+            ["--links", "http:... http:... http:...", ...]
+        """
         new_args = []
         links = []
         for arg in args:

@@ -37,6 +37,7 @@ class ShutdownDialog(QMessageBox):
             flash_wnd.flash_taskbar_icon(parent.winId())
 
         self.exec_()
+        # self.deleteLater()
 
     def reject(self, *args, **kwargs):
         self.timer.stop()
