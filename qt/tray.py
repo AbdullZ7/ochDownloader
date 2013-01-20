@@ -11,6 +11,7 @@ from core import cons
 from core import events
 
 import signals
+from context_menu import Menu
 
 ICON_INFO = QSystemTrayIcon.Information
 ICON_WARN = QSystemTrayIcon.Warning
@@ -64,15 +65,10 @@ class Tray(QSystemTrayIcon):
         self.parent.activateWindow()
 
     def context_menu(self):
-        self.menu = QMenu()
-
-        items = [(_('Show/Hide'), self.show_or_hide),
-                (None, None),
-                (_('Quit'), self.parent.event_close)]
-
-        [self.menu.addAction(title, callback) if title is not None else self.menu.addSeparator()
-         for title, callback in items]
-
+        options = [(_('Show/Hide'), self.show_or_hide, True),
+                   None,
+                   (_('Quit'), self.parent.event_close, True)]
+        self.menu = Menu(options)
         self.setContextMenu(self.menu)
 
     def show_message(self, title, msg, icon=ICON_INFO, duration=15):
