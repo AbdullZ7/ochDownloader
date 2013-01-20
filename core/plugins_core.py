@@ -110,12 +110,11 @@ class PluginsCore:
                 m = re.search(pattern, line)
                 if m is not None:
                     return m
+        err = err or "Pattern not found"
         if raise_err:
-            err = err or "Pattern not found"
-            err += ", pattern %s" % pattern
-            raise ParsingError(err)
+            raise ParsingError("%s, pattern: %s" % (err, pattern))
         if warning:
-            logger.warning("%s Pattern not found: %s" % (misc.get_host(self.link), pattern))
+            logger.warning("%s %s, pattern: %s" % (misc.get_host(self.link), err, pattern))
         return None
 
     def countdown(self, pattern, page, limit, default):
