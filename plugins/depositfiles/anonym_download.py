@@ -18,17 +18,14 @@ class PluginDownload(PluginsCore):
         link = self.link
         form = [("gateway_result", "1"), ]
         page = self.get_page(link, form=form)
-        m = self.get_match('var fid[^\']+\'(?P<fid>[^\']+)', page)
-        if m is not None:
-            self.fid = m.group('fid')
-            cn_pattern = 'download_waiter_remain">(?P<count>[^<]+)'
-            self.countdown(cn_pattern, page, 320, WAITING)
-            c_pattern = 'Recaptcha\.create\(\'(?P<key>[^\']+)'
-            page = self.recaptcha(c_pattern, page)
-            s_pattern = 'form action="(?P<link>.*?)"'
-            self.source = self.click(s_pattern, page, False)
-        else: #captcha not found
-            pass
+        m = self.get_match('var fid[^\']+\'(?P<fid>[^\']+)', page, "Captcha not found")
+        self.fid = m.group('fid')
+        cn_pattern = 'download_waiter_remain">(?P<count>[^<]+)'
+        self.countdown(cn_pattern, page, 320, WAITING)
+        c_pattern = 'Recaptcha\.create\(\'(?P<key>[^\']+)'
+        page = self.recaptcha(c_pattern, page)
+        s_pattern = 'form action="(?P<link>.*?)"'
+        self.source = self.click(s_pattern, page, False)
     
     def recaptcha_post(self, pattern, page, challenge, response, *args, **kwargs):
         #overrided method

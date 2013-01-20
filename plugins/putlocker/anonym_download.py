@@ -8,6 +8,7 @@ from core.plugins_core import PluginsCore, ParsingError, LimitExceededError
 BASE_URL = "http://www.putlocker.com"
 WAITING = 10
 
+
 class PluginDownload(PluginsCore):
     def __init__(self, *args, **kwargs):
         PluginsCore.__init__(self, *args, **kwargs)
@@ -16,21 +17,18 @@ class PluginDownload(PluginsCore):
         page = self.get_page(self.link)
         self.countdown('var countdownNum = (?P<count>[^;]+)', page, 320, WAITING)
         #value="da5444ca5740eab1" name="hash"
-        m = self.get_match('value="(?P<hash>[^"]+)" name="hash"', page)
+        m = self.get_match('value="(?P<hash>[^"]+)" name="hash"', page, "Link not found")
+        form = [('hash', m.group('hash')), ('confirm', 'Continue as Free User')]
+        page = self.get_page(self.link, form)
+        s_pattern = 'href="(?P<link>/get_file.php[^"]+)'
+        m = self.get_match(s_pattern, page, raise_err=False)
         if m is not None:
-            form = [('hash', m.group('hash')), ('confirm', 'Continue as Free User')]
-            page = self.get_page(self.link, form)
-            s_pattern = 'href="(?P<link>/get_file.php[^"]+)'
-            m = self.get_match(s_pattern, page)
-            if m is not None:
-                http_link = BASE_URL + m.group('link')
-                self.source = self.get_page(http_link, close=False)
-            elif self.get_match('exceeded the daily download limit', page, False) is not None:
-                raise LimitExceededError('Limit exceeded.')
-            else:
-                raise ParsingError('Link not found.')
+            http_link = BASE_URL + m.group('link')
+            self.source = self.get_page(http_link, close=False)
+        elif self.get_match('exceeded the daily download limit', page, raise_err=False) is not None:
+            raise LimitExceededError("Limit Exceeded")
         else:
-                raise ParsingError('Link not found.')
+            raise ParsingError('Link not found.')
 
 
 if __name__ == "__main__":

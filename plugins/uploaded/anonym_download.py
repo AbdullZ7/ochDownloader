@@ -19,20 +19,21 @@ class PluginDownload(PluginsCore):
         file_id = self.get_file_id()
         form_url = BASE_URL + "/io/ticket/slot/" + file_id
         page = self.get_page(form_url, form={})
-        m = self.get_match('(succ:true)', page)
-        if m is not None:
-            page = self.get_page(link)
-            self.countdown('period: <span>(?P<count>[^<]+)</span>', page, 320, WAITING)
-            js_url = BASE_URL + "/js/download.js"
-            page = self.get_page(js_url)
-            c_pattern = 'Recaptcha\.create\(.*?"(?P<key>[^"]+)'
-            self.recaptcha_post_link = BASE_URL + "/io/ticket/captcha/" + file_id
-            page = self.recaptcha(c_pattern, page)
-            #resume fix
-            self.content_range = None
-            self.source = self.click('url:\'(?P<link>[^\']+)', page, False)
-        else: #link not found
-            pass
+        #
+        m = self.get_match('(succ:true)', page, "Link not found")
+        page = self.get_page(link)
+        #
+        self.countdown('period: <span>(?P<count>[^<]+)</span>', page, 320, WAITING)
+        js_url = BASE_URL + "/js/download.js"
+        page = self.get_page(js_url)
+        #
+        c_pattern = 'Recaptcha\.create\(.*?"(?P<key>[^"]+)'
+        self.recaptcha_post_link = BASE_URL + "/io/ticket/captcha/" + file_id
+        page = self.recaptcha(c_pattern, page)
+        #
+        #resume fix
+        self.content_range = None
+        self.source = self.click('url:\'(?P<link>[^\']+)', page, False)
 
     def recaptcha_success(self, pattern, page):
         #overriden

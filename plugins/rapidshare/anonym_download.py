@@ -17,15 +17,12 @@ class PluginDownload(PluginsCore):
         api_url = "http://api.rapidshare.com/cgi-bin/rsapi.cgi?sub=download&fileid=" + id_ + "&filename=" + file_name
         page = self.get_page(api_url)
         m_pattern = 'DL:(?P<subhost>[^,]+),(?P<dlauth>[^,]+),'
-        m = self.get_match(m_pattern, page)
-        if m is not None:
-            self.countdown('DL:[^,]+,[^,]+,(?P<count>[^,]+)', page, 600, 60)
-            link = "http://{host}/cgi-bin/rsapi.cgi?sub=download&fileid={id}&filename={filename}&dlauth={auth}".format(host=m.group('subhost'), id=id_, filename=file_name, auth=m.group('dlauth'))
-            #resume fix
-            self.content_range = None
-            self.source = self.get_page(link, close=False)
-        else: #link not found
-            pass
+        m = self.get_match(m_pattern, page, "Link not found")
+        self.countdown('DL:[^,]+,[^,]+,(?P<count>[^,]+)', page, 600, 60)
+        link = "http://{host}/cgi-bin/rsapi.cgi?sub=download&fileid={id}&filename={filename}&dlauth={auth}".format(host=m.group('subhost'), id=id_, filename=file_name, auth=m.group('dlauth'))
+        #resume fix
+        self.content_range = None
+        self.source = self.get_page(link, close=False)
 
 
 if __name__ == "__main__":

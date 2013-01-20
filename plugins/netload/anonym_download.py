@@ -22,43 +22,37 @@ class PluginDownload(PluginsCore):
             file_id = self.link.split("netload.in/datei")[-1].split("/")[0].split(".")[0]
         link = self.link
         page = self.get_page(link)
+        #
         m_pattern = 'Free_dl"><a href="(?P<link>[^"]+)'
-        m = self.get_match(m_pattern, page)
-        if m is not None:
-            link = BASE_URL + "/" + m.group('link').replace("&amp;", "&")
-            page = self.get_page(link)
-            cn_pattern = '>countdown\((?P<count>[^,]+)'
-            self.countdown(cn_pattern, page, 600, 30)
-            #this pattern may not work
-            m_pattern = 'src="(?P<link>[^"]+)"[^"]+"Sicherheitsbild' #captcha
-            m = self.get_match(m_pattern, page)
-            if m is not None:
-                link = BASE_URL + "/" + m.group('link')
-                captcha_result = tesseract.get_solved_captcha(link, self.cookie, self.filter)
-                #file_id = self.get_match()
-                form = [("file_id", file_id), ("captcha_check", captcha_result), ("start", "")]
-                captcha_form_url = BASE_URL + "/" + "index.php?id=10"
-                page = self.get_page(captcha_form_url, form=form)
-                self.countdown(cn_pattern, page, 600, 30)
-                s_pattern = 'class="Orange_Link" href="(?P<link>[^"]+)'
-                self.source = self.click(s_pattern, page, False)
-            else: #captcha not found
-                pass
-        else: #dl not found
-            pass
+        m = self.get_match(m_pattern, page, "Download not found")
+        link = BASE_URL + "/" + m.group('link').replace("&amp;", "&")
+        page = self.get_page(link)
+        cn_pattern = '>countdown\((?P<count>[^,]+)'
+        self.countdown(cn_pattern, page, 600, 30)
+        #this pattern may not work
+        #
+        m_pattern = 'src="(?P<link>[^"]+)"[^"]+"Sicherheitsbild' #captcha
+        m = self.get_match(m_pattern, page, "Captcha not found")
+        link = BASE_URL + "/" + m.group('link')
+        captcha_result = tesseract.get_solved_captcha(link, self.cookie, self.filter)
+        #file_id = self.get_match()
+        form = [("file_id", file_id), ("captcha_check", captcha_result), ("start", "")]
+        captcha_form_url = BASE_URL + "/" + "index.php?id=10"
+        page = self.get_page(captcha_form_url, form=form)
+        self.countdown(cn_pattern, page, 600, 30)
+        s_pattern = 'class="Orange_Link" href="(?P<link>[^"]+)'
+        self.source = self.click(s_pattern, page, False)
     
     def countdown(self, pattern, page, limit, default):
-        if self.is_running():
-            m = re.search(pattern, page, re.S)
-            if m is not None:
-                wait = int(m.group('count')) / 100 #ms
-                if wait >= limit:
-                    raise LimitExceededError("Limit Exceeded")
-                else:
-                    self.wait_func(wait)
+        m = self.get_match(pattern, page, raise_err=False)
+        if m is not None:
+            wait = int(m.group('count')) / 100 #ms
+            if wait >= limit:
+                raise LimitExceededError("Limit Exceeded")
             else:
-                logging.warning("Pattern not found: %s" % pattern)
-                self.wait_func(default)
+                self.wait_func(wait)
+        else:
+            self.wait_func(default)
     
     def filter(self, image):
         """"""
