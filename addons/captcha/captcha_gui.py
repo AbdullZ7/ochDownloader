@@ -1,6 +1,7 @@
+import itertools
 import weakref
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+logger = logging.getLogger(__name__)
 
 import core.cons as cons
 from core.api import api
@@ -18,14 +19,15 @@ TIMEOUT = 55
 
 class CaptchaDialog(QDialog):
     """"""
-    def __init__(self, service, get_captcha, parent):
+    def __init__(self, host, get_captcha, parent):
         """"""
         QDialog.__init__(self, parent, Qt.WindowSystemMenuHint | Qt.WindowTitleHint)
         #self.set_icon(self.render_icon(gtk.STOCK_DIALOG_QUESTION, gtk.ICON_SIZE_MENU))
-        self.setWindowTitle("{service_name} captcha".format(service_name=service))
+        self.setWindowTitle("{host} captcha".format(host=host))
         self.resize(340, 200)
 
         self.weak_parent = weakref.ref(parent)
+        self.host = host
         self.get_captcha = get_captcha
         self.solution = None
         self.timeout = TIMEOUT
@@ -130,17 +132,17 @@ class CaptchaDialog(QDialog):
             self.reject()
     
     def on_cancel(self):
-        filter_host = [download_item.host for download_item in api.get_active_downloads().itervalues()
-                        if download_item.time > 0]
-        filter_id_items = [id_item for id_item, download_item in api.get_queue_downloads().iteritems()
-                            if download_item.host in filter_host]
-        api.stop_all(filter_host)
-        rows_buffer = self.parent.downloads.rows_buffer
-        stopped_icon = self.parent.downloads.icons_dict[cons.STATUS_STOPPED]
-        queue_icon = self.parent.downloads.icons_dict[cons.STATUS_QUEUE]
-        for id_item, row in rows_buffer.items():
-            if row[1] == queue_icon and id_item not in filter_id_items:
-                row[1] = stopped_icon
+        id_item_list = []
+        # stop all downloads from this host
+        for id_item, download_item in itertools.chain(api.get_active_downloads().iteritems(), api.get_queue_downloads().iteritems()):
+            if download_item.host == self.host:
+                api.stop_download(id_item)
+                id_item_list.append(id_item)
+        # change queue icon to stopped
+        for id_item in id_item_list:
+            row = self.parent.downloads.rows_buffer[id_item]
+            if row[1] == self.parent.downloads.icons_dict[cons.STATUS_QUEUE]:
+                row[1] = self.parent.downloads.icons_dict[cons.STATUS_STOPPED]
         self.reject()
     
     def accept(self, *args, **kwargs):

@@ -11,9 +11,9 @@ _thread_lock = threading.Lock()
 
 class Recaptcha:
     """"""
-    def __init__(self, service, url, wait_func):
+    def __init__(self, host, url, wait_func):
         """"""
-        self.service_name = service
+        self.host = host
         self.captcha_link = url
         self.wait_func = wait_func
         self.solution = None
@@ -35,7 +35,7 @@ class Recaptcha:
         """"""
         self.captcha_challenge = None
         if idle_queue.register_event(self.event):
-            events.captcha_dialog.emit(self.service_name, self.get_captcha, self.set_solution)
+            events.captcha_dialog.emit(self.host, self.get_captcha, self.set_solution)
             self.event.wait()
             self.event.clear() #re-use.
             idle_queue.remove_event(self.event)
