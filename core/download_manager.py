@@ -44,16 +44,13 @@ class DownloadManager(DownloadCore, ThreadManager):
             download_item.reset_fail_count()
             self.download_starter(download_item)
     
-    def stop_all(self, filter_host_list=None):
+    def stop_all(self):
         """"""
-        filter_host_list = filter_host_list or []
         for id_item, download_item in self.active_downloads.iteritems():
-            if download_item.host not in filter_host_list:
-                self.stop_thread(id_item)
+            self.stop_thread(id_item)
         for id_item, download_item in self.queue_downloads.items():
-            if download_item.host not in filter_host_list:
-                self.stopped_downloads[id_item] = download_item
-                del self.queue_downloads[id_item]
+            self.stopped_downloads[id_item] = download_item
+            del self.queue_downloads[id_item]
 
     def start_download(self, id_item):
         """"""
