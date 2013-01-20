@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 import cons
 from idle_queue import idle_add_and_wait
 from host_accounts import host_accounts
-from plugins_core import ParsingError, StopParsing, LimitExceededError
+from plugins_core import ParsingError, StopParsing, LimitExceededError, CaptchaException
 
 
 class PluginBridge:
@@ -34,7 +34,7 @@ class PluginBridge:
             self.premium = True
         else:
             plugin_download = "anonym_download"
-        logger.info(plugin_download)
+        logger.info("%s %s" % (self.host, plugin_download))
         self.set_data(plugin_download, account_item)
 
     def set_data(self, plugin_download, account_item):
@@ -42,16 +42,19 @@ class PluginBridge:
             module = importlib.import_module("plugins.{0}.{1}".format(self.host, plugin_download))
             p = module.PluginDownload(self.link, self.content_range, self.wait_func, account_item, self.video_quality)
             p.parse()
-        except (ParsingError, StopParsing, LimitExceededError) as err:
+        except (StopParsing, ParsingError, LimitExceededError, CaptchaException) as err:
             if isinstance(err, LimitExceededError):
                 self.limit_exceeded = True
                 self.err_msg = str(err)
-                logger.warning(err)
+                logger.warning("%s %s" % (self.host, str(err)))
+            elif isinstance(err, CaptchaException):
+                self.err_msg = str(err)
+                logger.warning("%s %s" % (self.host, str(err)))
             elif isinstance(err, ParsingError):
                 self.err_msg = str(err)
-                logger.warning(err)
-            else:
-                logger.debug(err)
+                logger.exception(err)
+            else: # StopParsing
+                logger.debug("%s %s" % (self.host, str(err)))
         except Exception as err:
             self.err_msg = str(err)
             logger.exception(err)

@@ -62,12 +62,10 @@ class PluginsCore:
 
     def click(self, pattern, page, close=True):
         #find link and return source.
-        m = self.get_match(pattern, page)
-        if m is not None:
-            link = m.group('link')
-            #default = page if close else None
-            return self.get_page(link, close=close)
-        #not running or pattern not found
+        m = self.get_match(pattern, page, "Link not found")
+        link = m.group('link')
+        #default = page if close else None
+        return self.get_page(link, close=close)
         if close:
             return page
 
@@ -80,7 +78,7 @@ class PluginsCore:
         return page
 
     def recaptcha_success(self, pattern, page):
-        m = self.get_match(pattern, page)
+        m = self.get_match(pattern, page, raise_err=False)
         if m is None:
             return True
         else:
@@ -91,37 +89,38 @@ class PluginsCore:
         #return source
         from addons.captcha.recaptcha import Recaptcha
 
-        try:
-            m = self.get_match(pattern, page)
-            if m is not None:
-                link = "http://www.google.com/recaptcha/api/challenge?k=%s" % m.group('key')
-                for retry in range(3):
-                    c = Recaptcha(misc.get_host(self.link), link, self.wait_func)
-                    c.run_captcha()
-                    if c.solution is not None:
-                        page = self.recaptcha_post(pattern, page, c.captcha_challenge, c.solution, extra_fields)
-                        if self.recaptcha_success(pattern, page) or not self.is_running():
-                            return page
-                    else:
-                        raise CaptchaException("No response from the user")
-                raise CaptchaException("Captcha, max retries reached")
-            else:
-                return page
-        except CaptchaException as err:
-            raise ParsingError(err)
+        m = self.get_match(pattern, page, raise_err=False)
+        if m is not None:
+            link = "http://www.google.com/recaptcha/api/challenge?k=%s" % m.group('key')
+            for retry in range(3):
+                c = Recaptcha(misc.get_host(self.link), link, self.wait_func)
+                c.run_captcha()
+                if c.solution is not None:
+                    page = self.recaptcha_post(pattern, page, c.captcha_challenge, c.solution, extra_fields)
+                    if self.recaptcha_success(pattern, page) or not self.is_running():
+                        return page
+                else:
+                    raise CaptchaException("Captcha, no response from the user")
+            raise CaptchaException("Captcha, max retries reached")
+        else:
+            return page
 
-    def get_match(self, pattern, page, warning=True):
+    def get_match(self, pattern, page, err=None, raise_err=True, warning=True):
         if self.is_running():
             for line in page.splitlines():
                 m = re.search(pattern, line)
                 if m is not None:
                     return m
-            if warning:
-                logger.warning("Pattern not found: %s" % pattern)
+        if raise_err:
+            err = err or "Pattern not found"
+            err += ", pattern %s" % pattern
+            raise ParsingError(err)
+        if warning:
+            logger.warning("%s Pattern not found: %s" % (misc.get_host(link), pattern))
         return None
 
     def countdown(self, pattern, page, limit, default):
-        m = self.get_match(pattern, page)
+        m = self.get_match(pattern, page, raise_err=False)
         if m is not None:
             wait = int(m.group('count'))
             if wait >= limit:
@@ -133,15 +132,15 @@ class PluginsCore:
 
     def validate(self, err_list, page):
         for err in err_list:
-            if self.get_match(err, page, False) is not None:
+            if self.get_match(err, page, raise_err=False, warning=False) is not None:
                 raise ParsingError(err)
 
     def is_running(self):
         if not self.wait_func():
             return True
         else:
-            raise StopParsing('Stop parsing')
-    
+            raise StopParsing("Stop Parsing")
+
 
 if __name__ == "__main__":
     pass
