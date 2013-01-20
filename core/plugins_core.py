@@ -10,6 +10,7 @@ import misc
 from network.connection import URLClose, request
 
 BUFF_SZ = 1024 * 1024 #1MB
+CAPTCHA_MAX_RETRIES = 3
 
 
 class CaptchaException(Exception): pass
@@ -76,7 +77,7 @@ class PluginsCore:
         return page
 
     def recaptcha_success(self, pattern, page):
-        m = self.get_match(pattern, page, raise_err=False)
+        m = self.get_match(pattern, page, "Wrong captcha", raise_err=False)
         if m is None:
             return True
         else:
@@ -90,7 +91,7 @@ class PluginsCore:
         m = self.get_match(pattern, page, raise_err=False)
         if m is not None:
             link = "http://www.google.com/recaptcha/api/challenge?k=%s" % m.group('key')
-            for retry in range(3):
+            for retry in range(CAPTCHA_MAX_RETRIES):
                 c = Recaptcha(misc.get_host(self.link), link, self.wait_func)
                 c.run_captcha()
                 if c.solution is not None:
