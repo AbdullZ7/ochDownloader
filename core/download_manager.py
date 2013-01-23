@@ -41,7 +41,7 @@ class DownloadManager(DownloadCore, ThreadManager):
         self.stopped_downloads.clear()
         self.reorder_queue(id_order_list)
         for download_item in self.queue_downloads.values():
-            download_item.reset_fail_count()
+            download_item.fail_count = 0
             self.download_starter(download_item)
     
     def stop_all(self):
