@@ -40,7 +40,7 @@ else:
 
 #logger constants
 LOG_NAME = "error.log"
-LOG_FORMAT = "%(asctime)s %(levelname)s-7s %(name)s: %(message)s"
+LOG_FORMAT = "%(asctime)s %(levelname)-7s %(name)s: %(message)s"
 LOG_MODE = "wb"
 LOG_FILE = os.path.join(APP_PATH, LOG_NAME)
 #OLD_NAME = "error_old.log"
