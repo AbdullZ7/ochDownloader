@@ -40,9 +40,7 @@ class DownloadManager(DownloadCore, ThreadManager):
         self.queue_downloads.update(self.stopped_downloads)
         self.stopped_downloads.clear()
         self.reorder_queue(id_order_list)
-        for download_item in self.queue_downloads.values():
-            download_item.fail_count = 0
-            self.download_starter(download_item)
+        self.next_download()
     
     def stop_all(self):
         """"""
@@ -59,7 +57,8 @@ class DownloadManager(DownloadCore, ThreadManager):
         except KeyError:
             return False
         else:
-            self.downloader_init([download_item, ], download_item.path)
+            self.queue_downloads[id_item] = download_item
+            self.next_download()
             return True
 
     def stop_download(self, id_item):
@@ -74,17 +73,16 @@ class DownloadManager(DownloadCore, ThreadManager):
                 return False
             else:
                 return True
-        else:
+        else: # active
             self.stop_thread(id_item)
             return True
 
     def delete_download(self, id_items_list, remove_file=False):
         """"""
         for id_item in id_items_list:
-            is_active = False
+            th = None
             try:
                 download_item = self.active_downloads.pop(id_item)
-                is_active = True
             except KeyError:
                 try:
                     download_item = self.stopped_downloads.pop(id_item)
@@ -97,15 +95,12 @@ class DownloadManager(DownloadCore, ThreadManager):
                         except KeyError:
                             #bug: error on remove complete item from the gui.
                             raise
-
-            if is_active:
+            else: # active
                 th = self.get_thread(id_item)
                 self.stop_thread(id_item)
                 self.delete_thread(id_item)
                 self.global_slots.remove_slot()
                 self.next_download()
-            else:
-                th = None
 
             if remove_file:
                 threading.Thread(group=None, target=self.remove_file, name=None, args=(download_item, th)).start()
@@ -164,32 +159,28 @@ class DownloadManager(DownloadCore, ThreadManager):
             #events.trigger_downloading_process_pre_start()
         for download_item in item_list:
             download_item.path = path
-            download_item.fail_count = 0
             self.queue_downloads[download_item.id] = download_item
-            self.download_starter(download_item)
+        self.next_download()
 
     def next_download(self):
-        """
-        Init next download on queue. This is called when an active download is stopped or has finished.
-        """
         for download_item in self.queue_downloads.values():
-            if self.global_slots.available_slot():
-                self.download_starter(download_item)
-            else:
+            started = self.download_starter(download_item)
+            if not started:
                 break
 
     def download_starter(self, download_item):
         """"""
-        if self.global_slots.available_slot():
-            slot = True
-            if host_accounts.get_account(download_item.host) is None: #not premium.
-                if not self.is_host_slot_available(download_item.host):
-                    slot = False
-            if slot:
-                self.global_slots.add_slot()
-                self.create_thread(download_item) #threadmanager
-                self.active_downloads[download_item.id] = download_item
-                del self.queue_downloads[download_item.id]
+        if not self.global_slots.available_slot():
+            return False
+        elif not self.is_host_slot_available(download_item.host) and host_accounts.get_account(download_item.host) is None: # not premium.
+            return False
+        else:
+            download_item.fail_count = 0
+            self.global_slots.add_slot()
+            self.create_thread(download_item) #threadmanager
+            self.active_downloads[download_item.id] = download_item
+            del self.queue_downloads[download_item.id]
+            return True
 
     def is_host_slot_available(self, host):
         """"""
