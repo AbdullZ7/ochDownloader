@@ -1,4 +1,3 @@
-import itertools
 import weakref
 import logging
 logger = logging.getLogger(__name__)
@@ -134,7 +133,11 @@ class CaptchaDialog(QDialog):
     def on_cancel(self):
         id_item_list = []
         # stop all downloads from this host
-        for id_item, download_item in itertools.chain(api.get_active_downloads().iteritems(), api.get_queue_downloads().iteritems()):
+        for id_item, download_item in api.get_active_downloads().iteritems():
+            if download_item.host == self.host and not download_item.start_time:
+                api.stop_download(id_item)
+                id_item_list.append(id_item)
+        for id_item, download_item in api.get_queue_downloads().iteritems():
             if download_item.host == self.host:
                 api.stop_download(id_item)
                 id_item_list.append(id_item)
