@@ -136,7 +136,6 @@ class CaptchaDialog(QDialog):
         for id_item, download_item in api.get_active_downloads().iteritems():
             if download_item.host == self.host and not download_item.start_time:
                 api.stop_download(id_item)
-                id_item_list.append(id_item)
         for id_item, download_item in api.get_queue_downloads().iteritems():
             if download_item.host == self.host:
                 api.stop_download(id_item)
@@ -144,8 +143,7 @@ class CaptchaDialog(QDialog):
         # change queue icon to stopped
         for id_item in id_item_list:
             row = self.parent.downloads.rows_buffer[id_item]
-            if row[1] == self.parent.downloads.icons_dict[cons.STATUS_QUEUE]:
-                row[1] = self.parent.downloads.icons_dict[cons.STATUS_STOPPED]
+            row[1] = self.parent.downloads.icons_dict[cons.STATUS_STOPPED]
         self.reject()
     
     def accept(self, *args, **kwargs):
