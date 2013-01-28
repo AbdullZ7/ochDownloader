@@ -77,7 +77,7 @@ class PluginsCore:
         return page
 
     def recaptcha_success(self, pattern, page):
-        m = self.get_match(pattern, page, "Wrong captcha", raise_err=False)
+        m = self.get_match_or_none(pattern, page, "Wrong captcha")
         if m is None:
             return True
         else:
@@ -88,7 +88,7 @@ class PluginsCore:
         #return source
         from addons.captcha.recaptcha import Recaptcha
 
-        m = self.get_match(pattern, page, raise_err=False)
+        m = self.get_match_or_none(pattern, page)
         if m is not None:
             link = "http://www.google.com/recaptcha/api/challenge?k=%s" % m.group('key')
             for retry in range(CAPTCHA_MAX_RETRIES):
@@ -104,21 +104,26 @@ class PluginsCore:
         else:
             return page
 
-    def get_match(self, pattern, page, err=None, raise_err=True, warning=True):
+    def get_match(self, pattern, page, err=None):
         if self.is_running():
             for line in page.splitlines():
                 m = re.search(pattern, line)
                 if m is not None:
                     return m
+        # if we got here, no match was found
         err = err or "Pattern not found"
-        if raise_err:
-            raise ParsingError("%s, pattern: %s" % (err, pattern))
-        if warning:
-            logger.warning("%s %s, pattern: %s" % (misc.get_host(self.link), err, pattern))
-        return None
+        raise ParsingError("%s, pattern: %s" % (err, pattern))
+
+    def get_match_or_none(self, pattern, page, err=None, warning=True):
+        try:
+            return self.get_match(pattern, page, err)
+        except ParsingError as err:
+            if warning:
+                logger.warning("%s %s, pattern: %s" % (misc.get_host(self.link), err, pattern))
+            return
 
     def countdown(self, pattern, page, limit, default):
-        m = self.get_match(pattern, page, raise_err=False)
+        m = self.get_match_or_none(pattern, page)
         if m is not None:
             wait = int(m.group('count'))
             if wait >= limit:
@@ -130,7 +135,7 @@ class PluginsCore:
 
     def validate(self, err_list, page):
         for err in err_list:
-            if self.get_match(err, page, raise_err=False, warning=False) is not None:
+            if self.get_match_or_none(err, page, warning=False) is not None:
                 raise ParsingError(err)
 
     def is_running(self):

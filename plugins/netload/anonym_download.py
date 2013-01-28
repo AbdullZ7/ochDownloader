@@ -44,7 +44,7 @@ class PluginDownload(PluginsCore):
         self.source = self.click(s_pattern, page, False)
     
     def countdown(self, pattern, page, limit, default):
-        m = self.get_match(pattern, page, raise_err=False)
+        m = self.get_match_or_none(pattern, page)
         if m is not None:
             wait = int(m.group('count')) / 100 #ms
             if wait >= limit:

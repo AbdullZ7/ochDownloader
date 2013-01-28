@@ -21,11 +21,11 @@ class PluginDownload(PluginsCore):
         form = [('hash', m.group('hash')), ('confirm', 'Continue as Free User')]
         page = self.get_page(self.link, form)
         s_pattern = 'href="(?P<link>/get_file.php[^"]+)'
-        m = self.get_match(s_pattern, page, raise_err=False)
+        m = self.get_match_or_none(s_pattern, page)
         if m is not None:
             http_link = BASE_URL + m.group('link')
             self.source = self.get_page(http_link, close=False)
-        elif self.get_match('exceeded the daily download limit', page, raise_err=False) is not None:
+        elif self.get_match_or_none('exceeded the daily download limit', page) is not None:
             raise LimitExceededError("Limit Exceeded")
         else:
             raise ParsingError('Link not found.')
