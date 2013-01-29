@@ -50,9 +50,6 @@ class PluginDownload(PluginsCore):
         ('17', '176x144 (.mp4)'),
         ]
 
-    def __init__(self, *args, **kwargs):
-        PluginsCore.__init__(self, *args, **kwargs)
-
     def parse(self):
         video_id = self.link.split("&")[0].split("=")[-1]
 

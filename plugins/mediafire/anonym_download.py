@@ -11,9 +11,6 @@ COOKIE = cookielib.CookieJar()
 
 
 class PluginDownload(PluginsCore):
-    def __init__(self, *args, **kwargs):
-        PluginsCore.__init__(self, *args, **kwargs)
-    
     def parse(self):
         self.cookie = COOKIE
         link = self.link.replace("download.php", "")

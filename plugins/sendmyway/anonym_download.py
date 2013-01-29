@@ -9,9 +9,6 @@ BASE_URL = "http://sendmyway.com"
 
 
 class PluginDownload(PluginsCore):
-    def __init__(self, *args, **kwargs):
-        PluginsCore.__init__(self, *args, **kwargs)
-
     def parse(self):
         page = self.get_page(self.link)
         file_id = self.link.split("/")[-1]

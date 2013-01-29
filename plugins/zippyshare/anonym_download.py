@@ -9,9 +9,6 @@ from addons.swfdump import dump
 
 
 class PluginDownload(PluginsCore):
-    def __init__(self, *args, **kwargs):
-        PluginsCore.__init__(self, *args, **kwargs)
-
     def parse(self):
         www = self.link.split('.')[0].split('/')[-1]
         link = 'http://%s.zippyshare.com' % www

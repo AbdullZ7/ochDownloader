@@ -3,15 +3,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Libs
-from core.plugins_core import PluginsCore, ParsingError
+from core.plugins_core import PluginsCore
 
 BASE_URL = "http://jumbofiles.com"
 
 
 class PluginDownload(PluginsCore):
-    def __init__(self, *args, **kwargs):
-        PluginsCore.__init__(self, *args, **kwargs)
-
     def parse(self):
         link = self.link
         file_id = self.link.split('jumbofiles.com/')[-1].split('/')[0]

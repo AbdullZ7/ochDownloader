@@ -10,9 +10,6 @@ BASE_URL = "http://multiupload.nl"
 
 
 class PluginDownload(PluginsCore):
-    def __init__(self, *args, **kwargs):
-        PluginsCore.__init__(self, *args, **kwargs)
-
     def parse(self):
         file_id = self.link.split("/")[-1]
 

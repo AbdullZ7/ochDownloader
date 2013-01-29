@@ -7,9 +7,6 @@ from core.plugins_core import PluginsCore
 
 
 class PluginDownload(PluginsCore):
-    def __init__(self, *args, **kwargs):
-        PluginsCore.__init__(self, *args, **kwargs)
-
     def parse(self):
         page = self.get_page(self.link)
         m = self.get_match('; url=(?P<link>[^"]+)', page, "Link not found")
