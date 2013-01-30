@@ -78,28 +78,25 @@ class URLOpen:
                                             urllib2.HTTPCookieProcessor(cookie),
                                             urllib2.ProxyHandler(proxy))
     
-    def open(self, url, form=None, headers=None, range=(None, None), referer=None, timeout=20):
+    def open(self, url, form=None, headers=None, range=(None, None), timeout=20):
         """"""
-        #url = url.encode('utf-8')
         url = urllib.quote_plus(url.strip(), safe="%/:=&?~#+!$,;'@()*[]") #fix url. replace spaces by plus sign and more. Solved on python 2.7+
-        headers_ = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:10.0.1) Gecko/20100101 Firefox/10.0.1",
+        range_start, range_end = range
+        headers = headers or {}
+        headers_final = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:10.0.1) Gecko/20100101 Firefox/10.0.1",
                     "Accept": "*/*",
                     "Accept-Charset": "ISO-8859-1,utf-8;q=0.7,*;q=0.7",
                     "Accept-Language": "en-US,en",
                     "Connection": "close"}
-        range_start, range_end = range
-        if headers:
-            headers_.update(headers) #overwrite duplicated keys.
+        headers_final.update(headers)
         if range_start is not None and range_end is not None:
-            headers_["Range"] = "bytes={0}-{1}".format(range_start, range_end)
+            headers_final["Range"] = "bytes={0}-{1}".format(range_start, range_end)
         elif range_start is not None:
-            headers_["Range"] = "bytes={0}-".format(range_start)
-        if referer is not None:
-            headers_["Referer"] = referer
+            headers_final["Range"] = "bytes={0}-".format(range_start)
         if form is not None: #may be empty (ex: urllib.urlencode({})).
-            headers_["Content-type"] = "application/x-www-form-urlencoded"
+            headers_final["Content-type"] = "application/x-www-form-urlencoded"
             form = urllib.urlencode(form)
-        return self.opener.open(urllib2.Request(url, None, headers_), form, timeout=timeout)
+        return self.opener.open(urllib2.Request(url, data=form, headers=headers_final), timeout=timeout)
 
 
 class URLClose:
