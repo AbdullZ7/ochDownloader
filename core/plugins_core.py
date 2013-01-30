@@ -88,7 +88,7 @@ class PluginsCore:
         #return source
         from addons.captcha.recaptcha import Recaptcha
 
-        m = self.get_match_or_none(pattern, page)
+        m = self.get_match_or_none(pattern, page, "Recaptcha not found")
         if m is not None:
             link = "http://www.google.com/recaptcha/api/challenge?k=%s" % m.group('key')
             for retry in range(CAPTCHA_MAX_RETRIES):
@@ -119,7 +119,7 @@ class PluginsCore:
             return self.get_match(pattern, page, err)
         except ParsingError as err:
             if warning:
-                logger.warning("%s %s, pattern: %s" % (misc.get_host(self.link), err, pattern))
+                logger.warning("%s %s" % (misc.get_host(self.link), err))
             return
 
     def countdown(self, pattern, page, limit, default):
