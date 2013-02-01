@@ -6,6 +6,7 @@ logger = logging.getLogger(__name__)
 
 from core.api import api
 
+import unrar
 from unrar import UnRAR
 
 from PySide.QtGui import *
@@ -15,7 +16,6 @@ from qt.list_model import SimpleListModel
 
 
 COMPLETE, ERR_MSG = range(2)
-RAR_FILE_PATTERN = '^(?P<name>.*?)(?P<part>\.part\d+)?(?P<ext>\.rar|\.r\d+)$'
 
 
 class UnRARGUI:
@@ -55,14 +55,14 @@ class UnRARGUI:
             self.parent.tab.removeTab(index_page)
     
     def can_extract(self, path, file_name):
-        m = re.match(RAR_FILE_PATTERN, file_name)
+        m = re.match(unrar.RAR_FILE_PATTERN, file_name)
         if m is not None: #is rar file
             if os.path.isfile(os.path.join(path, file_name)) and not self.has_segments_left(m.group('name')):
                 return True
         return False
 
     def get_first_volume_name(self, file_name):
-        m = re.match(RAR_FILE_PATTERN, file_name)
+        m = re.match(unrar.RAR_FILE_PATTERN, file_name)
         if m is not None: #is rar file
             if m.group('part') is not None: #new ext. style
                 return u"".join((m.group('name'), ".part1.rar"))
@@ -74,7 +74,7 @@ class UnRARGUI:
     def has_segments_left(self, name):
         """"""
         for download_item in api.get_active_downloads().values() + api.get_queue_downloads().values() + api.get_stopped_downloads().values():
-            m = re.match(RAR_FILE_PATTERN, download_item.name)
+            m = re.match(unrar.RAR_FILE_PATTERN, download_item.name)
             if m is not None:
                 if name == m.group('name'):
                     return True

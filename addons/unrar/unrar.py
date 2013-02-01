@@ -1,9 +1,16 @@
+import os
+import re
 import threading
 import logging
 logger = logging.getLogger(__name__)
 
+from core.conf_parser import conf
+
+import preferences_gui
 from unrar_lib.utils import extract_file
 from passwords_handler import passwords_handler
+
+RAR_FILE_PATTERN = '^(?P<name>.*?)(?P<part>\.part\d+)?(?P<ext>\.rar|\.r\d+)$'
 
 
 class Item:
@@ -63,6 +70,28 @@ class Extract(threading.Thread):
             extract_file(self.file_path, dest_path=self.dest_path, password_list=passwords)
         except Exception as err:
             self.err_msg = str(err)
+            logger.exception(err)
+        else:
+            if conf.get_addon_option(preferences_gui.OPTION_UNRAR_REMOVE_FILES, default=False, is_bool=True):
+                self.remove_files()
+
+    def remove_files(self):
+        try:
+            path, file_name = os.path.split(self.file_path)
+            m = re.match(RAR_FILE_PATTERN, file_name)
+            name = m.group('name')
+            for file in os.listdir(path):
+                file_path = os.path.join(path, file)
+                # check if it's a file and has same name
+                if file.startswith(name) and os.path.isfile(file_path):
+                    m2 = re.match(RAR_FILE_PATTERN, file)
+                    # check if both names matches
+                    if m2 is not None and m2.group('name') == name:
+                        # check if both are new style xor old style
+                        if (m.group('part') is None and m2.group('part') is None) or \
+                           (m.group('part') is not None and m2.group('part') is not None):
+                            os.remove(file_path)
+        except Exception as err:
             logger.exception(err)
 
 
