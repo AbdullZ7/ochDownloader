@@ -113,8 +113,11 @@ class _Config(RawConfigParser):
         self.set(section, option, str(value))
 
     @exception_handler()
-    def set_addon_option(self, option, value):
-        self.set(SECTION_ADDONS, option, value)
+    def set_addon_option(self, option, value, is_bool=False):
+        if is_bool:
+            self.setboolean(SECTION_ADDONS, option, value)
+        else:
+            self.set(SECTION_ADDONS, option, value)
 
     #@exception_handler(default=...)
     def get_addon_option(self, option, default=None, is_bool=False):
