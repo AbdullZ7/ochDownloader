@@ -25,7 +25,7 @@ class PluginBridge:
         self.err_msg = None
         self.premium = False
         self.limit_exceeded = False
-        self.f_name = None
+        self.save_as = None
 
     def plugin_download(self):
         account_item = host_accounts.get_account(self.host)
@@ -62,7 +62,7 @@ class PluginBridge:
             self.source = p.source
             self.dl_link = p.dl_link
             self.cookie = p.cookie
-            self.f_name = p.f_name
+            self.save_as = p.save_as
             self.video_quality = p.video_quality
             if not self.source and account_item is not None:
                 account_status = p.get_account_status()

@@ -85,7 +85,7 @@ class PluginDownload(PluginsCore):
         source = self.get_page(url, close=False)
         #print source.headers #Content-Type: video/webm
 
-        self.f_name = '.'.join((video_title, self.video_extensions[self.video_quality]))
+        self.save_as = '.'.join((video_title, self.video_extensions[self.video_quality]))
         self.source = source
 
 

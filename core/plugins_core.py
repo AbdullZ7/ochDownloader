@@ -35,7 +35,7 @@ class PluginsCore:
         self.video_quality = video_quality
         self.source = None
         self.cookie = cookielib.CookieJar()
-        self.f_name = None #file name for videos
+        self.save_as = None #file name for videos
 
         # recaptcha
         self.recaptcha_post_link = link

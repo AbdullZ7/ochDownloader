@@ -24,8 +24,6 @@ class Downloader(threading.Thread, MultiDownload):
         threading.Thread.__init__(self)
         MultiDownload.__init__(self, download_item, bucket)
 
-        self.f_name = None
-
     def run(self):
         """"""
         try:
@@ -91,7 +89,7 @@ class Downloader(threading.Thread, MultiDownload):
         elif self.source:
             self.link_file = pb.dl_link
             self.cookie = self.cookie or pb.cookie
-            self.f_name = self.save_as or pb.f_name
+            self.save_as = self.save_as or pb.save_as
             self.video_quality = pb.video_quality
         else:
             self.limit_exceeded = pb.limit_exceeded
@@ -100,8 +98,8 @@ class Downloader(threading.Thread, MultiDownload):
     def __set_filename_n_size(self):
         info = self.source.info()
         old_file_name = self.file_name
-        if self.f_name:
-            self.file_name = misc.normalize_file_name(self.f_name)
+        if self.save_as:
+            self.file_name = misc.normalize_file_name(self.save_as)
         else:
             self.file_name = self.__get_filename_from_source(info)
         if self.file_exists and old_file_name != self.file_name:
@@ -125,7 +123,7 @@ class Downloader(threading.Thread, MultiDownload):
         if not file_name: #may be an empty string or None
             file_name = misc.get_filename_from_url(self.source.url)
         elif file_name.startswith('=?UTF-8?B?'): #base64
-            file_name = file_name.lstrip('=?UTF-8?B?').decode('base64')
+            file_name = file_name[10:].decode('base64')
         file_name = misc.normalize_file_name(file_name)
         return file_name
 
