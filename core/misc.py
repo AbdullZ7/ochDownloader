@@ -131,14 +131,15 @@ def smart_unicode(s, encoding='utf-8', errors='strict'):
         return s
     elif not isinstance(s, basestring): #not a string
         return unicode(s)
-    try:
-        s = unicode(s, encoding, errors)
-    except UnicodeDecodeError:
+    else:
         try:
-            s = unicode(s, 'latin-1', 'replace')
-        except UnicodeDecodeError as err: # this should never get reached
-            logger.exception("{0}: {1}".format(s[:30], err))
-    return s
+            return unicode(s, encoding, errors)
+        except UnicodeDecodeError:
+            try:
+                return unicode(s, 'latin-1', 'replace')
+            except UnicodeDecodeError as err:
+                logger.exception(err)
+                return s
 
 
 def time_format(the_time):
