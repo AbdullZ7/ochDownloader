@@ -13,7 +13,7 @@ except ImportError:
 
 from core.conf_parser import conf
 from connection import URLClose, request
-from downloader_core import DownloaderCore
+from downloader_base import DownloaderBase
 
 
 NT_BUFSIZ = 8 * 1024 #8K. Network buffer.
@@ -26,11 +26,11 @@ class CanNotRun(Exception): pass
 class IncompleteChunk(Exception): pass
 
 
-class MultiDownload(DownloaderCore):
+class MultiDownload(DownloaderBase):
     """"""
     def __init__(self, download_item, bucket):
         """"""
-        DownloaderCore.__init__(self, download_item, bucket)
+        DownloaderBase.__init__(self, download_item, bucket)
 
         #Threading stuff
         self.lock1 = threading.Lock() #lock to write file.

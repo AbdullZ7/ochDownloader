@@ -3,7 +3,7 @@ import collections
 import core.cons as cons
 
 
-class DownloaderCore:
+class DownloaderBase:
     """"""
     def __init__(self, download_item, bucket):
         """"""
