@@ -4,10 +4,15 @@ import re
 import htmlentitydefs
 import subprocess
 import urllib
-
-import cons
 import logging
 logger = logging.getLogger(__name__)
+
+try:
+    import _winreg
+except ImportError:
+    _winreg = None
+
+import cons
 
 
 def keep_system_awake(stop=False):
@@ -58,8 +63,7 @@ def get_free_space(folder):
 
 def register_app_path():
     try:
-        if cons.OS_WIN:
-            import _winreg
+        if cons.OS_WIN and _winreg is not None:
             key_val = os.path.join('Software', cons.APP_NAME)
             with _winreg.CreateKeyEx(_winreg.HKEY_CURRENT_USER, key_val, 0, _winreg.KEY_WRITE) as key:
                 _winreg.SetValueEx(key, 'path', 0, _winreg.REG_SZ, cons.APP_PATH)

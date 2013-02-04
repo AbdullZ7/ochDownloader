@@ -6,6 +6,12 @@ import cookielib
 import logging
 logger = logging.getLogger(__name__)
 
+try:
+    from addons.captcha.recaptcha import Recaptcha
+except ImportError as err:
+    logger.warning(err)
+    Recaptcha = None
+
 import misc
 from network.connection import URLClose, request
 
@@ -84,10 +90,8 @@ class PluginsCore:
             return False
 
     def recaptcha(self, pattern, page, extra_fields=None):
-        #find catpcha and prompt captcha window
-        #return source
-        from addons.captcha.recaptcha import Recaptcha
-
+        if Recaptcha is None:
+            return page
         m = self.get_match_or_none(pattern, page, "Recaptcha not found")
         if m is not None:
             link = "http://www.google.com/recaptcha/api/challenge?k=%s" % m.group('key')
