@@ -3,7 +3,7 @@ logger = logging.getLogger(__name__)
 
 from core import utils
 from core.conf_parser import conf
-from core.plugin.parser import plugins_parser
+from core.plugin.conf_parser import plugins_config
 
 from PySide.QtGui import *
 
@@ -26,7 +26,7 @@ class Clipboard:
 
     def services(self):
         """"""
-        services = plugins_parser.services_dict.keys()
+        services = plugins_config.services_dict.keys()
         logger.debug("Services: {0}".format(services))
         return services
 

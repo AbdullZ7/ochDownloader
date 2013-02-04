@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 from core import cons
 from core import utils
 from core.conf_parser import conf
-from core.plugin.bridge import PluginBridge
+from core.plugin.parser2 import PluginParser
 
 from multi_download import MultiDownload
 
@@ -81,8 +81,8 @@ class Downloader(threading.Thread, MultiDownload):
     
     def __source(self):
         """"""
-        pb = PluginBridge(self.link, self.host, self.video_quality, self.content_range, self.wait_func)
-        pb.plugin_download()
+        pb = PluginParser(self.link, self.host, self.video_quality, self.content_range, self.wait_func)
+        pb.parse()
         self.source = pb.source
         if self.stop_flag:
             raise StatusStopped("Stopped")

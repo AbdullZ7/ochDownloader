@@ -22,7 +22,7 @@ DEFAULT = {SECTION_MAIN: {OPTION_SLOTS_LIMIT: "1",
                         }
 
 
-class _PluginsParser:
+class _PluginsConfigLoader:
     """"""
     def __init__(self):
         """"""
@@ -106,5 +106,4 @@ class _PluginConfig(RawConfigParser):
         return False
 
 
-#modules are singletons in python :)
-plugins_parser = _PluginsParser() #make it global.
+plugins_config = _PluginsConfigLoader()

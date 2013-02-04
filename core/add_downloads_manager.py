@@ -8,7 +8,7 @@ import cons
 import utils
 from download_core import DownloadItem
 from slots import Slots
-from core.plugin.parser import plugins_parser
+from core.plugin.conf_parser import plugins_config
 
 
 class LinkChecker(threading.Thread):
@@ -75,7 +75,7 @@ class AddDownloadsManager:
     def create_download_item(self, file_name, link, copy_link=True):
         """"""
         host = utils.get_host(link)
-        if plugins_parser.services_dict.get(host, None) is None:
+        if plugins_config.services_dict.get(host, None) is None:
             host = cons.UNSUPPORTED
         download_item = DownloadItem(file_name, host, link, can_copy_link=copy_link)
         self.__pending_downloads[download_item.id] = download_item

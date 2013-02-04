@@ -10,7 +10,7 @@ from thread_manager import ThreadManager
 from slots import Slots
 from host_accounts import host_accounts
 from conf_parser import conf
-from core.plugin.parser import plugins_parser
+from core.plugin.conf_parser import plugins_config
 
 
 class DownloadManager(DownloadCore, ThreadManager):
@@ -184,7 +184,7 @@ class DownloadManager(DownloadCore, ThreadManager):
     def is_host_slot_available(self, host):
         """"""
         count = 0
-        host_slots = plugins_parser.get_plugin_item(host).get_slots_limit()
+        host_slots = plugins_config.get_plugin_item(host).get_slots_limit()
         if host_slots > 0: #-1 or 0 means unlimited slots
             for download_item in self.active_downloads.itervalues():
                 if host == download_item.host:

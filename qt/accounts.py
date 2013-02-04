@@ -3,7 +3,7 @@ logger = logging.getLogger(__name__)
 
 #Libs
 from core.host_accounts import host_accounts
-from core.plugin.parser import plugins_parser
+from core.plugin.conf_parser import plugins_config
 
 from PySide.QtGui import *
 from PySide.QtCore import *
@@ -79,7 +79,7 @@ class ConfigAccounts(QDialog):
         label_pass = QLabel(_('Password:'))
         
         self.cb = QComboBox()
-        [self.cb.addItem(service) for service, plugin_config in sorted(plugins_parser.services_dict.items()) if plugin_config.get_premium_available()]
+        [self.cb.addItem(service) for service, plugin_config in sorted(plugins_config.services_dict.items()) if plugin_config.get_premium_available()]
         self.entry_user = QLineEdit()
         self.entry_pass = QLineEdit()
         
