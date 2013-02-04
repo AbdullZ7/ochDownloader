@@ -3,9 +3,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Libs
-import cons
+from core import cons
 from core.idle_queue import idle_add_and_wait
-from host_accounts import host_accounts
+from core.host_accounts import host_accounts
 from base import ParsingError, StopParsing, LimitExceededError, CaptchaException
 
 

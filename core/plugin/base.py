@@ -12,7 +12,7 @@ except ImportError as err:
     logger.warning(err)
     Recaptcha = None
 
-import utils
+from core import utils
 from core.network.connection import URLClose, request
 
 BUFF_SZ = 1024 * 1024 #1MB

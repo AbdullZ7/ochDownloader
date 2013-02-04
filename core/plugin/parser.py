@@ -5,7 +5,7 @@ logger = logging.getLogger(__name__)
 from ConfigParser import RawConfigParser, NoSectionError, NoOptionError
 
 #Libs
-import cons
+from core import cons
 
 #main section
 SECTION_MAIN = "main"
