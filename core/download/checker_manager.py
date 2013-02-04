@@ -4,10 +4,10 @@ import logging
 logger = logging.getLogger(__name__)
 from collections import OrderedDict
 
-import cons
-import utils
-from download_core import DownloadItem
-from slots import Slots
+from core import cons
+from core import utils
+from base import DownloadItem
+from core.slots import Slots
 from core.plugin.conf_parser import plugins_config
 
 
@@ -42,7 +42,7 @@ class LinkChecker(threading.Thread):
             self.link_status = cons.LINK_ERROR
 
 
-class AddDownloadsManager:
+class DownloadCheckerManager:
     """"""
     def __init__(self):
         """"""

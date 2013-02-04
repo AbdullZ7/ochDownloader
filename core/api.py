@@ -3,14 +3,14 @@ logger = logging.getLogger(__name__)
 
 #Libs
 import cons
-from download_manager import DownloadManager
-from add_downloads_manager import AddDownloadsManager
+from core.download.manager import DownloadManager
+from core.download.checker_manager import DownloadCheckerManager
 from update_manager import UpdateManager
 from session_parser import SessionParser
-from download_core import DownloadItem
+from core.download.base import DownloadItem
 
 
-class _Api(DownloadManager, AddDownloadsManager):
+class _Api(DownloadManager, DownloadCheckerManager):
     """
     AddDownloadsManager:
     .Contiene la lista de archivos pendientes, y metodos para el chequeo de links.
@@ -25,7 +25,7 @@ class _Api(DownloadManager, AddDownloadsManager):
     def __init__(self):
         """"""
         DownloadManager.__init__(self)
-        AddDownloadsManager.__init__(self)
+        DownloadCheckerManager.__init__(self)
         self.session_parser = SessionParser()
     
     def start_update_manager(self):

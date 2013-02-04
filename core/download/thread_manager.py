@@ -1,9 +1,9 @@
 import logging
 logger = logging.getLogger(__name__)
 
-from network.downloader import Downloader
-from network.token_bucket import TokenBucket #rate limit bandwidth
-import cons
+from core.network.downloader import Downloader
+from core.network.token_bucket import TokenBucket #rate limit bandwidth
+from core import cons
 
 
 class ThreadManager:

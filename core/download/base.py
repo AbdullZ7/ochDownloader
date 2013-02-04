@@ -5,7 +5,7 @@ logger = logging.getLogger(__name__)
 from collections import OrderedDict, deque
 
 #Libs
-import cons
+from core import cons
 
 
 class DownloadItem:
@@ -44,7 +44,6 @@ class DownloadItem:
         self.time_remain = 0
         self.time = 0
 
-    @property
     def _progress(self):
         """"""
         try:
@@ -56,7 +55,6 @@ class DownloadItem:
         else:
             return progress
 
-    @property
     def _speed(self):
         """"""
         if not self.start_time or self.status in (cons.STATUS_FINISHED, cons.STATUS_STOPPED, cons.STATUS_ERROR):
@@ -73,7 +71,6 @@ class DownloadItem:
             return 0
         return speed
 
-    @property
     def _time_remain(self):
         """"""
         try:
@@ -85,7 +82,6 @@ class DownloadItem:
         else:
             return remain_time
 
-    @property
     def _time(self):
         """"""
         if self.start_time:
@@ -108,13 +104,13 @@ class DownloadItem:
         self.is_premium = is_premium
         self.video_quality = video_quality
 
-        self.progress = self._progress
-        self.speed = self._speed
-        self.time_remain = self._time_remain
-        self.time = self._time
+        self.progress = self._progress()
+        self.speed = self._speed()
+        self.time_remain = self._time_remain()
+        self.time = self._time()
 
 
-class DownloadCore:
+class DownloadBase:
     """"""
     def __init__(self):
         """"""

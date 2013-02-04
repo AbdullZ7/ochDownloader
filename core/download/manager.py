@@ -3,17 +3,17 @@ import threading
 import logging
 logger = logging.getLogger(__name__)
 
-import cons
-import events
-from download_core import DownloadCore
+from core import cons
+from core import events
+from base import DownloadBase
 from thread_manager import ThreadManager
-from slots import Slots
-from host_accounts import host_accounts
-from conf_parser import conf
+from core.slots import Slots
+from core.host_accounts import host_accounts
+from core.conf_parser import conf
 from core.plugin.conf_parser import plugins_config
 
 
-class DownloadManager(DownloadCore, ThreadManager):
+class DownloadManager(DownloadBase, ThreadManager):
     """
     DownloadCore:
     .Contiene las listas con los items (tipos de clase, DownloadItem) de descarga, y los metodos para modificar esas listas.
@@ -31,7 +31,7 @@ class DownloadManager(DownloadCore, ThreadManager):
     """
     def __init__(self):
         """"""
-        DownloadCore.__init__(self) #download_core.py
+        DownloadBase.__init__(self) #download_core.py
         ThreadManager.__init__(self) #thread_manager.py
         self.global_slots = Slots() #slots.py
     
