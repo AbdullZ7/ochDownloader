@@ -3,14 +3,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Libs
-from core.plugins_core import PluginsCore, LimitExceededError
+from core.plugin.base import PluginBase, LimitExceededError
 
 
 BASE_URL = "http://uploaded.to"
 WAITING = 20
 
 
-class PluginDownload(PluginsCore):
+class PluginDownload(PluginBase):
     def parse(self):
         link = self.link
         file_id = self.get_file_id()

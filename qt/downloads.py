@@ -4,7 +4,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 from core import cons
-from core import misc
+from core import utils
 from core.api import api
 
 from PySide.QtGui import *
@@ -189,7 +189,7 @@ class Downloads(QTreeView):
             items_list = api.get_download_items([self.items[row_index][0] for row_index in rows])
             paths_list = {download_item.path for download_item in items_list}
             for folder_path in paths_list:
-                misc.open_folder_window(folder_path)
+                utils.open_folder_window(folder_path)
 
     def on_copy_link(self):
         rows = self.get_selected_rows()
@@ -257,9 +257,9 @@ class Downloads(QTreeView):
 
     def store_items(self, item_list):
         for download_item in item_list:
-            size_file = misc.size_format(download_item.size) if download_item.size else None
-            size_complete = misc.size_format(download_item.size_complete) if download_item.size_complete else None
-            time = misc.time_format(download_item.time) if download_item.time else None
+            size_file = utils.size_format(download_item.size) if download_item.size else None
+            size_complete = utils.size_format(download_item.size_complete) if download_item.size_complete else None
+            time = utils.time_format(download_item.time) if download_item.time else None
             host_icon = self.get_host_icon(download_item.host)
             
             item = [download_item.id, self.icons_dict[download_item.status], download_item.name, [host_icon, None, None],
@@ -280,12 +280,12 @@ class Downloads(QTreeView):
                 #row[3][0] = download_item.host #download_item.host #col 3
                 row[3][1] = self.icons_dict[cons.DL_RESUME] if download_item.can_resume else None #download_item.host #col 3
                 row[3][2] = self.icons_dict[cons.DL_PREMIUM] if download_item.is_premium else None #download_item.host #col 3
-                row[4] = misc.size_format(download_item.size) if download_item.size else None
-                row[5] = misc.size_format(download_item.size_complete) if download_item.size_complete else None
+                row[4] = utils.size_format(download_item.size) if download_item.size else None
+                row[5] = utils.size_format(download_item.size_complete) if download_item.size_complete else None
                 row[6] = download_item.progress
-                row[7] = misc.time_format(download_item.time) if download_item.time else None
-                row[8] = misc.time_format(download_item.time_remain) if download_item.time_remain else None
-                row[9] = misc.speed_format(download_item.speed) if download_item.speed else None
+                row[7] = utils.time_format(download_item.time) if download_item.time else None
+                row[8] = utils.time_format(download_item.time_remain) if download_item.time_remain else None
+                row[9] = utils.speed_format(download_item.speed) if download_item.speed else None
                 row[10] = self.get_status_msg(download_item)
             except KeyError as err:
                 logger.debug(err)

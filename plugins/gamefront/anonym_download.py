@@ -3,10 +3,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Libs
-from core.plugins_core import PluginsCore
+from core.plugin.base import PluginBase
 
 
-class PluginDownload(PluginsCore):
+class PluginDownload(PluginBase):
     def parse(self):
         page = self.get_page(self.link)
         page = self.click('href="(?P<link>[^"]+)" class="downloadNow', page)

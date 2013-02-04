@@ -10,7 +10,7 @@ from thread_manager import ThreadManager
 from slots import Slots
 from host_accounts import host_accounts
 from conf_parser import conf
-from plugins_parser import plugins_parser
+from core.plugin.parser import plugins_parser
 
 
 class DownloadManager(DownloadCore, ThreadManager):
@@ -93,7 +93,6 @@ class DownloadManager(DownloadCore, ThreadManager):
                         try:
                             download_item = self.complete_downloads.pop(id_item)
                         except KeyError:
-                            #bug: error on remove complete item from the gui.
                             raise
             else: # active
                 th = self.get_thread(id_item)

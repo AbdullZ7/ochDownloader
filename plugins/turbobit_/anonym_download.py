@@ -1,13 +1,12 @@
 #python libs
 import urllib, urllib2, httplib, socket
-import json
 import cookielib
 import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
 #Libs
 from link_checker import LinkChecker
-from core.plugins_core import PluginsCore
+from core.plugin.base import PluginBase
 from core.network.connection import URLOpen, URLClose #leer/abrir urls. And close connection if except raises.
 from addons.captcha.recaptcha import Recaptcha
 
@@ -23,10 +22,10 @@ class LinkErrorException(Exception): pass
 class CaptchaException(Exception): pass
 
 
-class AnonymDownload(PluginsCore):
+class AnonymDownload(PluginBase):
     """"""
     def __init__(self, *args, **kwargs):
-        PluginsCore.__init__(self, *args, **kwargs)
+        PluginBase.__init__(self, *args, **kwargs)
     
     def add(self): #wait_func: wait method from thread_managed
         """

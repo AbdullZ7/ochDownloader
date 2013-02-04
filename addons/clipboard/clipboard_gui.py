@@ -1,12 +1,11 @@
 import logging
 logger = logging.getLogger(__name__)
 
-from core import misc
+from core import utils
 from core.conf_parser import conf
-from core.plugins_parser import plugins_parser
+from core.plugin.parser import plugins_parser
 
 from PySide.QtGui import *
-from PySide.QtCore import *
 
 from qt import signals
 
@@ -54,7 +53,7 @@ class Clipboard:
     def check_text(self, text):
         urls = []
         if text:
-            urls = misc.links_parser(text)
+            urls = utils.links_parser(text)
         return urls
 
     def check_supported(self, urls):

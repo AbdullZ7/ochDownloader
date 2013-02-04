@@ -3,7 +3,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Libs
-from core.plugins_core import PluginsCore
+from core.base import PluginsCore
 
 
 class PluginDownload(PluginsCore):

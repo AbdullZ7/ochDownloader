@@ -4,11 +4,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Libs
-from core.plugins_core import PluginsCore
+from core.plugin.base import PluginBase
 from addons.swfdump import dump
 
 
-class PluginDownload(PluginsCore):
+class PluginDownload(PluginBase):
     def parse(self):
         www = self.link.split('.')[0].split('/')[-1]
         link = 'http://%s.zippyshare.com' % www

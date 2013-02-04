@@ -2,7 +2,7 @@ import os
 import logging
 logger = logging.getLogger(__name__)
 
-from core import misc
+from core import utils
 
 from PySide.QtGui import *
 from PySide.QtCore import *
@@ -99,7 +99,7 @@ class HistoryTab(QVBoxLayout):
         if rows:
             paths_list = {self.items[row_index][6] for row_index in rows}
             for folder_path in paths_list:
-                misc.open_folder_window(folder_path)
+                utils.open_folder_window(folder_path)
 
     def on_copy_link(self):
         rows = self.get_selected_rows()
@@ -119,7 +119,7 @@ class HistoryTab(QVBoxLayout):
     def on_double_click(self, q_index):
         row_index = q_index.row()
         path = os.path.join(self.items[row_index][6], self.items[row_index][1])
-        misc.run_file(path)
+        utils.run_file(path)
 
     def on_search(self):
         self.offset = 0
@@ -142,7 +142,7 @@ class HistoryTab(QVBoxLayout):
         match_term = self.search_entry.text()
         data_list = self.history_cls.get_data(self.offset, self.limit, match_term)
         self.__model.clear()
-        [self.__model.append((id, name, misc.size_format(size), misc.size_format(complete), date_.strftime("%d-%m-%y %H:%M"), link, path))
+        [self.__model.append((id, name, utils.size_format(size), utils.size_format(complete), date_.strftime("%d-%m-%y %H:%M"), link, path))
             for id, name, link, size, complete, path, date_ in data_list]
         if len(data_list) < self.limit:
             self.btn_next.setEnabled(False)

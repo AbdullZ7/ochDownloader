@@ -12,8 +12,8 @@ except ImportError as err:
     logger.warning(err)
     Recaptcha = None
 
-import misc
-from network.connection import URLClose, request
+import utils
+from core.network.connection import URLClose, request
 
 BUFF_SZ = 1024 * 1024 #1MB
 CAPTCHA_MAX_RETRIES = 3
@@ -25,7 +25,7 @@ class ParsingError(Exception): pass
 class LimitExceededError(Exception): pass
 
 
-class PluginsCore:
+class PluginBase:
     """"""
     def __init__(self, link, content_range, wait_func, account_item, video_quality):
         """"""
@@ -96,7 +96,7 @@ class PluginsCore:
         if m is not None:
             link = "http://www.google.com/recaptcha/api/challenge?k=%s" % m.group('key')
             for retry in range(CAPTCHA_MAX_RETRIES):
-                c = Recaptcha(misc.get_host(self.link), link, self.wait_func)
+                c = Recaptcha(utils.get_host(self.link), link, self.wait_func)
                 c.run_captcha()
                 if c.solution is not None:
                     page = self.recaptcha_post(pattern, page, c.captcha_challenge, c.solution, extra_fields)
@@ -123,7 +123,7 @@ class PluginsCore:
             return self.get_match(pattern, page, err)
         except ParsingError as err:
             if warning:
-                logger.warning("%s %s" % (misc.get_host(self.link), err))
+                logger.warning("%s %s" % (utils.get_host(self.link), err))
             return
 
     def countdown(self, pattern, page, limit, default):

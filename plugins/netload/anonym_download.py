@@ -1,17 +1,16 @@
 #python libs
-import re
 import logging
 logger = logging.getLogger(__name__)
 
 #Libs
-from core.plugins_core import PluginsCore, LimitExceededError
+from core.plugin.base import PluginBase, LimitExceededError
 from addons.tesseract import tesseract, clean_image
 
 BASE_URL = "http://netload.in"
 WAITING = 30
 
 
-class PluginDownload(PluginsCore):
+class PluginDownload(PluginBase):
     def parse(self):
         if "file_id" in self.link: #most likely not.
             file_id = self.link.split("file_id=")[-1].split("&")[0]

@@ -3,9 +3,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Libs
-from core.plugins_core import PluginsCore
+from core.plugin.base import PluginBase
 
 
-class PluginDownload(PluginsCore):
+class PluginDownload(PluginBase):
     def parse(self):
         self.source = self.get_page(self.link, default=None, close=False)

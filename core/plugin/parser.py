@@ -34,7 +34,7 @@ class _PluginsParser:
         try:
             for module_loader, plugin, ispkg in pkgutil.iter_modules(path=[cons.PLUGINS_PATH, ]):
                 path = os.path.join(cons.PLUGINS_PATH, plugin, cons.PLUGIN_CONFIG_FILE)
-                self.services_dict[plugin] = _PluginsConfig(path)
+                self.services_dict[plugin] = _PluginConfig(path)
         except Exception as err:
             logger.exception(err)
 
@@ -44,12 +44,12 @@ class _PluginsParser:
             return self.services_dict[plugin]
         except KeyError:
             path = os.path.join(cons.PLUGINS_PATH, plugin, cons.PLUGIN_CONFIG_FILE)
-            plugin_config = _PluginsConfig(path)
+            plugin_config = _PluginConfig(path)
             self.services_dict[plugin] = plugin_config
             return plugin_config
 
 
-class _PluginsConfig(RawConfigParser):
+class _PluginConfig(RawConfigParser):
     """"""
     def __init__(self, path):
         """"""

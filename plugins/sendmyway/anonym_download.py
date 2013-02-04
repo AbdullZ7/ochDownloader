@@ -3,12 +3,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Libs
-from core.plugins_core import PluginsCore
+from core.plugin.base import PluginBase
 
 BASE_URL = "http://sendmyway.com"
 
 
-class PluginDownload(PluginsCore):
+class PluginDownload(PluginBase):
     def parse(self):
         page = self.get_page(self.link)
         file_id = self.link.split("/")[-1]

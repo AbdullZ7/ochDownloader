@@ -9,7 +9,7 @@ from core.network.connection import URLClose, request
 #from core.misc import html_entities_parser #(html entities and numerics parser)
 
 from core import cons
-from core import misc
+from core import utils
 
 
 class LinkChecker:
@@ -27,7 +27,7 @@ class LinkChecker:
                 for line in s:
                     if 'name="description"' in line:
                         name = line.split('content="')[-1].split(" | Free file hosting")[0]
-                        name = misc.html_entities_parser(name)
+                        name = utils.html_entities_parser(name)
                     elif "File Size:</b>" in line:
                         tmp = line.split("</b>")[-1].split("</div>")[0].strip()
                         unit = tmp[-2:]

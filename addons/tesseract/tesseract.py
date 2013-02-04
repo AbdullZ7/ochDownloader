@@ -13,7 +13,7 @@ import GifImagePlugin
 import JpegImagePlugin
 
 from core import cons
-from core import misc
+from core import utils
 from core.network.connection import URLClose, request
 
 IMAGE_SUFFIX = ".tif"
@@ -70,7 +70,7 @@ class Tesseract:
         captcha = ""
         try:
             text_name = os.path.splitext(self.text_name)[0] #remove prefix for tesseract.
-            retcode = misc.subprocess_call([get_path(), self.image_name, text_name])
+            retcode = utils.subprocess_call([get_path(), self.image_name, text_name])
             if retcode >= 0:
                 with open(self.text_name, "rb") as fh:
                     captcha = fh.readline().strip()

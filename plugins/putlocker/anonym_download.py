@@ -3,13 +3,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Libs
-from core.plugins_core import PluginsCore, ParsingError, LimitExceededError
+from core.plugin.base import PluginBase, ParsingError, LimitExceededError
 
 BASE_URL = "http://www.putlocker.com"
 WAITING = 10
 
 
-class PluginDownload(PluginsCore):
+class PluginDownload(PluginBase):
     def parse(self):
         page = self.get_page(self.link)
         self.countdown('var countdownNum = (?P<count>[^;]+)', page, 320, WAITING)

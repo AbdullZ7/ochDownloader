@@ -1,5 +1,4 @@
 import uuid
-import cookielib
 import os
 import threading
 import pickle #permite escribir diccionarios, listas, etc en archivos, preservando el tipo.

@@ -4,12 +4,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Libs
-from core.plugins_core import PluginsCore
+from core.plugin.base import PluginBase
 
 BASE_URL = "http://multiupload.nl"
 
 
-class PluginDownload(PluginsCore):
+class PluginDownload(PluginBase):
     def parse(self):
         file_id = self.link.split("/")[-1]
 

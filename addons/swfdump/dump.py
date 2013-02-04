@@ -5,7 +5,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 from core import cons
-from core import misc
+from core import utils
 
 def get_path():
     if cons.OS_WIN:
@@ -18,7 +18,7 @@ def get_swf_dump(content):
     try:
         with tempfile.NamedTemporaryFile(suffix=".swf", delete=False) as fh:
             fh.write(content)
-        p = misc.subprocess_popen([get_path(), '-a', fh.name], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        p = utils.subprocess_popen([get_path(), '-a', fh.name], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         out_put, err = p.communicate()
         if err:
             raise Exception(err)

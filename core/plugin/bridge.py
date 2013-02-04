@@ -4,9 +4,9 @@ logger = logging.getLogger(__name__)
 
 #Libs
 import cons
-from idle_queue import idle_add_and_wait
+from core.idle_queue import idle_add_and_wait
 from host_accounts import host_accounts
-from plugins_core import ParsingError, StopParsing, LimitExceededError, CaptchaException
+from base import ParsingError, StopParsing, LimitExceededError, CaptchaException
 
 
 class PluginBridge:

@@ -3,10 +3,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 from core import cons
-from core import misc
+from core import utils
 from core.api import api
 from core.conf_parser import conf
-from core.Container_Extractor import Container
+from core.container import Container
 
 from PySide.QtGui import *
 from PySide.QtCore import *
@@ -267,7 +267,7 @@ class AddDownloads(QVBoxLayout):
                 row[2] = self.icons_dict[download_item.link_status]
                 row[3] = download_item.name
                 row[4] = download_item.host
-                row[5] = misc.size_format(download_item.size)
+                row[5] = utils.size_format(download_item.size)
                 row[6] = download_item.link_status_msg
             except KeyError as err:
                 logger.debug(err)

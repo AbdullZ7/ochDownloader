@@ -6,7 +6,7 @@ import logging
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
 from core.network.connection import URLClose, request
-from core.misc import html_entities_parser #(html entities and numerics parser)
+from core.utils import html_entities_parser #(html entities and numerics parser)
 
 import core.cons as cons
 

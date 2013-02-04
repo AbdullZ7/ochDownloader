@@ -6,9 +6,9 @@ logger = logging.getLogger(__name__)
 
 #Local Libs
 from core import cons
-from core import misc
+from core import utils
 from core.conf_parser import conf
-from core.plugins_bridge import PluginBridge
+from core.plugin.bridge import PluginBridge
 
 from multi_download import MultiDownload
 
@@ -61,7 +61,7 @@ class Downloader(threading.Thread, MultiDownload):
                 return False
             time.sleep(1)
             wait -= 1
-            self.status_msg = "{}: {}".format("Wait", misc.time_format(wait))
+            self.status_msg = "{}: {}".format("Wait", utils.time_format(wait))
 
     def __file_existence_check(self):
         """"""
@@ -99,7 +99,7 @@ class Downloader(threading.Thread, MultiDownload):
         info = self.source.info()
         old_file_name = self.file_name
         if self.save_as:
-            self.file_name = misc.normalize_file_name(self.save_as)
+            self.file_name = utils.normalize_file_name(self.save_as)
         else:
             self.file_name = self.__get_filename_from_source(info)
         if self.file_exists and old_file_name != self.file_name:
@@ -121,10 +121,10 @@ class Downloader(threading.Thread, MultiDownload):
             elif 'filename*=' in disposition:
                 file_name = disposition.split("'")[-1]
         if not file_name: #may be an empty string or None
-            file_name = misc.get_filename_from_url(self.source.url)
+            file_name = utils.get_filename_from_url(self.source.url)
         elif file_name.startswith('=?UTF-8?B?'): #base64
             file_name = file_name[10:].decode('base64')
-        file_name = misc.normalize_file_name(file_name)
+        file_name = utils.normalize_file_name(file_name)
         return file_name
 
     def __set_can_resume(self):

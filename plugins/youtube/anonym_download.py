@@ -6,12 +6,12 @@ from urlparse import parse_qs
 from collections import OrderedDict
 
 #Libs
-from core.plugins_core import PluginsCore
+from core.plugin.base import PluginBase
 
 from addons.video_quality_choice.choice import QualityChoice
 
 
-class PluginDownload(PluginsCore):
+class PluginDownload(PluginBase):
     """
     Mostly taken from youtube-dl
     https://github.com/rg3/youtube-dl
