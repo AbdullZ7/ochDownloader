@@ -1,6 +1,4 @@
-import collections
-
-import core.cons as cons
+from core import cons
 
 
 class DownloaderBase:
