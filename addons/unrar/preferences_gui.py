@@ -61,7 +61,7 @@ class Preferences(QVBoxLayout):
     
     def load(self):
         """"""
-        if conf.get_addon_option(OPTION_UNRAR_REMOVE_FILES, default=False, is_bool=True):
+        if conf.get_addon_option(OPTION_UNRAR_REMOVE_FILES, default=True, is_bool=True):
             self.remove_files_box.toggle() #activate
         self.load_pwd()
     

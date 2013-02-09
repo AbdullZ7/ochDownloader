@@ -72,7 +72,7 @@ class Extract(threading.Thread):
             self.err_msg = str(err)
             logger.exception(err)
         else:
-            if conf.get_addon_option(preferences_gui.OPTION_UNRAR_REMOVE_FILES, default=False, is_bool=True):
+            if conf.get_addon_option(preferences_gui.OPTION_UNRAR_REMOVE_FILES, default=True, is_bool=True):
                 self.remove_files()
 
     def remove_files(self):

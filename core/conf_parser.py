@@ -194,9 +194,8 @@ class _Config(RawConfigParser):
 
     @exception_handler(default=(-1, -1, -1, -1))
     def get_window_settings(self):
-        tmp = self.get(SECTION_GUI, OPTION_WINDOW_SETTINGS)
-        x, y, w, h = tmp.split(",")
-        x, y, w, h = int(x), int(y), int(w), int(h)
+        values = self.get(SECTION_GUI, OPTION_WINDOW_SETTINGS)
+        x, y, w, h = tuple((int(v) for v in values.split(",")))
         return x, y, w, h
 
     @exception_handler()
@@ -205,8 +204,8 @@ class _Config(RawConfigParser):
 
     @exception_handler(default=None)
     def get_columns_width(self):
-        tmp = self.get(SECTION_GUI, OPTION_COLUMNS_WIDTH)
-        columns = tuple([int(width) for width in tmp.split(",")])
+        values = self.get(SECTION_GUI, OPTION_COLUMNS_WIDTH)
+        columns = tuple((int(v) for v in values.split(",")))
         return columns
 
     @exception_handler()
