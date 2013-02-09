@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 #Local Libs
 from core import cons
 from core import utils
-from core.conf_parser import conf
+from core.config import conf
 from core.plugin.parser import PluginParser
 
 from core.download.multipart import MultiDownload

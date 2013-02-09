@@ -1,4 +1,4 @@
-from core.conf_parser import conf
+from core.config import conf
 
 from PySide.QtGui import *
 from PySide.QtCore import *

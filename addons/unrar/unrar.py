@@ -4,7 +4,7 @@ import threading
 import logging
 logger = logging.getLogger(__name__)
 
-from core.conf_parser import conf
+from core.config import conf
 
 import preferences_gui
 from unrar_lib.utils import extract_file

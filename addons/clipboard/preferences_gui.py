@@ -1,7 +1,7 @@
 import logging
 logger = logging.getLogger(__name__)
 
-from core.conf_parser import conf
+from core.config import conf
 import core.cons as cons
 
 from PySide.QtGui import *

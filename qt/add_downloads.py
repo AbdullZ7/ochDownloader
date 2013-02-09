@@ -5,7 +5,7 @@ logger = logging.getLogger(__name__)
 from core import cons
 from core import utils
 from core.api import api
-from core.conf_parser import conf
+from core.config import conf
 from core.container import Container
 
 from PySide.QtGui import *

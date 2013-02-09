@@ -2,7 +2,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 from core.api import api
-from core.conf_parser import conf
+from core.config import conf
 from core import events
 
 from qt.addons import AddonCore

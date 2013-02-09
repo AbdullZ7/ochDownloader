@@ -1,5 +1,5 @@
 import core.cons as cons
-from core.conf_parser import conf
+from core.config import conf
 from core.network.connection import request
 
 from PySide.QtGui import *

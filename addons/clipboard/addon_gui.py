@@ -2,7 +2,7 @@ import logging #registro de errores, van a consola y al fichero de texto.
 logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
 
 import core.cons as cons
-from core.conf_parser import conf
+from core.config import conf
 
 from qt.addons import AddonCore
 from clipboard_gui import Clipboard

@@ -11,7 +11,7 @@ try:
 except ImportError:
     from StringIO import StringIO
 
-from core.conf_parser import conf
+from core.config import conf
 from core.network.connection import URLClose, request
 from core.download.base import DownloaderBase
 

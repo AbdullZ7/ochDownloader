@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 from core import cons
 from core import utils
-from core.conf_parser import conf
+from core.config import conf
 
 #Config parser
 OPTION_IP_RENEW_SCRIPT_PATH = "ip_renew_script_path"

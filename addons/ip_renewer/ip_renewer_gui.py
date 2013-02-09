@@ -4,7 +4,7 @@ logger = logging.getLogger(__name__)
 
 import core.cons as cons
 from core.api import api
-from core.conf_parser import conf
+from core.config import conf
 
 from qt import signals
 

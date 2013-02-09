@@ -10,7 +10,7 @@ from core import cons
 from core import events
 from thread_manager import ThreadManager
 from core.slots import Slots
-from core.conf_parser import conf
+from core.config import conf
 from core.plugin.conf_parser import plugins_config
 
 

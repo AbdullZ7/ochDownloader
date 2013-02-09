@@ -6,7 +6,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Local Libs
-from core.conf_parser import conf
+from core.config import conf
 import core.cons as cons
 
 

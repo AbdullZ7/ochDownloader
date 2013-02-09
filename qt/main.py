@@ -6,7 +6,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Libs
-from core.conf_parser import conf
+from core.config import conf
 from core import events
 from core.api import api
 from core import cons

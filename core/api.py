@@ -7,7 +7,7 @@ from core.download_managment.manager import DownloadManager
 from core.download_checker.manager import DownloadCheckerManager
 from core.download_checker.item import DownloadItem
 from update_manager import UpdateManager
-from session_parser import SessionParser
+from session import SessionParser
 
 
 class _Api(DownloadManager, DownloadCheckerManager):

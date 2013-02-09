@@ -83,7 +83,7 @@ class PluginBase:
         return page
 
     def recaptcha_success(self, pattern, page):
-        m = self.get_match_or_none(pattern, page, "Wrong captcha")
+        m = self.get_match_or_none(pattern, page, warning=False)
         if m is None:
             return True
         else:
