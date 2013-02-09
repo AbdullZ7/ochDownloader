@@ -12,8 +12,8 @@ except ImportError:
     from StringIO import StringIO
 
 from core.conf_parser import conf
-from connection import URLClose, request
-from downloader_base import DownloaderBase
+from core.network.connection import URLClose, request
+from core.download.base import DownloaderBase
 
 
 NT_BUFSIZ = 8 * 1024 #8K. Network buffer.

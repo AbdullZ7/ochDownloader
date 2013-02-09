@@ -10,7 +10,7 @@ from core import utils
 from core.conf_parser import conf
 from core.plugin.parser import PluginParser
 
-from multi_download import MultiDownload
+from core.download.multipart import MultiDownload
 
 
 class StatusError(Exception): pass

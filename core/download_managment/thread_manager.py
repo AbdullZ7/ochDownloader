@@ -1,7 +1,7 @@
 import logging
 logger = logging.getLogger(__name__)
 
-from core.network.downloader import Downloader
+from core.download.downloader import Downloader
 from core.network.token_bucket import TokenBucket #rate limit bandwidth
 from core import cons
 
