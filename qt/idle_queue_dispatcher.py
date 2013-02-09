@@ -3,7 +3,7 @@ import weakref
 from PySide.QtGui import *
 from PySide.QtCore import *
 
-from core.idle_queue import idle_loop
+from core.dispatch.idle_queue import idle_loop
 
 
 class ThreadDispatcher(QThread):

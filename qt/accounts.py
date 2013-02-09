@@ -1,8 +1,9 @@
 import logging
+from core.accounts.host_accounts import host_accounts
+
 logger = logging.getLogger(__name__)
 
 #Libs
-from core.host_accounts import host_accounts
 from core.plugin.conf_parser import plugins_config
 
 from PySide.QtGui import *

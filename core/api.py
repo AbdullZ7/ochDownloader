@@ -3,11 +3,11 @@ logger = logging.getLogger(__name__)
 
 #Libs
 import cons
-from core.download.manager import DownloadManager
-from core.download.checker_manager import DownloadCheckerManager
+from core.download_managment.manager import DownloadManager
+from core.download_checker.manager import DownloadCheckerManager
+from core.download_checker.item import DownloadItem
 from update_manager import UpdateManager
 from session_parser import SessionParser
-from core.download.base import DownloadItem
 
 
 class _Api(DownloadManager, DownloadCheckerManager):

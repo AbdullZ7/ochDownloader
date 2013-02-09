@@ -1,8 +1,9 @@
 import threading
 import logging
+from core.dispatch import idle_queue
+
 logger = logging.getLogger(__name__)
 
-from core import idle_queue
 from weak_ref import weak_ref
 
 

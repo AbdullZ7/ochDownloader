@@ -85,7 +85,7 @@ class Starter:
 
     def clean_up(self):
         from core.api import api
-        from core.idle_queue import set_events
+        from core.dispatch.idle_queue import set_events
         set_events() #quit pending events.
         api.stop_all_threads()
 

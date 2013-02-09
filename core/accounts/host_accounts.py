@@ -7,7 +7,7 @@ import copy
 import logging
 logger = logging.getLogger(__name__)
 
-import cons
+from core import cons
 
 #COOKIE_CONNECTION_RETRY = 3
 HOST, STATUS, USER, PASSWORD, ENABLE = range(5) #Cool stuff.

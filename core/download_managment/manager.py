@@ -1,39 +1,43 @@
 import os
 import threading
 import logging
+from core.accounts.host_accounts import host_accounts
+
 logger = logging.getLogger(__name__)
+from collections import OrderedDict
 
 from core import cons
 from core import events
-from base import DownloadBase
 from thread_manager import ThreadManager
 from core.slots import Slots
-from core.host_accounts import host_accounts
 from core.conf_parser import conf
 from core.plugin.conf_parser import plugins_config
 
 
-class DownloadManager(DownloadBase, ThreadManager):
-    """
-    DownloadCore:
-    .Contiene las listas con los items (tipos de clase, DownloadItem) de descarga, y los metodos para modificar esas listas.
-    .Atributos heredados:
-    self.active_downloads, self.queue_downloads, self.complete_downloads, self.stopped_downloads
-    .Metodos heredados:
-    -
-    
-    ThreadManager:
-    .Contiene el diccionario con los threads (de descarga, clase Downloader) instanciados de las descargas activas.
-    .Atributos heredados:
-    self.thread_downloads (DICT)
-    .Metodos heredados:
-    get_thread, add_thread, delete_thread, stop_thread, stop_all, get_thread_status
-    """
+class DownloadManager(ThreadManager):
+    """"""
     def __init__(self):
         """"""
-        DownloadBase.__init__(self) #download_core.py
-        ThreadManager.__init__(self) #thread_manager.py
-        self.global_slots = Slots() #slots.py
+        ThreadManager.__init__(self)
+        self.active_downloads = {}
+        self.queue_downloads = OrderedDict()
+        self.complete_downloads = {}
+        self.stopped_downloads = {}
+        self.global_slots = Slots()
+
+    def reorder_queue(self, id_order_list):
+        """"""
+        ordered_items_dict = OrderedDict()
+        for id_item in id_order_list:
+            try:
+                ordered_items_dict[id_item] = self.queue_downloads[id_item]
+            except KeyError:
+                pass
+        if len(self.queue_downloads) == len(ordered_items_dict):
+            self.queue_downloads.clear()
+            self.queue_downloads.update(ordered_items_dict)
+        else:
+            logger.warning("reorder_queue failed")
     
     def start_all(self, id_order_list):
         """"""

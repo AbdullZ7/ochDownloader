@@ -2,7 +2,7 @@ import uuid
 import time
 import logging
 logger = logging.getLogger(__name__)
-from collections import OrderedDict, deque
+from collections import deque
 
 #Libs
 from core import cons
@@ -108,32 +108,6 @@ class DownloadItem:
         self.speed = self._speed()
         self.time_remain = self._time_remain()
         self.time = self._time()
-
-
-class DownloadBase:
-    """"""
-    def __init__(self):
-        """"""
-        self.active_downloads = {}
-        self.queue_downloads = OrderedDict()
-        self.complete_downloads = {}
-        self.stopped_downloads = {}
-
-    def reorder_queue(self, id_order_list):
-        """
-        TODO: only replace the order list in OrderedDict.
-        """
-        ordered_items_dict = OrderedDict()
-        for id_item in id_order_list:
-            try:
-                ordered_items_dict[id_item] = self.queue_downloads[id_item]
-            except KeyError:
-                pass
-        if len(self.queue_downloads) == len(ordered_items_dict):
-            self.queue_downloads.clear()
-            self.queue_downloads.update(ordered_items_dict)
-        else:
-            logger.warning("reorder_queue failed")
 
 
 if __name__ == "__main__":

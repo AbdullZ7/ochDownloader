@@ -1,11 +1,12 @@
 import importlib
 import logging
+from core.accounts.host_accounts import host_accounts
+
 logger = logging.getLogger(__name__)
 
 #Libs
 from core import cons
-from core.idle_queue import idle_add_and_wait
-from core.host_accounts import host_accounts
+from core.dispatch.idle_queue import idle_add_and_wait
 from base import ParsingError, StopParsing, LimitExceededError, CaptchaException
 
 
