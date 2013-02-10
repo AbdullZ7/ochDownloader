@@ -19,17 +19,19 @@ class ParseArgs(ArgumentParser):
 
     def send_downloads(self, args):
         #TODO emit signal, passing all links
+        # add an option so if there is no --path, we can set a default path or add to checking otherwise
         if "--links" in args:
-            args = self.re_parse(args)
+            args = self.format_links(args)
         try:
             p = self.parse_args(args=args)
         except Exception as err:
             logger.warning(err)
         else:
             print p.links
-            cj = self.load_cookie(p.cookie)
+            if p.cookie is not None:
+                cj = self.load_cookie(p.cookie)
 
-    def re_parse(self, args):
+    def format_links(self, args):
         """
         converts:
             ["--links", "http:...", "http:...", "http:...", ...]
@@ -39,14 +41,18 @@ class ParseArgs(ArgumentParser):
         new_args = []
         links = []
         for arg in args:
-            if arg.startswith("http"):
+            if arg.startswith("http:", "och:"):
+                arg = arg.replace("och://", "http://")
                 links.append(arg)
             elif arg != "--links":
                 new_args.append(arg)
-        new_args.append("--links")
-        links_ = " ".join(links)
-        new_args.append(links_)
-        return new_args
+        if links:
+            new_args.append("--links")
+            nice_links = " ".join(links)
+            new_args.append(nice_links)
+            return new_args
+        else:
+            return args
 
     def load_cookie(self, path):
         cj = cookielib.MozillaCookieJar()

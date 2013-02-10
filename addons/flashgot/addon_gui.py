@@ -2,11 +2,10 @@ import threading
 import logging
 logger = logging.getLogger(__name__)
 
-from core import utils
-
 from qt.addons import AddonCore
 
 import server
+import register
 
 
 class Addon(AddonCore):
@@ -14,7 +13,9 @@ class Addon(AddonCore):
     def __init__(self, parent, *args, **kwargs):
         """"""
         AddonCore.__init__(self, parent)
-        utils.register_app_path()
+        register.register_app_path()
+        register.register_client()
+        register.register_och_uri_scheme()
         self.start_server()
 
     def set_menu_item(self):
