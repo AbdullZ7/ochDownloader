@@ -62,6 +62,18 @@ class Accounts:
         self.add_account_item(account)
         self.checking_accounts.append(account)
 
+    def remove_account(self, host, id_account):
+        account = self.accounts_dict[host][id_account]
+        del self.accounts_dict[host][id_account]
+        if not self.accounts_dict[host]:
+            del self.accounts_dict[host]
+        try:
+            self.checking_accounts.remove(account)
+            del self.thread_checking_accounts[id_account]
+            self.slots.remove_slot()
+        except (ValueError, KeyError):
+            pass
+
     def start_checking(self):
         for account in self.checking_accounts:
             if self.slots.add_slot():
