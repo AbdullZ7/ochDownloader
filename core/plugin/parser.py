@@ -10,10 +10,11 @@ from base import ParsingError, StopParsing, LimitExceededError, CaptchaException
 
 class PluginParser:
     """"""
-    def __init__(self, link, host, video_quality, content_range, wait_func):
+    def __init__(self, link, host, account_dict, video_quality, content_range, wait_func):
         """"""
         self.link = link
         self.host = host
+        self.account_dict = account_dict
         self.video_quality = video_quality
         self.content_range = content_range
         self.wait_func = wait_func
@@ -27,19 +28,18 @@ class PluginParser:
         self.save_as = None
 
     def parse(self):
-        account_item = None
-        if account_item is not None:
+        if self.account_dict:
             plugin_download = "premium_download"
             self.premium = True
         else:
             plugin_download = "anonym_download"
         logger.info("%s %s" % (self.host, plugin_download))
-        self.set_data(plugin_download, account_item)
+        self.set_data(plugin_download)
 
-    def set_data(self, plugin_download, account_item):
+    def set_data(self, plugin_download):
         try:
             module = importlib.import_module("plugins.{0}.{1}".format(self.host, plugin_download))
-            p = module.PluginDownload(self.link, self.content_range, self.wait_func, account_item, self.video_quality)
+            p = module.PluginDownload(self.link, self.content_range, self.wait_func, self.account_dict, self.video_quality)
             p.parse()
         except (StopParsing, ParsingError, LimitExceededError, CaptchaException) as err:
             if isinstance(err, LimitExceededError):
@@ -63,10 +63,11 @@ class PluginParser:
             self.cookie = p.cookie
             self.save_as = p.save_as
             self.video_quality = p.video_quality
-            #if not self.source and account_item is not None:
-                #account_status = p.get_account_status()
-                #self.disable_account(account_item, account_status)
+            if not self.source and self.account_dict is not None:
+                account_status = p.get_account_status()
+                self.disable_account(account_status)
 
-    #def disable_account(self, account_item, account_status):
-        #if account_status in (cons.ACCOUNT_FAIL, cons.ACCOUNT_FREE): #login fail or free account.
+    def disable_account(self, account_status):
+        if account_status == cons.ACCOUNT_FAIL or (self.premium and account_status == cons.ACCOUNT_FREE):
             #idle_add_and_wait(host_accounts.enable_account, account_item.host, account_item.id_account, False, True)
+            pass

@@ -8,6 +8,7 @@ logger = logging.getLogger(__name__)
 from core import cons
 from core import utils
 from core.config import conf
+from core.accounts.manager import accounts_manager
 from core.plugin.parser import PluginParser
 
 from core.download.multipart import MultiDownload
@@ -23,6 +24,8 @@ class Downloader(threading.Thread, MultiDownload):
         """"""
         threading.Thread.__init__(self)
         MultiDownload.__init__(self, download_item, bucket)
+
+        self.account_dict = accounts_manager.get_account_as_dict(download_item.host)
 
     def run(self):
         """"""
@@ -81,7 +84,7 @@ class Downloader(threading.Thread, MultiDownload):
     
     def __source(self):
         """"""
-        pb = PluginParser(self.link, self.host, self.video_quality, self.content_range, self.wait_func)
+        pb = PluginParser(self.link, self.host, self.account_dict, self.video_quality, self.content_range, self.wait_func)
         pb.parse()
         self.source = pb.source
         if self.stop_flag:

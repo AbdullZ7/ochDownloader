@@ -56,6 +56,13 @@ class _AccountManager:
             if account_item.enable:
                 return account_item
 
+    def get_account_as_dict(self, host):
+        account = self.get_account_or_none(host)
+        if account is not None:
+            return {'account_id': account.id_account,
+                    'username': account.username,
+                    'password': account.password}
+
     def new_account(self, host, user, password):
         account = AccountItem(host, user, password)
         self.add_account_item(account)
