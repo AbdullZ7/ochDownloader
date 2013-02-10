@@ -73,9 +73,8 @@ LINK_CHECKING = "Checking"
 #account status constants
 ACCOUNT_PREMIUM = "Premium"
 ACCOUNT_FREE = "Free"
-ACCOUNT_FAIL= "Fail" #login fail
+ACCOUNT_FAIL = "Fail" #login fail
 ACCOUNT_ERROR = "Error" #cant connect
-ACCOUNT_CHECKING = "Checking"
 
 #unavailable names
 UNKNOWN = "Unknown"
