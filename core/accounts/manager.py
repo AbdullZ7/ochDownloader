@@ -1,6 +1,5 @@
 import os
 import pickle
-import copy
 import logging
 logger = logging.getLogger(__name__)
 from collections import OrderedDict
@@ -14,7 +13,7 @@ HOST, STATUS, USER, PASSWORD, ENABLE = range(5)
 PATH_FILE = os.path.join(cons.APP_PATH, "accounts")
 
 
-class Accounts:
+class _AccountManager:
     def __init__(self):
         self.accounts_dict = {} # {host: {id_account: account_item, }, }
         self.thread_checking_accounts = {} # {id_account: th, }
@@ -30,9 +29,9 @@ class Accounts:
                     account_item = AccountItem(item[HOST], item[USER], item[PASSWORD], item[STATUS], item[ENABLE])
                     self.add_account_item(account_item)
         except (EnvironmentError, pickle.UnpicklingError) as err:
-            logger.info("Accounts file doesnt exists: {0}".format(err))
+            logger.info(err)
         except EOFError as err:
-            logger.warning("End of file error: {0}".format(err))
+            logger.warning(err)
         except Exception as err:
             logger.exception(err)
 
@@ -52,8 +51,8 @@ class Accounts:
         accounts[account_item.id_account] = account_item
         self.accounts_dict[account_item.host] = accounts
 
-    def get_account_or_none(self, service):
-        for account_item in self.accounts_dict.get(service, {}).itervalues():
+    def get_account_or_none(self, host):
+        for account_item in self.accounts_dict.get(host, {}).itervalues():
             if account_item.enable:
                 return account_item
 
@@ -61,6 +60,7 @@ class Accounts:
         account = AccountItem(host, user, password)
         self.add_account_item(account)
         self.checking_accounts.append(account)
+        self.start_checking()
 
     def remove_account(self, host, id_account):
         account = self.accounts_dict[host][id_account]
@@ -73,6 +73,19 @@ class Accounts:
             self.slots.remove_slot()
         except (ValueError, KeyError):
             pass
+
+    def enable_account(self, host, id_account):
+        account = self.accounts_dict[host][id_account]
+        account.enable = True
+
+    def disable_account(self, host, id_account):
+        account = self.accounts_dict[host][id_account]
+        account.enable = False
+
+    def manual_checking(self, host, id_account):
+        account = self.accounts_dict[host][id_account]
+        if account not in self.checking_accounts:
+            self.checking_accounts.append(account)
 
     def start_checking(self):
         for account in self.checking_accounts:
@@ -95,3 +108,6 @@ class Accounts:
                 self.slots.remove_slot()
                 self.start_checking()
         return result
+
+
+accounts_manager = _AccountManager()

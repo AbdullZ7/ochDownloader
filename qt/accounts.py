@@ -1,10 +1,9 @@
 import logging
-from core.accounts.host_accounts import host_accounts
-
 logger = logging.getLogger(__name__)
 
 #Libs
 from core.plugin.config import plugins_config
+from core.accounts.manager import accounts_manager
 
 from PySide.QtGui import *
 from PySide.QtCore import *
@@ -113,14 +112,8 @@ class ConfigAccounts(QDialog):
         hbox_btns = QHBoxLayout()
         hbox_btns.addStretch()
         
-        btn_cancel = QPushButton(_('Cancel'))
-        btn_cancel.clicked.connect(self.reject)
-        btn_cancel.setFixedHeight(35)
-        btn_cancel.setMaximumWidth(80)
-        hbox_btns.addWidget(btn_cancel)
-        
-        btn_accept = QPushButton(_('Accept'))
-        btn_accept.clicked.connect(self.on_accept)
+        btn_accept = QPushButton(_('Close'))
+        btn_accept.clicked.connect(self.accept)
         btn_accept.setDefault(True)
         btn_accept.setFixedHeight(35)
         btn_accept.setMaximumWidth(80)
@@ -154,48 +147,52 @@ class ConfigAccounts(QDialog):
     
     def load_accounts(self):
         accounts_list = [account
-                        for service, accounts_list in sorted(host_accounts.accounts_dict.items())
-                        for account in accounts_list]
+                        for service, accounts in sorted(accounts_manager.accounts_dict.iteritems())
+                        for account in accounts.itervalues()]
         for account in accounts_list:
             password = "".join(["*" for _ in account.password])
             self.__model.append([account.id_account, account.host, account.status, account.username, password, account.enable])
             #TODO: Automatic accounts checking on load.
     
-    def on_accept(self):
-        for row in self.items:
-            host_accounts.enable_account(row[HOST], row[ACCOUNT_ID], row[ENABLE])
-        host_accounts.save_accounts()
-        self.timer.stop()
-        self.done(0)
-    
     def on_add(self):
         username = self.entry_user.text()
         password = self.entry_pass.text()
         if username and password:
-            account_item = host_accounts.create_account_item(self.cb.currentText(), username, password) #error, since we didnt check it, yet.
+            accounts_manager.new_account(self.cb.currentText(), username, password)
             self.__model.clear()
             self.load_accounts()
-            host_accounts.start_checking(account_item.host, account_item.id_account)
     
     def on_remove(self):
         row = self.get_selected_row()
-        host_accounts.remove_account(self.items[row][HOST], self.items[row][ACCOUNT_ID])
+        accounts_manager.remove_account(self.items[row][HOST], self.items[row][ACCOUNT_ID])
         self.__model.remove(row)
     
     def on_check(self):
         row = self.get_selected_row()
-        host_accounts.start_checking(self.items[row][HOST], self.items[row][ACCOUNT_ID])
+        accounts_manager.manual_checking(self.items[row][HOST], self.items[row][ACCOUNT_ID])
     
     def update_(self):
-        account_list = host_accounts.get_checking_update()
+        account_list = accounts_manager.update()
         for account_item in account_list:
             for row in self.items:
                 if row[ACCOUNT_ID] == account_item.id_account:
                     row[STATUS] = account_item.status
 
-    def reject(self, *args, **kwargs):
-        #reimplemented.
-        host_accounts.revert_changes()
+    def save(self):
+        for row in self.items:
+            if row[ENABLE]:
+                accounts_manager.enable_account(row[HOST], row[ACCOUNT_ID])
+            else:
+                accounts_manager.disable_account(row[HOST], row[ACCOUNT_ID])
+
+    def accept(self, *args, **kwargs):
         self.timer.stop()
+        self.save()
+        self.hide()
+        QDialog.accept(self, *args, **kwargs)
+
+    def reject(self, *args, **kwargs):
+        self.timer.stop()
+        self.save()
         self.hide()
         QDialog.reject(self, *args, **kwargs)

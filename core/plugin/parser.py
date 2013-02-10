@@ -1,7 +1,5 @@
 import importlib
 import logging
-from core.accounts.host_accounts import host_accounts
-
 logger = logging.getLogger(__name__)
 
 #Libs
@@ -29,7 +27,7 @@ class PluginParser:
         self.save_as = None
 
     def parse(self):
-        account_item = host_accounts.get_account(self.host)
+        account_item = None
         if account_item is not None:
             plugin_download = "premium_download"
             self.premium = True
@@ -65,10 +63,10 @@ class PluginParser:
             self.cookie = p.cookie
             self.save_as = p.save_as
             self.video_quality = p.video_quality
-            if not self.source and account_item is not None:
-                account_status = p.get_account_status()
-                self.disable_account(account_item, account_status)
+            #if not self.source and account_item is not None:
+                #account_status = p.get_account_status()
+                #self.disable_account(account_item, account_status)
 
-    def disable_account(self, account_item, account_status):
-        if account_status in (cons.ACCOUNT_FAIL, cons.ACCOUNT_FREE): #login fail or free account.
-            idle_add_and_wait(host_accounts.enable_account, account_item.host, account_item.id_account, False, True)
+    #def disable_account(self, account_item, account_status):
+        #if account_status in (cons.ACCOUNT_FAIL, cons.ACCOUNT_FREE): #login fail or free account.
+            #idle_add_and_wait(host_accounts.enable_account, account_item.host, account_item.id_account, False, True)

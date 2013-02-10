@@ -1,8 +1,6 @@
 import os
 import threading
 import logging
-from core.accounts.host_accounts import host_accounts
-
 logger = logging.getLogger(__name__)
 from collections import OrderedDict
 
@@ -175,7 +173,7 @@ class DownloadManager(ThreadManager):
         """"""
         if not self.global_slots.available_slot():
             return False
-        elif not self.is_host_slot_available(download_item.host) and host_accounts.get_account(download_item.host) is None: # not premium.
+        elif not self.is_host_slot_available(download_item.host): # and host_accounts.get_account(download_item.host) is None:
             return False
         else:
             download_item.fail_count = 0
