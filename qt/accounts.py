@@ -4,7 +4,7 @@ from core.accounts.host_accounts import host_accounts
 logger = logging.getLogger(__name__)
 
 #Libs
-from core.plugin.conf_parser import plugins_config
+from core.plugin.config import plugins_config
 
 from PySide.QtGui import *
 from PySide.QtCore import *

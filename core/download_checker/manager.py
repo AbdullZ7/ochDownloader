@@ -5,7 +5,7 @@ from collections import OrderedDict
 from core import cons
 from core import utils
 from core.slots import Slots
-from core.plugin.conf_parser import plugins_config
+from core.plugin.config import plugins_config
 from checker import LinkChecker
 from item import DownloadItem
 

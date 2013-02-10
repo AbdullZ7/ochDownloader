@@ -3,7 +3,7 @@ logger = logging.getLogger(__name__)
 
 from core import utils
 from core.config import conf
-from core.plugin.conf_parser import plugins_config
+from core.plugin.config import plugins_config
 
 from PySide.QtGui import *
 

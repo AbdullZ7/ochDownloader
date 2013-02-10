@@ -6,6 +6,7 @@ import cons
 from core.download_managment.manager import DownloadManager
 from core.download_checker.manager import DownloadCheckerManager
 from core.download_checker.item import DownloadItem
+from core.accounts.manager import AccountManager
 from update_manager import UpdateManager
 from session import SessionParser
 
@@ -27,6 +28,7 @@ class _Api(DownloadManager, DownloadCheckerManager):
         DownloadManager.__init__(self)
         DownloadCheckerManager.__init__(self)
         self.session_parser = SessionParser()
+        self.accounts = AccountManager()
     
     def start_update_manager(self):
         update_manager = UpdateManager() #new thread.

@@ -11,7 +11,7 @@ from core import events
 from thread_manager import ThreadManager
 from core.slots import Slots
 from core.config import conf
-from core.plugin.conf_parser import plugins_config
+from core.plugin.config import plugins_config
 
 
 class DownloadManager(ThreadManager):
