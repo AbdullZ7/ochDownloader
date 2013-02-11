@@ -5,6 +5,7 @@ logger = logging.getLogger(__name__)
 #Libs
 from core import cons
 from core.plugin.config import plugins_config
+from core.accounts.manager import accounts_manager
 from core.dispatch.idle_queue import idle_add_and_wait
 from base import ParsingError, StopParsing, LimitExceededError, CaptchaException
 
@@ -32,22 +33,23 @@ class PluginParser:
         self.limit_exceeded = False
         self.save_as = None
 
-    def parse(self):
-        conf = plugins_config.services_dict[self.host]
-        if self.account_dict and (conf.get_premium_available() or conf.get_free_available()):
-            self.check_account()
-        if self.account_dict and self.account_dict['status'] == cons.ACCOUNT_PREMIUM:
-            plugin_download = PREMIUM_MODULE
-        elif self.account_dict and self.account_dict['status'] == cons.ACCOUNT_FREE:
-            plugin_download = FREE_MODULE
-        else:
-            plugin_download = ANONYM_MODULE
-        logger.info("%s %s" % (self.host, plugin_download))
-        self.set_data(plugin_download)
+        self.account_status = None
 
-    def set_data(self, plugin_download):
+    def parse(self):
+        if self.account_dict:
+            self.check_account()
+        if self.account_status == cons.ACCOUNT_PREMIUM:
+            module_name = PREMIUM_MODULE
+        elif self.account_status == cons.ACCOUNT_FREE:
+            module_name = FREE_MODULE
+        else:
+            module_name = ANONYM_MODULE
+        logger.info("%s %s" % (self.host, module_name))
+        self.set_data(module_name)
+
+    def set_data(self, module_name):
         try:
-            module = importlib.import_module("plugins.{0}.{1}".format(self.host, plugin_download))
+            module = importlib.import_module("plugins.{0}.{1}".format(self.host, module_name))
             p = module.PluginDownload(self.link, self.content_range, self.wait_func, self.cookie, self.video_quality)
             p.parse()
         except (ParsingError, LimitExceededError, CaptchaException) as err:
@@ -75,5 +77,27 @@ class PluginParser:
     def check_account(self):
         # update account status
         # check if plugin supports premium or free and disable otherwise
-        pass
+        try:
+            module = importlib.import_module("plugins.{0}.account".format(self.host))
+            p = module.PluginAccount(self.account_dict['username'], self.account_dict['password'], self.wait_func)
+            p.parse()
+        except Exception as err:
+            logger.exception(err)
+        else:
+            # disable if account is not free or premium or there is no plugin support
+            conf = plugins_config.services_dict[self.host]
+            if (p.account_status == cons.ACCOUNT_PREMIUM and conf.get_premium_available()) or \
+               (p.account_status == cons.ACCOUNT_FREE and conf.get_free_available()):
+                self.cookie = p.cookie
+                self.account_status = p.account_status
+            else:
+                self.disable_account()
 
+    def disable_account(self):
+        # use a wrapper since the account may have been removed while we were here
+        def wrapper(host, id_account):
+            try:
+                accounts_manager.disable_account(host, id_account)
+            except KeyError:
+                pass
+        idle_add_and_wait(wrapper, self.host, self.account_dict['id_account'])
