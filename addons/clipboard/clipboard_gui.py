@@ -63,7 +63,7 @@ class Clipboard:
         exts = tuple(exts.split(";"))
         links = []
         for url in urls:
-            if exts_active and exts and url.endswith(exts):
+            if exts_active and exts and url.lower().endswith(exts):
                 links.append(url)
             else:
                 for name in self.services:
