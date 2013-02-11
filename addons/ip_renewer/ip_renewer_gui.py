@@ -45,8 +45,7 @@ class IPRenewerGUI:
     def can_change_ip(self):
         """"""
         for download_item in api.get_active_downloads().itervalues():
-            #p = plugins_parser.get_plugin_item(download_item.host)
-            if not download_item.can_resume and download_item.time: # or (p.get_captcha_required() and not download_item.is_premium and download_item.time):
+            if download_item.start_time:
                 return False
         return True
     

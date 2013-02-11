@@ -13,12 +13,12 @@ SECTION_MAIN = "main"
 #main options
 OPTION_SLOTS_LIMIT = "slots_limit"
 OPTION_PREMIUM = "premium"
-OPTION_CAPTCHA_REQUIRED = "captcha_required"
+OPTION_FREE = "free"
 
 
 DEFAULT = {SECTION_MAIN: {OPTION_SLOTS_LIMIT: "1",
                           OPTION_PREMIUM: "False",
-                          OPTION_CAPTCHA_REQUIRED: "False"},
+                          OPTION_FREE: "False"},
                         }
 
 
@@ -82,6 +82,17 @@ class _PluginConfig(RawConfigParser):
         except Exception as err:
             logger.exception(err)
         return False
+
+    def get_free_available(self):
+        """"""
+        try:
+            free_available = self.getboolean(SECTION_MAIN, OPTION_FREE)
+            return free_available
+        except (NoSectionError, NoOptionError) as err:
+            logger.warning(err)
+        except Exception as err:
+            logger.exception(err)
+        return False
     
     def get_slots_limit(self):
         """"""
@@ -93,17 +104,6 @@ class _PluginConfig(RawConfigParser):
         except Exception as err:
             logger.exception(err)
         return 1
-    
-    def get_captcha_required(self):
-        """"""
-        try:
-            required = self.getboolean(SECTION_MAIN, OPTION_CAPTCHA_REQUIRED)
-            return required
-        except (NoSectionError, NoOptionError) as err:
-            logger.warning(err)
-        except Exception as err:
-            logger.exception(err)
-        return False
 
 
 plugins_config = _PluginsConfigLoader()

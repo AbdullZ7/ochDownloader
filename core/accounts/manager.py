@@ -61,7 +61,8 @@ class _AccountManager:
         if account is not None:
             return {'account_id': account.id_account,
                     'username': account.username,
-                    'password': account.password}
+                    'password': account.password,
+                    'status': account.status}
 
     def new_account(self, host, user, password):
         account = AccountItem(host, user, password)

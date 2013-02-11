@@ -45,7 +45,8 @@ class Downloader(threading.Thread, MultiDownload):
                 self.stop_flag = True
                 self.status = cons.STATUS_STOPPED
                 logger.info(err)
-            self.status_msg = str(err)
+            if err:
+                self.status_msg = str(err)
         else:
             self.status = cons.STATUS_FINISHED
             self.status_msg = "Finished"
@@ -84,19 +85,19 @@ class Downloader(threading.Thread, MultiDownload):
     
     def __source(self):
         """"""
-        pb = PluginParser(self.link, self.host, self.account_dict, self.video_quality, self.content_range, self.wait_func)
-        pb.parse()
-        self.source = pb.source
+        pp = PluginParser(self.link, self.host, self.cookie, self.account_dict, self.video_quality, self.content_range, self.wait_func)
+        pp.parse()
+        self.source = pp.source
         if self.stop_flag:
             raise StatusStopped("Stopped")
         elif self.source:
-            self.link_file = pb.dl_link
-            self.cookie = self.cookie or pb.cookie
-            self.save_as = self.save_as or pb.save_as
-            self.video_quality = pb.video_quality
+            self.link_file = pp.dl_link
+            self.cookie = pp.cookie
+            self.save_as = self.save_as or pp.save_as
+            self.video_quality = pp.video_quality
         else:
-            self.limit_exceeded = pb.limit_exceeded
-            raise StatusError(pb.err_msg)
+            self.limit_exceeded = pp.limit_exceeded
+            raise StatusError(pp.err_msg)
 
     def __set_filename_n_size(self):
         info = self.source.info()

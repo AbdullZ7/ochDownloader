@@ -6,6 +6,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Libs
+from core.accounts.manager import accounts_manager
 from core.config import conf
 from core import events
 from core.api import api
@@ -299,6 +300,7 @@ class Gui(QMainWindow):
             self.preferences.on_close()
             conf.set_window_settings(x, y, w, h)
             conf.save()
+            accounts_manager.save()
             event.accept()
         else: #hide only
             self.hide()

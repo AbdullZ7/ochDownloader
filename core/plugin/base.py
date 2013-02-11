@@ -27,17 +27,16 @@ class LimitExceededError(Exception): pass
 
 class PluginBase:
     """"""
-    def __init__(self, link, content_range, wait_func, account_dict, video_quality):
+    def __init__(self, link, content_range, wait_func, cookie, video_quality):
         """"""
-        self.link = link #host link
-        self.dl_link = link #file ready to download link
+        self.link = link # host link
+        self.dl_link = link # file ready to download link
         self.content_range = content_range
         self.wait_func = wait_func
-        self.account_dict = account_dict
+        self.cookie = cookie or cookielib.CookieJar() # if empty or None do not use it
         self.video_quality = video_quality
         self.source = None
-        self.cookie = cookielib.CookieJar()
-        self.save_as = None #file name for videos
+        self.save_as = None # file name for videos
 
         # recaptcha
         self.recaptcha_post_link = link
