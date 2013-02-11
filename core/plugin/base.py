@@ -65,7 +65,6 @@ class PluginBase:
         #find link and return source.
         m = self.get_match(pattern, page, "Link not found")
         link = m.group('link')
-        #default = page if close else None
         return self.get_page(link, close=close)
 
     def recaptcha_post(self, pattern, page, challenge, response, extra_fields=None):

@@ -24,7 +24,7 @@ class AccountChecker(threading.Thread):
         """"""
         try:
             module = importlib.import_module("plugins.{0}.account".format(self.host))
-            account = module.AccountChecker(self.username, self.password)
+            account = module.PluginAccount(self.username, self.password)
             account.parse()
         except ImportError as err:
             logger.debug(err)
@@ -33,4 +33,4 @@ class AccountChecker(threading.Thread):
             logger.exception(err)
             self.status = cons.ACCOUNT_ERROR
         else:
-            self.status = account.status
+            self.status = account.account_status
