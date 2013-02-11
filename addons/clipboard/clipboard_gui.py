@@ -12,7 +12,7 @@ from qt import signals
 #Config parser
 OPTION_CLIPBOARD_EXTS = "clipboard_exts"
 OPTION_CLIPBOARD_ACTIVE = "clipboard_exts_active"
-EXTS = ".exe;.rar;.zip;.avi;.mkv;.mp4"
+EXTS = ".exe;.rar;.zip;.avi;.mkv;.mp4;.msi;.mp3;.mka;.flv;.jar;.pdf;.iso"
 
 
 class Clipboard:
