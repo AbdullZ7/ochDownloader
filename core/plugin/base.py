@@ -46,7 +46,7 @@ class PluginBase:
     def parse(self):
         raise NotImplementedError()
 
-    def get_page(self, link, form=None, default=None, close=True):
+    def get_page(self, link, form=None, close=True):
         #return source code.
         if self.is_running():
             range = (None, None) if close else (self.content_range, None)
@@ -60,7 +60,6 @@ class PluginBase:
             except (urllib2.URLError, httplib.HTTPException, socket.error) as err:
                 logger.debug(link)
                 raise ParsingError(err)
-        return default
 
     def click(self, pattern, page, close=True):
         #find link and return source.
@@ -74,7 +73,7 @@ class PluginBase:
         form_list = [(self.recaptcha_challenge_field, challenge), (self.recaptcha_response_field, response)]
         if extra_fields:
             form_list.extend(extra_fields)
-        page = self.get_page(self.recaptcha_post_link, form=form_list, default=page)
+        page = self.get_page(self.recaptcha_post_link, form=form_list)
         return page
 
     def recaptcha_success(self, pattern, page):

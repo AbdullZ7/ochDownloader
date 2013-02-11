@@ -8,4 +8,4 @@ from core.plugin.base import PluginBase
 
 class PluginDownload(PluginBase):
     def parse(self):
-        self.source = self.get_page(self.link, default=None, close=False)
+        self.source = self.get_page(self.link, close=False)

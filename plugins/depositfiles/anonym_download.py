@@ -26,7 +26,7 @@ class PluginDownload(PluginBase):
     def recaptcha_post(self, pattern, page, challenge, response, *args, **kwargs):
         #overrided method
         self.recaptcha_post_link = BASE_URL + "/get_file.php?fid=" + self.fid + "&challenge=" + challenge + "&response=" + response
-        page = self.get_page(self.recaptcha_post_link, default=page)
+        page = self.get_page(self.recaptcha_post_link)
         return page
 
 
