@@ -6,6 +6,7 @@ import cookielib
 import logging
 logger = logging.getLogger(__name__)
 
+from core import utils
 from core.network.connection import URLClose, request
 
 BUFF_SZ = 1024 * 1024 #1MB
@@ -47,8 +48,11 @@ class PluginAccountBase:
         # if we got here, no match was found
         raise ParsingError("Pattern not found: %s" % pattern)
 
+    def get_cookie_as_dict(self):
+        return utils.dict_from_cookiejar(self.cookie)
+
     def is_running(self):
-        if self.wait_func is not None and not self.wait_func():
+        if self.wait_func is None or not self.wait_func():
             return True
         else:
             raise StopParsing("Stop Parsing")
