@@ -79,7 +79,9 @@ class ConfigAccounts(QDialog):
         label_pass = QLabel(_('Password:'))
         
         self.cb = QComboBox()
-        [self.cb.addItem(service) for service, plugin_config in sorted(plugins_config.services_dict.items()) if plugin_config.get_premium_available()]
+        [self.cb.addItem(service)
+         for service, plugin_config in sorted(plugins_config.services_dict.items())
+         if plugin_config.get_premium_available() or plugin_config.get_free_available()]
         self.entry_user = QLineEdit()
         self.entry_pass = QLineEdit()
         
