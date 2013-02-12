@@ -215,7 +215,8 @@ class MultiDownload(DownloaderBase):
             #propagate
             self.set_err(err)
         finally:
-            flush()
+            if is_downloading:
+                flush()
 
 
 if __name__ == "__main__":
