@@ -102,10 +102,10 @@ def run_file(path):
 
 
 def links_parser(text):
-    return [link.strip()
+    return [link
             for line in text.splitlines()
-            for word in line.split(" ")
-            for link in word
+            for words in line.split(" ")
+            for link in words
             if link.startswith(("http://", "https://"))]
 
 

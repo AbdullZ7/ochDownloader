@@ -16,7 +16,7 @@ class PluginAccount(PluginAccountBase):
         url = 'https://www.4shared.com/'
         page = self.get_page(url, form) # https returns a blank source code
         cookie_dict = self.get_cookie_as_dict()
-        if cookie_dict.get('Login', None):
+        if cookie_dict.get('Login', None) is not None:
             self.account_status = cons.ACCOUNT_FREE # or PREMIUM, who knows
         else:
             self.account_status = cons.ACCOUNT_ERROR
