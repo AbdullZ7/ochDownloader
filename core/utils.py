@@ -101,18 +101,12 @@ def run_file(path):
         logger.warning(err)
 
 
-def links_parser(text_pasted):
-    """
-    NOT FOOL PROOF
-    """
-    #links_list = text_pasted.split("http") #['://www.megaup.com/wawa', 'parte1:', '://www.megaup.com/wawa2']
-    links_list = [link
-                    for line in text_pasted.splitlines()
-                    for link in line.split("http")] #['parte1:http://www....', ]
-    result_list = ["".join(("http", link)).strip()
-                   for link in links_list
-                   if link.startswith(("://", "s://"))] #http/https
-    return result_list
+def links_parser(text):
+    return [link.strip()
+            for line in text.splitlines()
+            for word in line.split(" ")
+            for link in word
+            if link.startswith(("http://", "https://"))]
 
 
 def smart_unicode(s, encoding='utf-8', errors='strict'):
