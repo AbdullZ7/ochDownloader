@@ -41,7 +41,7 @@ class ParseArgs(ArgumentParser):
         new_args = []
         links = []
         for arg in args:
-            if arg.startswith("http:", "och:"):
+            if arg.startswith("http", "och:"):
                 arg = arg.replace("och://", "http://")
                 links.append(arg)
             elif arg != "--links":

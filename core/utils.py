@@ -105,8 +105,7 @@ def links_parser(text):
     return [link
             for line in text.splitlines()
             for words in line.split(" ")
-            for link in words
-            if link.startswith(("http://", "https://"))]
+            for link in words if link.startswith(("http://", "https://"))]
 
 
 def smart_unicode(s, encoding='utf-8', errors='strict'):
@@ -264,7 +263,6 @@ def dict_from_cookiejar(cj):
     for _, cookies in cj._cookies.items():
         for _, cookies in cookies.items():
             for cookie in cookies.values():
-                # print cookie
                 cookie_dict[cookie.name] = cookie.value
     return cookie_dict
 
