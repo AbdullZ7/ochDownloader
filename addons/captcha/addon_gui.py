@@ -30,8 +30,7 @@ class Addon(AddonCore):
     def trigger(self, *args, **kwargs):
         self.captcha(*args, **kwargs)
     
-    def captcha(self, host, get_captcha_img, set_solution, *args, **kwargs):
-        captcha_dlg = CaptchaDialog(host, get_captcha_img, self.parent)
-        solution = captcha_dlg.get_solution() #user input solution
-        set_solution(solution)
+    def captcha(self, host, challenge, set_solution, *args, **kwargs):
+        dialog = CaptchaDialog(host, challenge, self.parent)
+        set_solution(dialog.solution)
 

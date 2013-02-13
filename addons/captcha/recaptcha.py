@@ -36,25 +36,30 @@ class Recaptcha:
         """"""
         self.captcha_challenge = None
         if idle_queue.register_event(self.event):
-            events.captcha_dialog.emit(self.host, self.get_captcha, self.set_solution)
+            challenge = Challenge(self.captcha_link)
+            events.captcha_dialog.emit(self.host, challenge, self.set_solution)
             self.event.wait()
             self.event.clear() #re-use.
             idle_queue.remove_event(self.event)
+            self.captcha_challenge = challenge.captcha_challenge
             if not self.solution:
                 logger.warning("No captcha response")
 
-    def get_captcha(self):
-        """"""
-        image_type = None
-        image_data = None
+
+class Challenge:
+    def __init__(self, url):
+        self.captcha_link = url
+
+    def request(self):
+        self.captcha_challenge = None
+        self.image_data = None
         try:
             for line in request.get(self.captcha_link).readlines():
                 if "challenge : " in line:
                     self.captcha_challenge = line.split("'")[1]
                     handle = request.get("http://www.google.com/recaptcha/api/image?c=%s" % self.captcha_challenge)
-                    image_data = handle.read()
-                    image_type = handle.info()["Content-Type"].split("/")[1]
+                    self.image_data = handle.read()
+                    #self.image_type = handle.info()["Content-Type"].split("/")[1]
                     break
         except Exception as err:
             logger.exception("%s :%s" % (self.captcha_link, err))
-        return image_type, image_data
