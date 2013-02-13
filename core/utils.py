@@ -104,8 +104,7 @@ def run_file(path):
 def links_parser(text):
     return [link
             for line in text.splitlines()
-            for words in line.split(" ")
-            for link in words if link.startswith(("http://", "https://"))]
+            for link in line.split(" ") if link.startswith(("http://", "https://"))]
 
 
 def smart_unicode(s, encoding='utf-8', errors='strict'):
