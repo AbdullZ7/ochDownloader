@@ -49,7 +49,7 @@ DEFAULT = {SECTION_MAIN: {OPTION_VERSION: cons.APP_VER,
                             OPTION_PROXY_ACTIVE: "False",
                             OPTION_RETRIES_LIMIT: "99",
                             OPTION_HTML_DL: "False",
-                            OPTION_MAX_CONN: "10"},
+                            OPTION_MAX_CONN: "5"},
             SECTION_GUI: {OPTION_WINDOW_SETTINGS: "-1,-1,-1,-1",
                         OPTION_SAVE_DL_PATHS: pickle.dumps([]),
                         OPTION_COLUMNS_WIDTH: "-1,-1,-1,-1,-1,-1,-1",
@@ -181,7 +181,7 @@ class _Config(RawConfigParser):
     def set_max_conn(self, max):
         self.setint(SECTION_NETWORK, OPTION_MAX_CONN, max)
 
-    @exception_handler(default=10)
+    @exception_handler(default=5)
     def get_max_conn(self):
         return self.getint(SECTION_NETWORK, OPTION_MAX_CONN)
 
