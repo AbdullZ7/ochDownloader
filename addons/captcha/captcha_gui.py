@@ -41,6 +41,7 @@ class CaptchaDialog(QDialog):
         #captcha image
         #self.image = QPixmap()
         self.label = QLabel()
+        self.label.setText(_('Loading...'))
         #self.label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         #self.label.setPixmap(self.image)
         vbox.addWidget(self.label)
@@ -107,6 +108,8 @@ class CaptchaDialog(QDialog):
         self.accept()
     
     def on_refresh(self):
+        self.label.clear()
+        self.label.setText(_('Loading...'))
         self.timeout = TIMEOUT
         self.entry_input.setText("")
         self.entry_input.setFocus()
@@ -118,10 +121,12 @@ class CaptchaDialog(QDialog):
     def update_image(self):
         if not self.th_challenge_request.is_alive():
             if self.challenge.image_data:
+                self.label.clear()
                 image = QPixmap()
                 image.loadFromData(self.challenge.image_data)
                 self.label.setPixmap(image)
             else:
+                self.label.clear()
                 self.label.setPixmap(QPixmap())
                 #self.image.set_from_pixbuf(self.render_icon(gtk.STOCK_MISSING_IMAGE, gtk.ICON_SIZE_DIALOG))
             self.timer2.stop()
