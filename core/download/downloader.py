@@ -29,6 +29,9 @@ class Downloader(threading.Thread, MultiDownload):
 
     def run(self):
         """"""
+        # TODO: set_size, set_is_resuming
+        # if is_resuming, do not change file name
+        # rename file name(n) if file exists and is not empty and there is no chunks
         try:
             self.__file_existence_check()
             self.__source()
@@ -69,14 +72,13 @@ class Downloader(threading.Thread, MultiDownload):
 
     def __file_existence_check(self):
         """"""
-        START, END = range(2)
         try:
             if not os.path.exists(self.path):
                 os.makedirs(self.path)
             elif os.path.isfile(os.path.join(self.path, self.file_name)):
                 self.file_exists = True
-                start_chunks = [chunk[START] for chunk in self.chunks
-                                if chunk[START] < chunk[END]]
+                start_chunks = [start for start, end in self.chunks
+                                if start < end]
                 if start_chunks:
                     self.content_range = min(start_chunks)
         except (EnvironmentError, ValueError) as err:
@@ -109,7 +111,7 @@ class Downloader(threading.Thread, MultiDownload):
         if self.file_exists and old_file_name != self.file_name:
             #do not rename the file.
             raise StatusError("Cant resume, file name has change. Please retry.")
-        self.size_file = self.get_content_size(info) #downloader_core
+        self.size_file = self.get_content_size(info)
     
     def __get_filename_from_source(self, info):
         """"""
