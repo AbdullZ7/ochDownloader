@@ -16,38 +16,57 @@ class PluginDownload(PluginBase):
     Mostly taken from youtube-dl
     https://github.com/rg3/youtube-dl
     """
+    # YouTube quality and codecs id map.
+    # source: http://en.wikipedia.org/wiki/YouTube#Quality_and_codecs
     video_extensions = {
-        '5': 'video', #unknown
-        '6': 'video', #unknown
+        '5': 'flv',
+        '6': 'flv',
         '13': '3gp',
         '17': 'mp4',
         '18': 'mp4',
         '22': 'mp4',
-        '34': 'video', #unknown
-        '35': 'video', #unknown
+        '34': 'flv',
+        '35': 'flv',
+        '36': 'flv',
         '37': 'mp4',
-        '38': 'video',
+        '38': 'mp4',
         '43': 'webm',
         '44': 'webm',
         '45': 'webm',
-        '46': 'webm',
+        '82': 'mp4',
+        '83': 'mp4',
+        '84': 'mp4',
+        '85': 'mp4',
+        '100': 'webm',
+        '101': 'webm',
+        '102': 'webm',
+        '120': 'flv',
         }
 
     video_dimensions = [
-        ('38', '4096x3072 (.video)'),
-        ('37', '1920x1080 (.mp4)'),
-        ('46', '1920x1080 (.webm)'),
-        ('22', '1280x720 (.mp4)'),
-        ('45', '1280x720 (.webm)'),
-        ('44', '854x480 (.webm)'),
-        ('35', '854x480 (.???)'),
-        ('43', '640x360 (.webm)'),
-        ('34', '640x360 (.??)'),
-        ('18', '640x360 (.???)'),
+        ('38', '3072p (.mp4)'),
+        ('37', '1080p (.mp4)'),
+        ('46', '1080p (.webm)'),
+        ('22', '720p (.mp4)'),
+        ('45', '720p (.webm)'),
+        ('44', '480p (.webm)'),
+        ('35', '480p (.flv)'),
+        ('18', '360p (.mp4)'),
+        ('43', '360p (.webm)'),
+        ('34', '360p (.flv)'),
+        ('6', '270p (.flv)'),
+        ('5', '240p (.flv)'),
+        ('17', '144p (.mp4)'),
         ('13', '??? (.3gp)'),
-        ('6', '??? (.???)'),
-        ('5', '400x240 (.???)'),
-        ('17', '176x144 (.mp4)'),
+
+        ('84', '720p (.mp4) - 3D'),
+        ('102', '720p (.webm) - 3D'),
+        ('85', '520p (.mp4) - 3D'),
+        ('82', '360p (.mp4) - 3D'),
+        ('100', '360p (.webm) - 3D -'),
+        ('101', '360p (.webm) - 3D'),
+        ('83', '240p (.mp4) - 3D'),
+        ('120', '720p (.flv) - Streaming'),
         ]
 
     def parse(self):
