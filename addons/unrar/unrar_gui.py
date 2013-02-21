@@ -46,7 +46,7 @@ class UnRARGUI:
             self.btn_close.setFixedHeight(12)
             self.btn_close.setFixedWidth(12)
             self.btn_close.clicked.connect(self.on_close_tab)
-            self.parent.tab.tabBar().setTabButton(index_page, QTabBar.RightSide, btn_close)
+            self.parent.tab.tabBar().setTabButton(index_page, QTabBar.RightSide, self.btn_close)
     
     def on_close_tab(self):
         index_page = self.parent.tab.indexOf(self.tab_widget)
