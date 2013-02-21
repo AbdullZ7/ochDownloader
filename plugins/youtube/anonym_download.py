@@ -93,10 +93,11 @@ class PluginDownload(PluginBase):
         video_title = urllib.unquote_plus(video_info['title'][0])
 
         if self.video_quality is None:
-            choices_dict = OrderedDict([(id_, quality) for id_, quality in self.video_dimensions if id_ in url_map])
-            c = QualityChoice(video_title, choices_dict, self.wait_func)
+            choices_list = [quality for id_, quality in self.video_dimensions if id_ in url_map]
+            c = QualityChoice(video_title, choices_list, self.wait_func)
             c.run_choice()
-            self.video_quality = c.solution
+            choices_dict = {quality: id_ for id_, quality in self.video_dimensions}
+            self.video_quality = choices_dict[c.solution]
 
         url = url_map[self.video_quality]
         #print url
