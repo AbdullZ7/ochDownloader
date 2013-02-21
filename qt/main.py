@@ -88,23 +88,23 @@ class Gui(QMainWindow):
         
         self.stop = (QToolButton(), media.get_icon(media.STOP, media.MEDIUM), _('Stop Download'), self.on_stop_download, False)
         self.start = (QToolButton(), media.get_icon(media.START, media.MEDIUM), _('Start Download'), self.on_start_download, False)
-        accounts = (QToolButton(), media.get_icon(media.ACCOUNTS, media.MEDIUM), _('Accounts'), self.on_accounts, True)
-        preferences = (QToolButton(), media.get_icon(media.PREFERENCES, media.MEDIUM), _('Preferences'), self.on_preferences, True)
-        about = (QToolButton(), media.get_icon(media.ABOUT, media.MEDIUM), _('About'), self.on_about, True)
+        self.accounts = (QToolButton(), media.get_icon(media.ACCOUNTS, media.MEDIUM), _('Accounts'), self.on_accounts, True)
+        self.preferences = (QToolButton(), media.get_icon(media.PREFERENCES, media.MEDIUM), _('Preferences'), self.on_preferences, True)
+        self.about = (QToolButton(), media.get_icon(media.ABOUT, media.MEDIUM), _('About'), self.on_about, True)
         
         self.menu = QMenu()
-        preferences[BTN].setPopupMode(QToolButton.MenuButtonPopup)
-        preferences[BTN].setMenu(self.menu)
+        self.preferences[BTN].setPopupMode(QToolButton.MenuButtonPopup)
+        self.preferences[BTN].setMenu(self.menu)
         
-        toolbar = Toolbar(self, [self.start, self.stop, None, accounts, preferences, None, about])
+        self.toolbar = Toolbar(self, [self.start, self.stop, None, self.accounts, self.preferences, None, self.about])
 
-        self.toolbar = self.addToolBar(toolbar)
+        self.addToolBar(self.toolbar)
 
         #self.vbox = QVBoxLayout(self)
 
         #tabs
         self.previous_tab = None
-        self.tab = QTabWidget(self)
+        self.tab = QTabWidget()
         #
         self.tab.addTab(self.downloads, _('Downloads'))
         #
@@ -280,7 +280,7 @@ class Gui(QMainWindow):
         api.save_session(id_item_list)
     
     def idle_timeout(self, interval, func):
-        timer = QTimer(self)
+        timer = QTimer()
         timer.timeout.connect(func)
         timer.start(interval)
         return timer
@@ -313,7 +313,7 @@ class Toolbar(QToolBar):
         """
         list = [(tool_name, image, module_handler), ]
         """
-        QToolBar.__init__(self, parent)
+        QToolBar.__init__(self)
         for button in btn_list:
             if button is None:
                 self.addSeparator()

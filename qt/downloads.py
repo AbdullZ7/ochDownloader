@@ -19,7 +19,7 @@ from context_menu import Menu
 class Downloads(QTreeView):
     def __init__(self, parent):
         #TODO: Create wrapper or subclass list to append and remove from items and rows_buffer.
-        QTreeView.__init__(self, parent)
+        QTreeView.__init__(self)
 
         self.weak_parent = weakref.ref(parent)
 
@@ -78,7 +78,7 @@ class Downloads(QTreeView):
         signals.on_stop_all.connect(self.on_stop_all)
 
         #update list
-        parent.idle_timeout(1000, self.update_)
+        self.timer = parent.idle_timeout(1000, self.update_)
 
     @property
     def parent(self):

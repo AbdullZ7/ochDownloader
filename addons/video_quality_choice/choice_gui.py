@@ -14,13 +14,12 @@ else:
 
 class QualityChoiceDialog(QDialog):
     """"""
-    def __init__(self, f_name, choices_dict, parent):
+    def __init__(self, f_name, choices_list, parent):
         """"""
         QDialog.__init__(self, parent, Qt.WindowSystemMenuHint | Qt.WindowTitleHint)
-        self.setWindowTitle("{f_name}".format(f_name=f_name))
+        self.setWindowTitle(f_name)
         self.resize(340, 200)
 
-        self.choices_dict = choices_dict
         self.solution = None
 
         vbox = QVBoxLayout()
@@ -29,7 +28,7 @@ class QualityChoiceDialog(QDialog):
 
         #captcha image
         self.cb = QComboBox()
-        [self.cb.addItem(quality) for quality in self.choices_dict.values()]
+        [self.cb.addItem(choice) for choice in choices_list]
         vbox.addWidget(self.cb)
 
         #buttons
@@ -60,10 +59,7 @@ class QualityChoiceDialog(QDialog):
         return self.solution
 
     def on_ok(self):
-        quality = self.cb.currentText()
-        if quality:
-            choice_dict = {quality: id_ for id_, quality in self.choices_dict.iteritems()}
-            self.solution = choice_dict.get(quality, None)
+        self.solution = self.cb.currentText()
         self.accept()
 
     def reject(self, *args, **kwargs):

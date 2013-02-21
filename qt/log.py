@@ -10,7 +10,7 @@ from PySide.QtCore import *
 
 
 class Log(QVBoxLayout):
-    def __init__(self, parent=None):
+    def __init__(self, parent):
         QVBoxLayout.__init__(self)
         self.setContentsMargins(0, 0, 0, 0)
         self.setSpacing(5)
@@ -51,7 +51,7 @@ class Log(QVBoxLayout):
 
 
 class ViewFullLog(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, parent):
         QDialog.__init__(self, parent, Qt.WindowSystemMenuHint | Qt.WindowTitleHint)
         self.setWindowTitle(_('Full Log File'))
         self.resize(340, 200)

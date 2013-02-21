@@ -8,7 +8,7 @@ import signals
 
 class StatusBar(QStatusBar):
     def __init__(self, parent):
-        QStatusBar.__init__(self, parent)
+        QStatusBar.__init__(self)
 
         self.update_manager = api.start_update_manager()
 

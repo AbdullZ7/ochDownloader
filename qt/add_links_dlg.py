@@ -9,7 +9,7 @@ from PySide.QtCore import *
 
 
 class AddLinks(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, parent):
         QDialog.__init__(self, parent, Qt.WindowSystemMenuHint | Qt.WindowTitleHint)
         self.setWindowTitle(_('Add links'))
         self.resize(340, 200)

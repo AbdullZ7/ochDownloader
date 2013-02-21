@@ -15,7 +15,7 @@ ACCOUNT_ID, HOST, STATUS, USER, PASSWORD, ENABLE = range(6)
 
 
 class ConfigAccounts(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, parent):
         QDialog.__init__(self, parent, Qt.WindowSystemMenuHint | Qt.WindowTitleHint)
         self.setWindowTitle(_('Host Accounts'))
         self.resize(500, 450)
@@ -29,7 +29,7 @@ class ConfigAccounts(QDialog):
         group_accounts = QGroupBox(_('Accounts:'))
         group_accounts.setLayout(vbox_accounts)
         
-        self.tree_view = QTreeView(parent)
+        self.tree_view = QTreeView()
         #
         #listview look
         self.tree_view.setWordWrap(True) #search textElideMode

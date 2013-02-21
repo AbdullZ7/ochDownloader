@@ -11,10 +11,10 @@ _thread_lock = threading.Lock()
 
 class QualityChoice:
     """"""
-    def __init__(self, f_name, choices_dict, wait_func):
+    def __init__(self, f_name, choices_list, wait_func):
         """"""
         self.f_name = f_name
-        self.choices_dict = choices_dict
+        self.choices_list = choices_list
         self.wait_func = wait_func
         self.solution = None
         self.event = threading.Event()
@@ -34,7 +34,7 @@ class QualityChoice:
 
     def make_choice(self):
         if idle_queue.register_event(self.event):
-            events.quality_choice_dialog.emit(self.f_name, self.choices_dict, self.set_solution)
+            events.quality_choice_dialog.emit(self.f_name, self.choices_list, self.set_solution)
             self.event.wait()
             self.event.clear() #re-use.
             idle_queue.remove_event(self.event)

@@ -42,10 +42,10 @@ class UnRARGUI:
         if self.parent.tab.indexOf(self.tab_widget) < 0:
             index_page = 2
             self.parent.tab.insertTab(index_page, self.tab_widget, _('Extracting'))
-            btn_close = QPushButton(self.parent)
-            btn_close.setFixedHeight(12)
-            btn_close.setFixedWidth(12)
-            btn_close.clicked.connect(self.on_close_tab)
+            self.btn_close = QPushButton()
+            self.btn_close.setFixedHeight(12)
+            self.btn_close.setFixedWidth(12)
+            self.btn_close.clicked.connect(self.on_close_tab)
             self.parent.tab.tabBar().setTabButton(index_page, QTabBar.RightSide, btn_close)
     
     def on_close_tab(self):

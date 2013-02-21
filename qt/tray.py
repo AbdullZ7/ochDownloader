@@ -20,7 +20,7 @@ ICON_CRITICAL = QSystemTrayIcon.Critical
 
 class Tray(QSystemTrayIcon):
     def __init__(self, parent):
-        QSystemTrayIcon.__init__(self, parent)
+        QSystemTrayIcon.__init__(self)
         self.weak_parent = weakref.ref(parent)
         self.setIcon(QIcon(os.path.join(cons.MEDIA_PATH, "misc", "ochd.ico")))
         self.setToolTip(cons.APP_TITLE)

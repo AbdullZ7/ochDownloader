@@ -15,7 +15,6 @@ class Addon(AddonCore):
         """"""
         AddonCore.__init__(self, parent)
         self.name = _("Clipboard")
-        self.event_id = None
         self.clipboard_monitor = Clipboard()
     
     def set_menu_item(self):

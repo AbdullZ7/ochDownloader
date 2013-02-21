@@ -27,7 +27,7 @@ class AddDownloads(QVBoxLayout):
 
         self.weak_parent = weakref.ref(parent)
         
-        self.tree_view = QTreeView(parent)
+        self.tree_view = QTreeView()
         #
         self.tree_view.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tree_view.customContextMenuRequested.connect(self.context_menu)
@@ -99,7 +99,7 @@ class AddDownloads(QVBoxLayout):
         btn_add.setMaximumWidth(40)
         hbox.addWidget(btn_add)
         
-        self.menu = QMenu(parent)
+        self.menu = QMenu()
         import_action = self.menu.addAction(_("Import Container"), self.on_import_container)
         self.menu.addSeparator()
         recheck_action = self.menu.addAction(_("Re-check"), self.on_recheck)
@@ -119,7 +119,7 @@ class AddDownloads(QVBoxLayout):
         signals.add_downloads_to_check.connect(self.add_downloads_to_check)
         
         #update list
-        parent.idle_timeout(1000, self.update_)
+        self.timer = parent.idle_timeout(1000, self.update_)
 
     @property
     def parent(self):
