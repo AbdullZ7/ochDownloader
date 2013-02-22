@@ -5,6 +5,7 @@ import socket
 import cookielib
 import logging
 logger = logging.getLogger(__name__)
+from xml.sax import saxutils
 
 try:
     from addons.captcha.recaptcha import Recaptcha
@@ -49,7 +50,7 @@ class PluginBase:
     def get_page(self, link, form=None, close=True):
         #return source code.
         if self.is_running():
-            link = utils.html_entities_parser(link)
+            link = saxutils.unescape(link)
             range = (None, None) if close else (self.content_range, None)
             try:
                 with URLClose(request.url_open(link, self.cookie, form, range), close) as s:
