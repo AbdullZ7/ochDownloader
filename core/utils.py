@@ -254,6 +254,18 @@ def html_entities_parser(text):
     return re.sub("&#?\w+;", fixup, text)
 
 
+def url_unescape(url):
+    entities = {
+        "&lt;": "<",
+        "&gt;": ">",
+        # must do ampersand last
+        "&amp;": "&",
+    }
+    for k, v in entities.iteritems():
+        url = url.replace(k, v)
+    return url
+
+
 def dict_from_cookiejar(cj):
     """
     Make a dict from a cookiejar and return it.
