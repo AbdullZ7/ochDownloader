@@ -49,6 +49,7 @@ class PluginBase:
     def get_page(self, link, form=None, close=True):
         #return source code.
         if self.is_running():
+            link = utils.html_entities_parser(link)
             range = (None, None) if close else (self.content_range, None)
             try:
                 with URLClose(request.url_open(link, self.cookie, form, range), close) as s:
