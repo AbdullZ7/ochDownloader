@@ -117,7 +117,6 @@ class DownloadManager(ThreadManager):
 
     def update_active_downloads(self):
         """
-        Roba ciclos.
         This may change the active_downloads dict, you should get a dict copy before calling this method.
         """
         for id_item, download_item in self.active_downloads.items():
@@ -126,6 +125,7 @@ class DownloadManager(ThreadManager):
             limit_exceeded = self.is_limit_exceeded(id_item) #threadmanager
             old_status = download_item.status
             if old_status in (cons.STATUS_STOPPED, cons.STATUS_FINISHED, cons.STATUS_ERROR):
+
                 if old_status == cons.STATUS_STOPPED:
                     self.stopped_downloads[id_item] = download_item
                 elif old_status == cons.STATUS_FINISHED:
@@ -138,10 +138,12 @@ class DownloadManager(ThreadManager):
                     else:
                         download_item.status = cons.STATUS_QUEUE
                         self.queue_downloads[id_item] = download_item
+
                 self.delete_thread(id_item) #threadmanager
                 del self.active_downloads[id_item]
                 self.global_slots.remove_slot()
                 self.next_download()
+
                 if old_status == cons.STATUS_FINISHED:
                     events.download_complete.emit(download_item)
                 if not self.active_downloads and old_status != cons.STATUS_STOPPED:
@@ -156,14 +158,13 @@ class DownloadManager(ThreadManager):
         """
         Crea los threads para la descarga de cada archivo.
         """
-        #if not self.active_downloads: #after this method completes, there will be one active download at least.
-            #events.trigger_downloading_process_pre_start()
         for download_item in item_list:
             download_item.path = path
             self.queue_downloads[download_item.id] = download_item
         self.next_download()
 
     def next_download(self):
+        #BUG: if next download has no host available should keep trying with the next one...
         for download_item in self.queue_downloads.values():
             started = self.download_starter(download_item)
             if not started:

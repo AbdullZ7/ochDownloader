@@ -258,6 +258,7 @@ def url_unescape(url):
     entities = {
         "&lt;": "<",
         "&gt;": ">",
+        "&quot;": "\"",
         # must do ampersand last
         "&amp;": "&",
     }
