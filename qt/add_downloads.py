@@ -263,7 +263,8 @@ class AddDownloads(QVBoxLayout):
         for download_item in checking_downloads.itervalues():
             try:
                 row = self.rows_buffer[download_item.id]
-                row[1] = True if download_item.link_status != cons.LINK_DEAD else False
+                if download_item.link_status == cons.LINK_DEAD:
+                    row[1] = False
                 row[2] = self.icons_dict[download_item.link_status]
                 row[3] = download_item.name
                 row[4] = download_item.host

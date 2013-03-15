@@ -72,7 +72,6 @@ def halt():
 
 class Gui(QMainWindow):
     def __init__(self):
-        #TODO: REFACTORY
         QMainWindow.__init__(self)
         
         self.setWindowTitle(cons.APP_TITLE)

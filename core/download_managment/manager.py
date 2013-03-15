@@ -164,25 +164,23 @@ class DownloadManager(ThreadManager):
         self.next_download()
 
     def next_download(self):
-        #BUG: if next download has no host available should keep trying with the next one...
         for download_item in self.queue_downloads.values():
-            started = self.download_starter(download_item)
-            if not started:
+            self.download_starter(download_item)
+            if not self.global_slots.available_slot():
                 break
 
     def download_starter(self, download_item):
         """"""
         if not self.global_slots.available_slot():
-            return False
+            return
         elif not self.is_host_slot_available(download_item.host): # and host_accounts.get_account(download_item.host) is None:
-            return False
+            return
         else:
             download_item.fail_count = 0
             self.global_slots.add_slot()
             self.create_thread(download_item) #threadmanager
             self.active_downloads[download_item.id] = download_item
             del self.queue_downloads[download_item.id]
-            return True
 
     def is_host_slot_available(self, host):
         """"""

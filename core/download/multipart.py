@@ -128,7 +128,7 @@ class MultiDownload(DownloaderBase):
     def set_err(self, err):
         logger.exception(err)
         self.error_flag = True
-        self.status_msg = "Error: {0}".format(err)
+        self.status_msg = str(err)
 
     def flush_buffer(self, fh, i, chunk, buf, len_buf):
         try:

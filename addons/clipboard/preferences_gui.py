@@ -14,7 +14,6 @@ class Preferences(QVBoxLayout):
     """"""
     def __init__(self):
         """"""
-        #TODO: add activator
         QVBoxLayout.__init__(self)
 
         frame = QGroupBox(_('Extensions to catch:'))
