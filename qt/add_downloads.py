@@ -268,7 +268,8 @@ class AddDownloads(QVBoxLayout):
                 row[2] = self.icons_dict[download_item.link_status]
                 row[3] = download_item.name
                 row[4] = download_item.host
-                row[5] = utils.size_format(download_item.size)
+                if download_item.size:
+                    row[5] = utils.size_format(download_item.size)
                 row[6] = download_item.link_status_msg
             except KeyError as err:
                 logger.debug(err)
