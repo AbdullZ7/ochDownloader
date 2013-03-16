@@ -36,7 +36,7 @@ class MultiDownload(DownloaderBase):
         self.lock1 = threading.Lock() #lock to write file.
         self.lock2 = threading.Lock()
 
-        self.chunks = download_item.chunks[:] if download_item.chunks is not None else [] #shallow copy
+        self.chunks = download_item.chunks[:] if download_item.chunks else [] #shallow copy
         self.chunks_control = []
 
         self.first_flag = True

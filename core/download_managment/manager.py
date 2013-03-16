@@ -120,9 +120,8 @@ class DownloadManager(ThreadManager):
         This may change the active_downloads dict, you should get a dict copy before calling this method.
         """
         for id_item, download_item in self.active_downloads.items():
-            item_data = self.get_thread_update(id_item) #threadmanager
-            download_item.update(*item_data)
-            limit_exceeded = self.is_limit_exceeded(id_item) #threadmanager
+            th = self.thread_downloads[download_item.id]
+            self.update_download_item(th, download_item)
             old_status = download_item.status
             if old_status in (cons.STATUS_STOPPED, cons.STATUS_FINISHED, cons.STATUS_ERROR):
 
@@ -139,7 +138,7 @@ class DownloadManager(ThreadManager):
                         download_item.status = cons.STATUS_QUEUE
                         self.queue_downloads[id_item] = download_item
 
-                self.delete_thread(id_item) #threadmanager
+                del self.thread_downloads[id_item]
                 del self.active_downloads[id_item]
                 self.global_slots.remove_slot()
                 self.next_download()
@@ -148,16 +147,30 @@ class DownloadManager(ThreadManager):
                     events.download_complete.emit(download_item)
                 if not self.active_downloads and old_status != cons.STATUS_STOPPED:
                     events.all_downloads_complete.emit()
-                if limit_exceeded and self.active_downloads and old_status == cons.STATUS_ERROR:
+                if th.limit_exceeded and self.active_downloads and old_status == cons.STATUS_ERROR:
                     events.limit_exceeded.emit()
 
-    def update_download_item(self, download_item):
-        pass
+    def update_download_item(self, th, download_item):
+        #th = self.thread_downloads[download_item.id]
+
+        if th.error_flag and th.stop_flag: #fix on stopped failed download
+            status = cons.STATUS_STOPPED
+        else:
+            status = th.status #get before any other attr
+
+        download_item.status = status
+        download_item.chunks, download_item.size_complete = th.get_chunk_n_size()
+        download_item.name = th.file_name
+        download_item.status_msg = th.status_msg
+        download_item.size = th.size_file
+        download_item.start_time = th.start_time
+        download_item.size_resume = th.size_tmp
+        download_item.can_resume = th.can_resume
+        download_item.is_premium = th.is_premium
+        download_item.video_quality = th.video_quality
+        download_item.recalc_stats()
 
     def downloader_init(self, item_list, path):
-        """
-        Crea los threads para la descarga de cada archivo.
-        """
         for download_item in item_list:
             download_item.path = path
             self.queue_downloads[download_item.id] = download_item
@@ -186,7 +199,7 @@ class DownloadManager(ThreadManager):
         """"""
         count = 0
         host_slots = plugins_config.get_plugin_item(host).get_slots_limit()
-        if host_slots > 0: #-1 or 0 means unlimited slots
+        if host_slots > 0: # -1 or 0 means unlimited slots
             for download_item in self.active_downloads.itervalues():
                 if host == download_item.host:
                     count += 1

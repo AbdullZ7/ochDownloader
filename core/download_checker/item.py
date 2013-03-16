@@ -89,21 +89,8 @@ class DownloadItem:
         else:
             return 0
 
-    def update(self, name, status, size, size_complete, start_time,
-               size_resume, chunks, status_msg, can_resume, is_premium, video_quality):
+    def recalc_stats(self):
         """"""
-        self.name = name
-        self.status = status
-        self.status_msg = status_msg
-        self.size = size
-        self.size_complete = size_complete
-        self.start_time = start_time
-        self.size_resume = size_resume
-        self.chunks = chunks or []
-        self.can_resume = can_resume
-        self.is_premium = is_premium
-        self.video_quality = video_quality
-
         self.progress = self._progress()
         self.speed = self._speed()
         self.time_remain = self._time_remain()

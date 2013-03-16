@@ -11,8 +11,8 @@ class ThreadManager:
     Downloads thread manager.
     """
     def __init__(self):
-        self.thread_downloads = {} #{id_item: thread_instance, }, active downloads only.
-        self.bucket = TokenBucket() #rate-limit bandwidth
+        self.thread_downloads = {} # {id_item: thread_instance, }, active downloads only.
+        self.bucket = TokenBucket() # rate-limit bandwidth
     
     def get_thread(self, id_item):
         """"""
@@ -45,21 +45,3 @@ class ThreadManager:
                     th.join(0.1)
                 else:
                     threads.remove(th)
-    
-    def get_thread_update(self, id_item):
-        """"""
-        th = self.thread_downloads[id_item]
-
-        if th.error_flag and th.stop_flag: #fix on stopped failed download
-            status = cons.STATUS_STOPPED
-        else:
-            status = th.status #get before any other attr
-
-        chunks, size_complete = th.get_chunk_n_size()
-
-        return th.file_name, status, th.size_file, size_complete, th.start_time,\
-               th.size_tmp, chunks, th.status_msg, th.can_resume, th.is_premium, th.video_quality
-
-    def is_limit_exceeded(self, id_item):
-        th = self.thread_downloads[id_item]
-        return th.limit_exceeded
