@@ -30,7 +30,7 @@ class Tab(QWidget):
         if self.parent.tab.indexOf(self) < 0:
             self.setLayout(self.vbox)
             tab_index = 2
-            self.parent.tab.insertTab(tab_index, self, _('Decrypting'))
+            self.parent.tab.insertTab(tab_index, self, _('Decrypter'))
             self.btn_close = QPushButton()
             self.btn_close.setFixedHeight(12)
             self.btn_close.setFixedWidth(12)
