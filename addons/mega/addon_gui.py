@@ -5,6 +5,8 @@ from core import events
 
 from qt.addons import AddonCore
 
+from .tab import Tab
+
 
 class Addon(AddonCore):
     """"""
@@ -12,7 +14,7 @@ class Addon(AddonCore):
         """"""
         AddonCore.__init__(self, parent)
         self.name = _("Mega decryptor")
-        #self.unrar_gui = UnRARGUI(parent)
+        self.tab = Tab(parent)
         events.download_complete.connect(self.trigger)
 
     def set_menu_item(self):
@@ -20,9 +22,11 @@ class Addon(AddonCore):
 
     def on_action(self):
         # Open tab
-        pass
+        self.tab.setup_tab()
+        self.tab.switch_tab()
 
     def trigger(self, download_item, *args, **kwargs):
         """"""
         # Open tab, start decrypting
-        pass
+        self.tab.setup_tab()
+        self.tab.store(download_item)
