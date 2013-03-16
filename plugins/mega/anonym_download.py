@@ -1,7 +1,7 @@
 import json
 import urllib2
 
-from core.plugin.base import PluginBase, BUFF_SZ
+from core.plugin.base import PluginBase, ParsingError, BUFF_SZ
 
 from addons.mega import crypto
 
@@ -11,8 +11,10 @@ from addons.mega import crypto
 class PluginDownload(PluginBase):
     def parse(self):
         url_parts = self.link.split("!")
-        #if len(url_parts) != 3:
-            #raise missing File Key
+
+        if len(url_parts) != 3:
+            raise ParsingError(_('Missing file key'))
+
         file_id, file_key = url_parts[1], url_parts[2]
         key = crypto.base64_to_a32(file_key)
         k = (key[0] ^ key[4], key[1] ^ key[5], key[2] ^ key[6], key[3] ^ key[7])
@@ -27,7 +29,7 @@ class PluginDownload(PluginBase):
         attributes = crypto.base64urldecode(file['at'])
         attributes = crypto.dec_attr(attributes, k)
 
-        self.save_as = attributes['n']
+        self.save_as = attributes['n'] + ".crypted"
         self.source = self.get_page(dl_url, close=False)
 
     def request(self, url, data):
