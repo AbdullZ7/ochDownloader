@@ -78,7 +78,7 @@ class Tab(QWidget):
             row = self.tree_view.rows_buffer[item.id_item]
             row[2] = item.status
         self.tree_view.model.refresh()
-        
+
         if not self.decrypt_manager.active_items:
             self.running = False
             self.timer.stop()

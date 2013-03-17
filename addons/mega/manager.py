@@ -7,8 +7,8 @@ from .decrypt import Decrypter
 
 
 class Item:
-    def __init__(self, item_id, name, path, link):
-        self.item_id = item_id
+    def __init__(self, id_item, name, path, link):
+        self.id_item = id_item
         self.name = name
         self.path = path
         self.link = link
