@@ -8,13 +8,12 @@ from .decrypt import Decrypter
 
 class DecryptManager:
     def __init__(self):
-        self.th = None
         self.pending_downloads = []
-        self.pipe_out, self.pipe_in = multiprocessing.Pipe(duplex=False)
+        self.pipe_out, self.pipe_in = multiprocessing.Pipe()
 
     @property
     def is_running(self):
-        if self.th is None:
+        if not hasattr(self, 'th'):
             return False
         elif not self.th.is_alive():
             return False
@@ -40,7 +39,7 @@ class DecryptManager:
                 self.running = True
 
     def get_update(self):
-        if self.th is not None and not self.th.is_alive():
+        if not self.is_running and hasattr(self, 'th'):
             id_item = self.th.id_item
             if self.pipe_out.poll():
                 err, status = self.pipe_out.recv()
