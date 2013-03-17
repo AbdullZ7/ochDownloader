@@ -28,6 +28,7 @@ class Decrypter(threading.Thread):
             logger.exception(err)
             self.status = "Error: %s" % str(err)
         else:
+            # TODO: remove file
             self.status = _("Success")
 
     def get_out_name(self, name):

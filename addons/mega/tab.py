@@ -8,6 +8,8 @@ from qt.tree_view import TreeView
 
 class Tab(QWidget):
     def __init__(self, parent, decrypt_manager):
+        # TODO: add import crypted file (+ link),
+        # it should create a DownloadItem
         QWidget.__init__(self)
 
         self.weak_parent = weakref.ref(parent)
@@ -43,11 +45,20 @@ class Tab(QWidget):
         tab_index = self.parent.tab.indexOf(self)
         if tab_index >= 0:
             self.parent.tab.removeTab(tab_index)
+            #self.clear_complete()
+
+    def clear_complete(self):
+        for row in self.items[:]:
+            if row[2] is not None:
+                self.remove_row(row[0])
 
     def switch_tab(self):
         tab_index = self.parent.tab.indexOf(self)
         if tab_index >= 0:
             self.parent.tab.setCurrentIndex(tab_index)
+
+    def on_import(self):
+        pass
 
     def store(self, download_item):
         item = [download_item.id, download_item.name, None]
@@ -58,6 +69,8 @@ class Tab(QWidget):
             self.timer = self.parent.idle_timeout(1000, self.update_)
 
     def update_(self):
+        # TODO: clear complete items on tab close
+        # TODO: Add icons (complete, running, queue)
         # this gets call even if the tab is closed
         item = self.decrypt_manager.get_update()
         if item is not None:
