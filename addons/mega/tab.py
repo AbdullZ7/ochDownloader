@@ -72,11 +72,13 @@ class Tab(QWidget):
         # TODO: clear complete items on tab close
         # TODO: Add icons (complete, running, queue)
         # this gets call even if the tab is closed
-        item = self.decrypt_manager.get_update()
-        if item is not None:
-            id_item, status = item
-            row = self.tree_view.rows_buffer[id_item]
-            row[2] = status
-        if not self.decrypt_manager.pending_downloads:
+        items = self.decrypt_manager.get_active_items()
+        self.decrypt_manager.update()
+        for item in items:
+            row = self.tree_view.rows_buffer[item.id_item]
+            row[2] = item.status
+        self.tree_view.model.refresh()
+        
+        if not self.decrypt_manager.active_items:
             self.running = False
             self.timer.stop()

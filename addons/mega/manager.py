@@ -6,19 +6,21 @@ logger = logging.getLogger(__name__)
 from .decrypt import Decrypter
 
 
+class Item:
+    def __init__(self, item_id, name, path, link):
+        self.item_id = item_id
+        self.name = name
+        self.path = path
+        self.link = link
+        self.th = None
+        self.status = None
+
+
 class DecryptManager:
     def __init__(self):
-        self.pending_downloads = []
+        self.queue_items = []
+        self.active_items = []
         self.pipe_out, self.pipe_in = multiprocessing.Pipe()
-
-    @property
-    def is_running(self):
-        if not hasattr(self, 'th'):
-            return False
-        elif not self.th.is_alive():
-            return False
-        else:
-            return True
 
     def remove_file(self, path, name):
         try:
@@ -26,31 +28,38 @@ class DecryptManager:
         except Exception as err:
             logger.warning(err)
 
+    def get_active_items(self):
+        return self.active_items[:]
+
     def add(self, download_item):
-        self.pending_downloads.append(download_item)
+        item = Item(download_item.id, download_item.name, download_item.path, download_item.link)
+        self.queue_items.append(item)
         self.next()
 
     def next(self):
-        if not self.is_running:
-            if self.pending_downloads:
-                download_item = self.pending_downloads.pop(0)
-                self.th = Decrypter(download_item, self.pipe_in)
-                self.th.start()
-                self.running = True
+        if not self.active_items:
+            if self.queue_items:
+                item = self.queue_items.pop(0)
+                item.th = Decrypter(item, self.pipe_in)
+                item.th.start()
+                item.status = _("Running")
+                self.active_items.append(item)
 
-    def get_update(self):
-        if not self.is_running and hasattr(self, 'th'):
-            id_item = self.th.id_item
-            if self.pipe_out.poll():
-                err, status = self.pipe_out.recv()
-                if err:
-                    logger.error(status)
+    def update(self):
+        # get a copy of active_items before calling this
+        for item in self.active_items[:]:
+            if not item.th.is_alive():
+
+                if self.pipe_out.poll():
+                    err, status = self.pipe_out.recv()
+                    if err:
+                        logger.error(status)
+                    else:
+                        self.remove_file(item.path, item.name)
                 else:
-                    self.remove_file(self.th.path, self.th.name)
-            else:
-                status = "Error: Empty pipe"
-                logger.error(status)
-            self.next()
-            return id_item, status
-        else:
-            return
+                    status = "Error: Empty pipe"
+                    logger.error(status)
+
+                item.status = status
+                self.active_items.remove(item)
+                self.next()

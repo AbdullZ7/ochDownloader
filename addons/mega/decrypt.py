@@ -13,11 +13,9 @@ class Decrypter(multiprocessing.Process):
     def __init__(self, download_item, pipe_in):
         multiprocessing.Process.__init__(self)
 
-        self.id_item = download_item.id
         self.link = download_item.link
         self.path = download_item.path
         self.name = download_item.name
-        self.status = "Running"
         self.pipe_in = pipe_in # (err_flag, msg)
 
     def run(self):
