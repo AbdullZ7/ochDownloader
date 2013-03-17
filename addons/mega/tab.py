@@ -7,10 +7,12 @@ from qt.tree_view import TreeView
 
 
 class Tab(QWidget):
-    def __init__(self, parent):
+    def __init__(self, parent, decrypt_manager):
         QWidget.__init__(self)
 
         self.weak_parent = weakref.ref(parent)
+        self.decrypt_manager = decrypt_manager
+        self.running = False
 
         self.vbox = QVBoxLayout()
         self.vbox.setContentsMargins(0, 0, 0, 0)
@@ -50,3 +52,20 @@ class Tab(QWidget):
     def store(self, download_item):
         item = [download_item.id, download_item.name, None]
         self.tree_view.append_item(item)
+
+        if not self.running:
+            self.running = True
+            self.timer = self.parent.idle_timeout(1000, self.update_)
+
+    def update_(self):
+        # this gets call even if the tab is closed
+        th = self.decrypt_manager.th
+        if th is not None:
+            row = self.rows_buffer[th.item_id]
+            row[2] = th.status
+            if not th.is_alive():
+                if self.decrypt_manager.pending_downloads:
+                    self.decrypt_manager.next()
+                else:
+                    self.running = False
+                    self.timer.stop()

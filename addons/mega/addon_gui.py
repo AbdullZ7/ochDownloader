@@ -6,6 +6,7 @@ from core import events
 from qt.addons import AddonCore
 
 from .tab import Tab
+from .manager import DecryptManager
 
 HOST_MEGA = "mega"
 
@@ -16,7 +17,8 @@ class Addon(AddonCore):
         """"""
         AddonCore.__init__(self, parent)
         self.name = _("Mega decrypter")
-        self.tab = Tab(parent)
+        self.decrypt_manager = DecryptManager()
+        self.tab = Tab(parent, self.decrypt_manager)
         events.download_complete.connect(self.trigger)
 
     def set_menu_item(self):
@@ -31,5 +33,7 @@ class Addon(AddonCore):
         """"""
         # Open tab, start decrypting
         if download_item.host == HOST_MEGA:
+            self.decrypt_manager.add(download_item)
+
             self.tab.setup_tab()
             self.tab.store(download_item)
