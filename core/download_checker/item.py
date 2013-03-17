@@ -47,7 +47,7 @@ class DownloadItem:
     def _progress(self):
         """"""
         try:
-            progress = int((self.size_complete * 100) / self.size) #porcentaje completado
+            progress = int((self.size_complete * 100) / self.size)
         except ZeroDivisionError:
             return 0
         if progress > 100:
@@ -60,7 +60,7 @@ class DownloadItem:
         if not self.start_time or self.status in (cons.STATUS_FINISHED, cons.STATUS_STOPPED, cons.STATUS_ERROR):
             return 0
         size_complete = self.size_complete
-        speed = float((size_complete - self.sp_size)) / (time.time() - self.sp_time) #size / elapsed_time
+        speed = float((size_complete - self.sp_size)) / (time.time() - self.sp_time) # size / elapsed_time
         self.sp_size = size_complete
         self.sp_time = time.time()
         self.sp_deque.append(speed)
@@ -85,7 +85,7 @@ class DownloadItem:
     def _time(self):
         """"""
         if self.start_time:
-            return time.time() - self.start_time #elapsed time
+            return time.time() - self.start_time # elapsed time
         else:
             return 0
 

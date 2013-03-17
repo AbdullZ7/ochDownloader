@@ -1,4 +1,6 @@
 import os
+import logging
+logger = logging.getLogger(__name__)
 
 from Crypto.Cipher import AES
 from Crypto.Util import Counter
@@ -14,6 +16,16 @@ class Decrypter:
         self.link = download_item.link
         self.path = download_item.path
         self.name = download_item.name
+        self.status = _("Running")
+
+    def run(self):
+        try:
+            self.decrypt()
+        except Exception as err:
+            logger.exception(err)
+            self.status = "Error: %s" % str(err)
+        else:
+            self.status = _("Success")
 
     def get_out_name(self, name):
         if name.endswith(FILE_EXT):
