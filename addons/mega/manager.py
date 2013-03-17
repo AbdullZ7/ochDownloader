@@ -19,7 +19,14 @@ class DecryptManager:
         if not self.running:
             if self.pending_downloads:
                 download_item = self.pending_downloads.pop(0)
-                decrypter = Decrypter(download_item)
-                self.th = threading.Thread(group=None, target=decrypter.run, name=None)
+                self.th = Decrypter(download_item)
                 self.th.start()
                 self.running = True
+
+    def get_update(self):
+        if self.th is not None:
+            if not self.th.is_alive():
+                self.running = False
+            return self.th.id_item, self.th.status, self.th.is_alive()
+        else:
+            return

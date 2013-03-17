@@ -59,13 +59,17 @@ class Tab(QWidget):
 
     def update_(self):
         # this gets call even if the tab is closed
-        th = self.decrypt_manager.th
-        if th is not None:
-            row = self.rows_buffer[th.item_id]
-            row[2] = th.status
-            if not th.is_alive():
+        item = self.decrypt_manager.get_update()
+        if item is not None:
+            id_item, status, is_running = item
+            row = self.tree_view.rows_buffer[id_item]
+            row[2] = status
+            if not is_running:
                 if self.decrypt_manager.pending_downloads:
                     self.decrypt_manager.next()
                 else:
                     self.running = False
                     self.timer.stop()
+        else:
+            self.running = False
+            self.timer.stop()

@@ -1,4 +1,5 @@
 import os
+import threading
 import logging
 logger = logging.getLogger(__name__)
 
@@ -10,8 +11,10 @@ import crypto
 FILE_EXT = ".crypted"
 
 
-class Decrypter:
+class Decrypter(threading.Thread):
     def __init__(self, download_item):
+        threading.Thread.__init__(self)
+
         self.id_item = download_item.id
         self.link = download_item.link
         self.path = download_item.path
