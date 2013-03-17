@@ -1,7 +1,5 @@
 import os
-import threading
-import logging
-logger = logging.getLogger(__name__)
+import multiprocessing
 
 from Crypto.Cipher import AES
 from Crypto.Util import Counter
@@ -11,25 +9,24 @@ import crypto
 FILE_EXT = ".crypted"
 
 
-class Decrypter(threading.Thread):
-    def __init__(self, download_item):
-        threading.Thread.__init__(self)
+class Decrypter(multiprocessing.Process):
+    def __init__(self, download_item, pipe_in):
+        multiprocessing.Process.__init__(self)
 
         self.id_item = download_item.id
         self.link = download_item.link
         self.path = download_item.path
         self.name = download_item.name
-        self.status = _("Running")
+        self.status = "Running"
+        self.pipe_in = pipe_in # (err_flag, msg)
 
     def run(self):
         try:
             self.decrypt()
         except Exception as err:
-            logger.exception(err)
-            self.status = "Error: %s" % str(err)
+            self.pipe_in.send((True, "Error: %s" % str(err)))
         else:
-            # TODO: remove file
-            self.status = _("Success")
+            self.pipe_in.send((False, "Success"))
 
     def get_out_name(self, name):
         if name.endswith(FILE_EXT):
