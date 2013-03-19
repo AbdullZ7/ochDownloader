@@ -9,6 +9,13 @@ import crypto
 FILE_EXT = ".crypted"
 
 
+def get_out_name(name):
+    if name.endswith(FILE_EXT):
+        return name[:-len(FILE_EXT)]
+    else:
+        return name + ".decrypted"
+
+
 class Decrypter(multiprocessing.Process):
     def __init__(self, download_item, pipe_in):
         multiprocessing.Process.__init__(self)
@@ -26,12 +33,6 @@ class Decrypter(multiprocessing.Process):
         else:
             self.pipe_in.send((False, "Success"))
 
-    def get_out_name(self, name):
-        if name.endswith(FILE_EXT):
-            return name[:-len(FILE_EXT)]
-        else:
-            return name + ".decrypted"
-
     def decrypt(self):
         url_parts = self.link.split("!")
         file_id, file_key = url_parts[1], url_parts[2]
@@ -42,7 +43,7 @@ class Decrypter(multiprocessing.Process):
 
         file_path = os.path.join(self.path, self.name)
         size = os.path.getsize(file_path)
-        out_name = self.get_out_name(self.name)
+        out_name = get_out_name(self.name)
         out_file_path = os.path.join(self.path, out_name)
 
         decryptor = AES.new(crypto.a32_to_str(k), AES.MODE_CTR, counter=Counter.new(128, initial_value=((iv[0] << 32) + iv[1]) << 64))

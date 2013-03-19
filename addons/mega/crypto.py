@@ -3,6 +3,7 @@ from Crypto.Cipher import AES
 import base64
 import json
 import struct
+import logging
 
 
 def base64urldecode(data):
@@ -13,7 +14,7 @@ def base64urldecode(data):
 
 
 def str_to_a32(b):
-    if len(b) % 4: # Add padding, we need a string with a length multiple of 4
+    if len(b) % 4:  # Add padding, we need a string with a length multiple of 4
         b += '\0' * (4 - len(b) % 4)
     return struct.unpack('>%dI' % (len(b) / 4), b)
 
@@ -32,8 +33,9 @@ def base64_to_a32(s):
 
 
 def dec_attr(attr, key):
-    attr = aes_cbc_decrypt(attr, a32_to_str(key)).rstrip('\0')
-    return json.loads(attr[4:]) if attr[:6] == 'MEGA{"' else False
+    attr = aes_cbc_decrypt(attr, a32_to_str(key))
+    attr = attr.rstrip(')\0 ')
+    return json.loads(attr[4:])
 
 
 def get_chunks(size):

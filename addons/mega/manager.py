@@ -3,7 +3,16 @@ import multiprocessing
 import logging
 logger = logging.getLogger(__name__)
 
-from .decrypt import Decrypter
+try:
+    from addons.unrar.addon_gui import OPTION_UNRAR_ACTIVE
+    from addons.unrar.signals import unrar_file
+except ImportError:
+    OPTION_UNRAR_ACTIVE = None
+    unrar_file = None
+
+from core.download_checker.item import DownloadItem
+
+from .decrypt import Decrypter, get_out_name
 
 
 class Item:
@@ -56,6 +65,7 @@ class DecryptManager:
                         logger.error(status)
                     else:
                         self.remove_file(item.path, item.name)
+                        unrar_file.emit(DownloadItem(get_out_name(item.name), "mega", item.link, path=item.path))
                 else:
                     status = "Error: Empty pipe"
                     logger.error(status)

@@ -6,9 +6,10 @@ from core.config import conf
 
 from qt.addons import AddonCore
 
-from preferences_gui import Preferences
-from unrar_gui import UnRARGUI
-from passwords_handler import passwords_handler #init singleton
+import signals
+from .preferences_gui import Preferences
+from .unrar_gui import UnRARGUI
+from .passwords_handler import passwords_handler
 
 
 #Config parser
@@ -19,9 +20,10 @@ class Addon(AddonCore):
     """"""
     def __init__(self, parent, *args, **kwargs):
         """"""
+        # TODO: add preference choice to extract on all_dl_complete or just dl_complete
         AddonCore.__init__(self, parent)
         self.name = _("Auto extraction")
-        self.unrar_gui = UnRARGUI(self.parent)
+        self.unrar_gui = UnRARGUI(parent)
         events.add_password.connect(passwords_handler.add)
         #self.ip_renewer_cls = IPRenewer()
 
@@ -30,23 +32,28 @@ class Addon(AddonCore):
         return Preferences()
 
     def set_menu_item(self):
-        self.action = self.parent.menu.addAction(self.name, self.on_toggle) #can toggle
+        self.action = self.parent.menu.addAction(self.name, self.on_toggle)  # can toggle
         self.action.setCheckable(True)
         if conf.get_addon_option(OPTION_UNRAR_ACTIVE, default=False, is_bool=True):
             self.action.setChecked(True)
             self.connect()
 
     def on_toggle(self):
-        if self.action.isChecked(): #se activo
+        if self.action.isChecked():  # se activo
             conf.set_addon_option(OPTION_UNRAR_ACTIVE, "True")
             self.connect()
         else:
             conf.set_addon_option(OPTION_UNRAR_ACTIVE, "False")
-            events.download_complete.disconnect(self.trigger)
+            self.disconnect()
     
     def connect(self):
         """"""
         events.download_complete.connect(self.trigger)
+        signals.unrar_file.connect(self.trigger)
+
+    def disconnect(self):
+        events.download_complete.disconnect(self.trigger)
+        signals.unrar_file.disconnect(self.trigger)
     
     def trigger(self, download_item, *args, **kwargs):
         """"""

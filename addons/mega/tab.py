@@ -74,9 +74,11 @@ class Tab(QWidget):
         # this gets call even if the tab is closed
         items = self.decrypt_manager.get_active_items()
         self.decrypt_manager.update()
+
         for item in items:
             row = self.tree_view.rows_buffer[item.id_item]
             row[2] = item.status
+
         self.tree_view.model.refresh()
 
         if not self.decrypt_manager.active_items:
