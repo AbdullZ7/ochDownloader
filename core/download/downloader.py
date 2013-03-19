@@ -43,13 +43,13 @@ class Downloader(threading.Thread, MultiDownload):
             if isinstance(err, StatusError):
                 self.error_flag = True
                 self.status = cons.STATUS_ERROR
+                self.status_msg = "Error: {}".format(err)  # str(err)
                 logger.warning(err)
             else:
                 self.stop_flag = True
                 self.status = cons.STATUS_STOPPED
+                self.status_msg = "Stopped"
                 logger.info(err)
-            if err:
-                self.status_msg = "Error: {}".format(err) # str(err)
         else:
             self.status = cons.STATUS_FINISHED
             self.status_msg = "Finished"
