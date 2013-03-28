@@ -34,7 +34,9 @@ def base64_to_a32(s):
 
 def dec_attr(attr, key):
     attr = aes_cbc_decrypt(attr, a32_to_str(key))
-    attr = attr.rstrip(')\0 ')
+    attr += "asd"  # put some unwanted chars, just in case there is none
+    attr = '"}'.join(attr.split('"}')[:-1])  # remove unwanted chars "{...} asd"
+    attr += '"}'
     return json.loads(attr[4:])
 
 
