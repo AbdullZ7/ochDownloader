@@ -17,5 +17,5 @@ class PluginDownload(PluginBase):
                 ("referer", ""), ("method_free", ""), ("method_premium", ""),
                 ("down_script", "1")]
         page = self.get_page(self.link, form=form)
-        s_pattern = 'download_url=(?P<link>[^"]+)" id="download_link'
+        s_pattern = 'href="(?P<link>(?!http://www\.)[^"]+)" id="download_link'  # exclude (www.)sendmyway.com/ urls
         self.source = self.click(s_pattern, page, False)
