@@ -81,7 +81,7 @@ class Starter:
             gui.dispatcher.stop()
         except Exception as err:
             self.logger.exception(err)
-            halt() #close gui.
+            halt()  # close gui.
 
     def clean_up(self):
         from core.api import api

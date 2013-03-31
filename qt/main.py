@@ -29,10 +29,10 @@ from addons import AddonsManager
 from tray import Tray
 from idle_queue_dispatcher import ThreadDispatcher
 
-
 MIN_WIDTH = 550
 MIN_HEIGHT = 250
 BTN, ICON, TITLE, CALLBACK, SENSITIVE = range(5)
+
 
 def init_gettext():
     """Internationalization"""
@@ -48,7 +48,8 @@ def init_gettext():
                 #default_lang = lang
                 #break
     lang = gettext.translation(cons.APP_NAME, cons.LOCALE_PATH, languages=[default_lang, ], fallback=True)
-    lang.install(cons.APP_NAME, cons.LOCALE_PATH) #install _() on builtins namespace
+    lang.install(cons.APP_NAME, cons.LOCALE_PATH)  # install _() on builtins namespace
+
 
 #Catch Unhandled Exceptions...
 def excepthook(exc_type, exc_value, tb):
@@ -58,16 +59,14 @@ def excepthook(exc_type, exc_value, tb):
     logger.critical(message)
     halt()
 
+
 #and close GUI.
 def halt():
-    """
-    TODO: Mostrar ventana de error y cerrar apropiadamente.
-    """
     for window in QApplication.topLevelWidgets():
         if isinstance(window, Gui):
             window.can_close = True
             window.close()
-        #window.hide()
+    QMessageBox.critical(None, "Critical error", "Please send us your error.log")
 
 
 class Gui(QMainWindow):
@@ -98,8 +97,6 @@ class Gui(QMainWindow):
         self.toolbar = Toolbar(self, [self.start, self.stop, None, self.accounts, self.preferences, None, self.about])
 
         self.addToolBar(self.toolbar)
-
-        #self.vbox = QVBoxLayout(self)
 
         #tabs
         self.previous_tab = None

@@ -11,10 +11,6 @@ class Slots:
         self.__limit = limit
         self.slots = 0
     
-    def set_slots(self, slots=0):
-        """"""
-        self.slots = slots
-    
     def get_limit(self):
         """"""
         return self.__limit
@@ -35,7 +31,7 @@ class Slots:
     
     def remove_slot(self):
         """"""
-        if self.slots > 0: #if this method is called, it's suppose to be higher then 0.
+        if self.slots > 0:
             self.slots -= 1
             return True
         return False
