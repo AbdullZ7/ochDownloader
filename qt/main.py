@@ -285,20 +285,19 @@ class Gui(QMainWindow):
         self.tray.hide()
         self.close()
 
-    def closeEvent(self, event): #overloaded method
-        """
-        also useful for any QWidget
-        """
+    def closeEvent(self, event):
+        # overridden
         if not self.tray.isVisible():
             x, y, w, h = self.geometry().getRect()
             self.hide()
             self.save_session()
             self.preferences.on_close()
+            self.dispatcher.stop()
             conf.set_window_settings(x, y, w, h)
             conf.save()
             accounts_manager.save()
             event.accept()
-        else: #hide only
+        else:  # hide only
             self.hide()
             event.ignore()
 

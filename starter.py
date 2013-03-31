@@ -1,4 +1,4 @@
-import warnings #pygtk warnings are redirected to this module.
+import warnings
 import logging
 import logging.handlers
 import sys
@@ -37,8 +37,8 @@ class Starter:
     """"""
     def __init__(self):
         """"""
-        self.start_logger()
-        self.logger = logging.getLogger(self.__class__.__name__) #self.__class__.__name__ = nombre de la clase
+        self.setup_logger()
+        self.logger = logging.getLogger(self.__class__.__name__)
     
     def start_app(self):
         """"""
@@ -48,37 +48,32 @@ class Starter:
         """"""
         self.logger.warning(warnings.formatwarning(message, category, filename, lineno))
 
-    def start_logger(self):
+    def setup_logger(self):
         """"""
         #config logger
         logging.basicConfig(level=logging.DEBUG,
                             format="%(levelname)-7s %(name)s: %(message)s")
 
-        rotate_mb = 1 #1mb = 1*1024*1024
+        rotate_mb = 1
         rotating = logging.handlers.RotatingFileHandler(cons.LOG_FILE, mode="ab", maxBytes=rotate_mb*1024*1024, backupCount=5)
         rotating.setLevel(logging.INFO)
         rotating.setFormatter(logging.Formatter(cons.LOG_FORMAT))
         logging.getLogger("").addHandler(rotating)
 
-        #rotating.doRollover() #write on a new log file, rotate the previous one.
-        
-        #doRotate()
-
     def start_gui(self):
         """"""
-        #Gui, create logger first
         from PySide.QtGui import QApplication
         from qt.main import Gui, excepthook, halt, init_gettext
 
-        sys.excepthook = excepthook #capturar exceptiones unhandled.
-        warnings.showwarning = self.redirect_warnings #capturar pygtk warnings.
-        init_gettext() #internacionalization
+        sys.excepthook = excepthook  # capture unhandled exceptiones.
+        warnings.showwarning = self.redirect_warnings  # capture pygtk warnings.
+        init_gettext()  # internacionalization
+
         try:
             self.logger.info("New app gui instance")
             app = QApplication(['']) #QApplication(sys.argv)
             gui = Gui()
             app.exec_()
-            gui.dispatcher.stop()
         except Exception as err:
             self.logger.exception(err)
             halt()  # close gui.
@@ -86,7 +81,7 @@ class Starter:
     def clean_up(self):
         from core.api import api
         from core.dispatch.idle_queue import set_events
-        set_events() #quit pending events.
+        set_events()  # quit pending events.
         api.stop_all_threads()
 
     def exit(self, value=0):
@@ -95,17 +90,16 @@ class Starter:
 
 
 if __name__ == "__main__":
-    #sign_in = SingleAppInstance()
     python_version_check()
     starter = Starter()
     try:
-        installThreadExcepthook() #This allows to log exceptions in threads.
+        installThreadExcepthook()  # This allows to log exceptions in threads.
         starter.start_app()
         starter.clean_up()
     except KeyboardInterrupt:
         starter.exit("KeyboardInterrupt.")
     except Exception as err:
-        starter.logger.exception(err) #Unhandled error.
+        starter.logger.exception(err)  # Unhandled error.
         starter.exit("Unhandled Exception!!")
     else:
         starter.exit()
