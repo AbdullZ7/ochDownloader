@@ -6,8 +6,9 @@ from PySide.QtNetwork import QLocalServer, QLocalSocket
 
 
 class QSingleApplication:
-    def __init__(self, app_id):
+    def __init__(self, app, app_id):
         # create local socket. If cant connect, create local server
+        self.app = app
         self.app_id = app_id
         self.can_run = False
         self.create_socket()
@@ -21,9 +22,10 @@ class QSingleApplication:
     def on_connected(self):
         if len(sys.argv) > 1 and sys.argv[1] is not None:
             self.socket.write(sys.argv[1])
-            #self.socket.bytesWritten.connect(self.quit)
+            self.socket.bytesWritten.connect(self.app.quit)
         else:
             QMessageBox.warning(None, "Already running", "The program is already running.")
+            self.app.quit()
 
     def create_server(self):
         self.server = QLocalServer()
@@ -46,18 +48,16 @@ class QSingleApplication:
 if __name__ == '__main__':
     from PySide.QtGui import QMainWindow, QLabel
 
-    class DallAgneseWindow(QMainWindow):
+    class GUI(QMainWindow):
         def __init__(self):
             QMainWindow.__init__(self)
             self.setWindowTitle("QSingleApplication Demo")
             labelText = "demo app"
             self.setCentralWidget(QLabel(labelText))
+            self.show()
 
     app = QApplication(sys.argv) #QApplication(sys.argv)
-    ss = QSingleApplication("ochDownloader")
+    ss = QSingleApplication(app, app_id="ochDownloader")
     if ss.can_run:
-        myWindow = DallAgneseWindow()
-        myWindow.show()
-        sys.exit(app.exec_())
-    else:
-        sys.exit(0)
+        gui = GUI()
+    sys.exit(app.exec_())
