@@ -4,15 +4,15 @@ import logging
 logger = logging.getLogger(__name__)
 
 try:
-    from addons.unrar.addon_gui import OPTION_UNRAR_ACTIVE
     from addons.unrar.signals import unrar_file
 except ImportError:
-    OPTION_UNRAR_ACTIVE = None
     unrar_file = None
 
 from core.download_checker.item import DownloadItem
 
-from .decrypt import Decrypter, get_out_name
+from .decrypt import Decrypter
+
+FILE_EXT = ".crypted"
 
 
 class Item:
@@ -23,6 +23,13 @@ class Item:
         self.link = link
         self.th = None
         self.status = None
+        self.out_name = self.get_out_name(name)
+
+    def get_out_name(self, name):
+        if name.endswith(FILE_EXT):
+            return name[:-len(FILE_EXT)]
+        else:
+            return name + ".decrypted"
 
 
 class DecryptManager:
@@ -65,7 +72,8 @@ class DecryptManager:
                         logger.error(status)
                     else:
                         self.remove_file(item.path, item.name)
-                        unrar_file.emit(DownloadItem(get_out_name(item.name), "mega", item.link, path=item.path))
+                        if unrar_file is not None:
+                            unrar_file.emit(DownloadItem(item.out_name, "mega", item.link, path=item.path))
                 else:
                     status = "Error: Empty pipe"
                     logger.error(status)

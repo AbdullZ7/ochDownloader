@@ -4,6 +4,7 @@ import urllib2
 from core.plugin.base import PluginBase, ParsingError, BUFF_SZ
 
 from addons.mega import crypto
+from addons.mega.manager import FILE_EXT
 
 # http://mega.co.cz/#!file_id!decrypted_key
 
@@ -29,7 +30,7 @@ class PluginDownload(PluginBase):
         attributes = crypto.base64urldecode(file['at'])
         attributes = crypto.dec_attr(attributes, k)
 
-        self.save_as = attributes['n'] + ".crypted"
+        self.save_as = attributes['n'] + FILE_EXT
         self.source = self.get_page(dl_url, close=False)
 
     def request(self, url, data):

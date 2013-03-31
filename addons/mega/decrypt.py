@@ -6,15 +6,6 @@ from Crypto.Util import Counter
 
 import crypto
 
-FILE_EXT = ".crypted"
-
-
-def get_out_name(name):
-    if name.endswith(FILE_EXT):
-        return name[:-len(FILE_EXT)]
-    else:
-        return name + ".decrypted"
-
 
 class Decrypter(multiprocessing.Process):
     def __init__(self, download_item, pipe_in):
@@ -23,7 +14,8 @@ class Decrypter(multiprocessing.Process):
         self.link = download_item.link
         self.path = download_item.path
         self.name = download_item.name
-        self.pipe_in = pipe_in # (err_flag, msg)
+        self.out_name = download_item.out_name
+        self.pipe_in = pipe_in  # (err_flag, msg)
 
     def run(self):
         try:
@@ -43,8 +35,7 @@ class Decrypter(multiprocessing.Process):
 
         file_path = os.path.join(self.path, self.name)
         size = os.path.getsize(file_path)
-        out_name = get_out_name(self.name)
-        out_file_path = os.path.join(self.path, out_name)
+        out_file_path = os.path.join(self.path, self.out_name)
 
         decryptor = AES.new(crypto.a32_to_str(k), AES.MODE_CTR, counter=Counter.new(128, initial_value=((iv[0] << 32) + iv[1]) << 64))
 
