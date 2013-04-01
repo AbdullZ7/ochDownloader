@@ -51,14 +51,8 @@ class Starter:
         self.logger.warning(warnings.formatwarning(message, category, filename, lineno))
 
     def create_config_folder(self):
-        try:
-            if not os.path.exists(cons.HOME_APP_PATH):
-                os.makedirs(cons.HOME_APP_PATH)
-        except EnvironmentError as err:
-            fh = logging.FileHandler(os.path.join(cons.HOME_PATH, cons.LOG_VERBOSE_NAME), mode="wb")
-            logging.getLogger("").addHandler(fh)
-            logger = logging.getLogger(self.__class__.__name__)
-            logger.exception(err)
+        if not os.path.exists(cons.HOME_APP_PATH):
+            os.makedirs(cons.HOME_APP_PATH)
 
     def setup_logger(self):
         """"""
@@ -93,6 +87,7 @@ class Starter:
     def clean_up(self):
         from core.api import api
         from core.dispatch.idle_queue import set_events
+
         set_events()  # quit pending events.
         api.stop_all_threads()
 

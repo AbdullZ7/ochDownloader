@@ -13,27 +13,27 @@ idle_loop = Queue.Queue()
 def idle_add(func, *args, **kwargs):
     def idle():
         func(*args, **kwargs)
-        return False
     idle_loop.put(idle)
 
 
 def idle_add_and_wait(func, *args, **kwargs):
     event = threading.Event()
+
     def idle():
         try:
             func(*args, **kwargs)
-            return False
         finally:
             event.set()
+
     if register_event(event):
-        #gobject.idle_add(idle)
         idle_loop.put(idle)
-        event.wait() #wait for set().
+        event.wait()  # wait for set().
+
     remove_event(event)
 
 
-def set_events(): #execute at exit.
-    logger.debug("Setting pending events.")
+def set_events():  # execute at exit.
+    global _block
     _block = True
     with _thread_lock:
         for event in _event_list:
@@ -41,6 +41,7 @@ def set_events(): #execute at exit.
 
 
 def register_event(event):
+    global _block
     with _thread_lock:
         _event_list.append(event)
     if not _block:
