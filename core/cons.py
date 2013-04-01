@@ -1,31 +1,30 @@
 import os
 import sys
 
-
 #app constants
 APP_NAME = "ochDownloader"
 APP_VER = "0.9.2"
 APP_TITLE = " ".join((APP_NAME, APP_VER, ""))
 
 #app path constants
-APP_PATH = os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "") #.decode("utf-8") #os.path.dirname(sys.argv[0]) = .../root, os.path.join = .../root/
-DLFOLDER_PATH = os.path.join(APP_PATH, "Downloads")
+APP_PATH = os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "")
+HOME_PATH = os.path.expanduser("~")
+HOME_APP_PATH = os.path.join(HOME_PATH, "." + APP_NAME)  # hidden folder .ochDownloader
+DLFOLDER_PATH = os.path.join(HOME_PATH, "Downloads")
 PLUGINS_PATH = os.path.join(APP_PATH, "plugins")
-CONFIG_FILE = os.path.join(APP_PATH, "config.ini")
-SESSION_FILE = os.path.join(APP_PATH, "session3")
+CONFIG_FILE = os.path.join(HOME_APP_PATH, "config.ini")
+SESSION_FILE = os.path.join(HOME_APP_PATH, "session3")
 ADDONS_GUI_PATH = os.path.join(APP_PATH, "addons")
 MEDIA_PATH = os.path.join(APP_PATH, "media")
 DB_PATH = os.path.join(APP_PATH, "db")
 DB_FILE = os.path.join(DB_PATH, "db.sqlite")
-#LOCK_FILE = os.path.join(APP_PATH, "process.lock") #allow single app instance. not implemented.
-#Internationalization
 LOCALE_PATH = os.path.join(APP_PATH, "Locale")
 
 #plugins
 PLUGIN_CONFIG_FILE = "config.ini"
 
 #file constants
-FILE_BUFSIZE = 1024 * 1024 #1MB, 0 = no buffer, -1 = OS buffer.
+FILE_BUFSIZE = 1024 * 1024  # 1MB, 0 = no buffer, -1 = OS buffer.
 
 #os constants
 OS_WIN = False
@@ -42,9 +41,7 @@ else:
 LOG_NAME = "error.log"
 LOG_FORMAT = "%(asctime)s %(levelname)-7s %(name)s: %(message)s"
 LOG_MODE = "wb"
-LOG_FILE = os.path.join(APP_PATH, LOG_NAME)
-#OLD_NAME = "error_old.log"
-#OLD_LOG = os.path.join(APP_PATH, OLD_NAME)
+LOG_FILE = os.path.join(HOME_APP_PATH, LOG_NAME)
 
 #Update constants
 UPDATE_URL = "http://www.ochdownloader.com/update.txt"
@@ -73,8 +70,8 @@ LINK_CHECKING = "Checking"
 #account status constants
 ACCOUNT_PREMIUM = "Premium"
 ACCOUNT_FREE = "Free"
-ACCOUNT_FAIL = "Fail" #login fail
-ACCOUNT_ERROR = "Error" #cant connect
+ACCOUNT_FAIL = "Fail"  # login fail
+ACCOUNT_ERROR = "Error"  # cant connect
 
 #unavailable names
 UNKNOWN = "Unknown"
