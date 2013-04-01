@@ -2,6 +2,7 @@ import warnings
 import logging
 import logging.handlers
 import sys
+import os
 import threading
 
 #Libs
@@ -37,6 +38,7 @@ class Starter:
     """"""
     def __init__(self):
         """"""
+        self.create_config_folder()
         self.setup_logger()
         self.logger = logging.getLogger(self.__class__.__name__)
     
@@ -47,6 +49,16 @@ class Starter:
     def redirect_warnings(self, message, category, filename, lineno, file=None, line=None):
         """"""
         self.logger.warning(warnings.formatwarning(message, category, filename, lineno))
+
+    def create_config_folder(self):
+        try:
+            if not os.path.exists(cons.HOME_APP_PATH):
+                os.makedirs(cons.HOME_APP_PATH)
+        except EnvironmentError as err:
+            fh = logging.FileHandler(os.path.join(cons.HOME_PATH, cons.LOG_VERBOSE_NAME), mode="wb")
+            logging.getLogger("").addHandler(fh)
+            logger = logging.getLogger(self.__class__.__name__)
+            logger.exception(err)
 
     def setup_logger(self):
         """"""
