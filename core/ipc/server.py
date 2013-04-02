@@ -1,6 +1,8 @@
 import os
 import asyncore
 import socket
+import logging
+logger = logging.getLogger(__name__)
 
 from core import cons
 
@@ -21,7 +23,7 @@ class ServerHandler(asyncore.dispatcher):
     def handle_close(self):
         args = ''.join(self.data).strip().split(' ')
         ParseArgs(args)
-        self.data = []
+        del self.data[:]
         self.close()
 
 
@@ -53,8 +55,11 @@ def start():
 
 
 def write_file(port):
-    with open(FILE, "wb") as fh:
-        fh.write(port)
+    try:
+        with open(FILE, "wb") as fh:
+            fh.write(port)
+    except EnvironmentError as err:
+        logger.exception(err)
 
 
 if __name__ == "__main__":

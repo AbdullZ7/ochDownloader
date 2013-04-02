@@ -30,16 +30,21 @@ class Client(asyncore.dispatcher):
         self.buffer = self.buffer[sent:]
 
 
-def start():
+def start(data):
     port = get_port_from_file()
-    client = Client('localhost', port, data)
-    asyncore.loop()  # blocks
+    if port:
+        client = Client('localhost', port, data)
+        asyncore.loop()  # blocks
 
 
 def get_port_from_file():
-    with open(FILE, "rb") as fh:
-        port = int(fh.read().strip())
-    return port
+    try:
+        with open(FILE, "rb") as fh:
+            port = int(fh.read().strip())
+    except (EnvironmentError, ValueError) as err:
+        logger.exception(err)
+    else:
+        return port
 
 
 if __name__ == "__main__":
