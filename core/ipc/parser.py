@@ -12,7 +12,7 @@ class ParseArgs(ArgumentParser):
     def __init__(self, args):
         ArgumentParser.__init__(self)
         self.add_argument('-i', '--ipc', dest='ipc', default=False)
-        self.add_argument('-l', '--links', dest='links', default=None)
+        self.add_argument('-l', '--links', dest='links')
         self.add_argument('-c', '--cookie', dest='cookie')
         self.add_argument('-p', '--path', dest='path')
         self.arguments = self.parse_args(args)
@@ -25,13 +25,6 @@ class ParseArgs(ArgumentParser):
         if "--links" in args:
             args = self.format_links(args)
         return ArgumentParser.parse_args(self, *args, **kwargs)
-
-    def send_downloads(self, args):
-        #TODO emit signal, passing all links
-        # add an option so if there is no --path, we can set a default path or add to checking otherwise
-        #if self.arguments.links is not None:
-        if self.arguments.cookie is not None:
-            cj = self.load_cookie(self.arguments.cookie)
 
     def format_links(self, args):
         """
@@ -55,14 +48,3 @@ class ParseArgs(ArgumentParser):
             return new_args
         else:
             return args
-
-    def load_cookie(self, path):
-        cj = cookielib.MozillaCookieJar()
-        cj.magic_re = '' # fixes LoadError, netscape header comment checking.
-        try:
-            cj.load(path)
-        except Exception as err:
-            logger.warning(err)
-            return None
-        else:
-            return cj

@@ -5,6 +5,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 from core import cons
+from core import utils
+from core import events
 
 from .parser import ParseArgs
 
@@ -19,10 +21,21 @@ class ServerHandler(asyncore.dispatcher):
         self.data.append(data)
 
     def handle_close(self):
-        args = ''.join(self.data).strip().split(' ')
-        ParseArgs(args)
-        del self.data[:]
         self.close()
+        self.emit()
+
+    def emit(self):
+        args = ''.join(self.data).strip().split(' ')
+        parser = ParseArgs(args)
+        if parser.arguments.links is not None:
+            path = parser.arguments.path or cons.DLFOLDER_PATH
+            links = parser.arguments.links
+            if parser.arguments.cookie is not None:
+                cj = utils.load_cookie(parser.arguments.cookie)
+            else:
+                cj = None
+            events.add_downloads.emit(links, path, cj)
+        #del self.data[:]
 
 
 class Server(asyncore.dispatcher):
@@ -47,9 +60,12 @@ class Server(asyncore.dispatcher):
 
 
 def start():
-    server = Server('localhost', 0)
-    write_file(str(server.port_))
-    asyncore.loop()  # blocks
+    try:
+        server = Server('localhost', 0)
+        write_file(str(server.port_))
+        asyncore.loop()  # blocks
+    except Exception as err:
+        logger.exception(err)
 
 
 def write_file(port):
@@ -58,9 +74,3 @@ def write_file(port):
             fh.write(port)
     except EnvironmentError as err:
         logger.exception(err)
-
-
-if __name__ == "__main__":
-    server = Server('localhost', 0)
-    # Note that here loop is infinite (count is not given)
-    asyncore.loop()  # blocks

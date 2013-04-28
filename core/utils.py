@@ -4,6 +4,7 @@ import re
 import htmlentitydefs
 import subprocess
 import urllib
+import cookielib
 import logging
 logger = logging.getLogger(__name__)
 
@@ -277,6 +278,18 @@ def dict_from_cookiejar(cj):
             for cookie in cookies.values():
                 cookie_dict[cookie.name] = cookie.value
     return cookie_dict
+
+
+def load_cookie(path):
+        cj = cookielib.MozillaCookieJar()
+        cj.magic_re = ''  # fixes LoadError, netscape header comment checking.
+        try:
+            cj.load(path)
+        except Exception as err:
+            logger.warning(err)
+            return None
+        else:
+            return cj
 
 
 if __name__ == "__main__":
