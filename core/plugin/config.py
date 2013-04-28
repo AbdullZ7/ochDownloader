@@ -59,9 +59,9 @@ class _PluginConfig(RawConfigParser):
 
     def load(self, path):
         try:
-            self.read(path) #read config file
+            self.read(path)  # read config file
         except Exception as err:
-            logger.info(err)
+            logger.warning(err)
 
     def create(self):
         """"""

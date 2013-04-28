@@ -26,7 +26,7 @@ class ServerHandler(asyncore.dispatcher):
 
     def emit(self):
         args = ''.join(self.data).strip().split(' ')
-        parser = ParseArgs(args)
+        parser = ParseArgs(args)  # since args are parsed in the other end, this should never raise an exception
         if parser.arguments.links is not None:
             path = parser.arguments.path or cons.DLFOLDER_PATH
             links = parser.arguments.links

@@ -49,7 +49,7 @@ class Starter:
         ipc_manager = IPCManager(sys.argv[1:])
         ipc_manager.start_worker()
 
-        if ipc_manager.server_is_running:
+        if ipc_manager.is_server:
             self.start_gui()
 
     def redirect_warnings(self, message, category, filename, lineno, file=None, line=None):
@@ -83,7 +83,7 @@ class Starter:
 
         try:
             self.logger.info("New app gui instance")
-            app = QApplication(['']) #QApplication(sys.argv)
+            app = QApplication([''])  # QApplication(sys.argv)
             gui = Gui()
             app.exec_()
         except Exception as err:

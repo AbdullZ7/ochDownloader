@@ -44,7 +44,7 @@ class PluginParser:
             module_name = FREE_MODULE
         else:
             module_name = ANONYM_MODULE
-        logger.info("%s %s" % (self.host, module_name))
+        logger.debug("%s %s" % (self.host, module_name))
         self.set_data(module_name)
 
     def set_data(self, module_name):
@@ -58,7 +58,7 @@ class PluginParser:
                 logger.warning("%s %s" % (self.host, str(err)))
             elif isinstance(err, CaptchaException):
                 logger.warning("%s %s" % (self.host, str(err)))
-            else: #ParsingError
+            else:  # ParsingError
                 logger.exception(err)
             if err:
                 self.err_msg = str(err)

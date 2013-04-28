@@ -49,7 +49,7 @@ class Downloader(threading.Thread, MultiDownload):
                 self.stop_flag = True
                 self.status = cons.STATUS_STOPPED
                 self.status_msg = "Stopped"
-                logger.info(err)
+                logger.debug(err)
         else:
             self.status = cons.STATUS_FINISHED
             self.status_msg = "Finished"

@@ -6,6 +6,7 @@ from core import cons
 
 
 class SocketError(Exception): pass
+class FilePortError(Exception): pass
 
 
 class Client:
@@ -51,5 +52,6 @@ class ClientManager():
                 port = int(fh.read().strip())
         except (EnvironmentError, ValueError) as err:
             logger.exception(err)
+            raise FilePortError(err)
         else:
             return port

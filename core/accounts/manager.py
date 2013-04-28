@@ -28,9 +28,7 @@ class _AccountManager:
                 for item in accounts_list:
                     account_item = AccountItem(item[HOST], item[USER], item[PASSWORD], item[STATUS], item[ENABLE])
                     self.add_account_item(account_item)
-        except (EnvironmentError, pickle.UnpicklingError) as err:
-            logger.info(err)
-        except EOFError as err:
+        except (EnvironmentError, EOFError, pickle.UnpicklingError) as err:
             logger.warning(err)
         except Exception as err:
             logger.exception(err)
