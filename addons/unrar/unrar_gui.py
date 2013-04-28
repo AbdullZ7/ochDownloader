@@ -63,11 +63,14 @@ class UnRARGUI:
 
     def get_first_volume_name(self, file_name):
         m = re.match(unrar.RAR_FILE_PATTERN, file_name)
-        if m is not None: #is rar file
-            if m.group('part') is not None: #new ext. style
-                return u"".join((m.group('name'), ".part1.rar"))
-            else: #single part or old ext. style
-                return u"".join((m.group('name'), ".rar"))
+        if m is not None: # is rar file
+            if m.group('part') is not None: # new ext. style
+                if len(m.group('part')) == 6: # .partX
+                    return "".join((m.group('name'), ".part1.rar"))
+                else: # .partXX
+                    return "".join((m.group('name'), ".part01.rar"))
+            else: # single part or old ext. style
+                return "".join((m.group('name'), ".rar"))
         else:
             return
     

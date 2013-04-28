@@ -44,7 +44,13 @@ class Starter:
     
     def start_app(self):
         """"""
-        self.start_gui()
+        from core.ipc.manager import IPCManager
+
+        ipc_manager = IPCManager(sys.argv[1:])
+        ipc_manager.start_worker()
+
+        if ipc_manager.server_is_running:
+            self.start_gui()
 
     def redirect_warnings(self, message, category, filename, lineno, file=None, line=None):
         """"""

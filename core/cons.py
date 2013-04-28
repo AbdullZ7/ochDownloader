@@ -12,13 +12,14 @@ HOME_PATH = os.path.expanduser("~")
 HOME_APP_PATH = os.path.join(HOME_PATH, "." + APP_NAME)  # hidden folder .ochDownloader
 DLFOLDER_PATH = os.path.join(HOME_PATH, "Downloads")
 PLUGINS_PATH = os.path.join(APP_PATH, "plugins")
-CONFIG_FILE = os.path.join(HOME_APP_PATH, "config.ini")
-SESSION_FILE = os.path.join(HOME_APP_PATH, "session3")
 ADDONS_GUI_PATH = os.path.join(APP_PATH, "addons")
 MEDIA_PATH = os.path.join(APP_PATH, "media")
+LOCALE_PATH = os.path.join(APP_PATH, "Locale")
+CONFIG_FILE = os.path.join(HOME_APP_PATH, "config.ini")
+SESSION_FILE = os.path.join(HOME_APP_PATH, "session3")
 DB_PATH = os.path.join(HOME_APP_PATH, "db")
 DB_FILE = os.path.join(DB_PATH, "db.sqlite")
-LOCALE_PATH = os.path.join(APP_PATH, "Locale")
+IPC_PORT_FILE = os.path.join(HOME_APP_PATH, "port")
 
 #plugins
 PLUGIN_CONFIG_FILE = "config.ini"
@@ -39,7 +40,6 @@ else:
 
 #logger constants
 LOG_NAME = "error.log"
-LOG_VERBOSE_NAME = "%s_error.log" % APP_NAME
 LOG_FORMAT = "%(asctime)s %(levelname)-7s %(name)s: %(message)s"
 LOG_MODE = "wb"
 LOG_FILE = os.path.join(HOME_APP_PATH, LOG_NAME)

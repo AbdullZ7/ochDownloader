@@ -8,8 +8,6 @@ from core import cons
 
 from .parser import ParseArgs
 
-FILE = os.path.join(cons.APP_PATH, "port.txt")
-
 
 class ServerHandler(asyncore.dispatcher):
     def __init__(self, *args, **kwargs):
@@ -56,7 +54,7 @@ def start():
 
 def write_file(port):
     try:
-        with open(FILE, "wb") as fh:
+        with open(cons.IPC_PORT_FILE, "wb") as fh:
             fh.write(port)
     except EnvironmentError as err:
         logger.exception(err)

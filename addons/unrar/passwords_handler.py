@@ -1,9 +1,9 @@
 import os
 import threading
 import logging
-logger = logging.getLogger(__name__) #__name___ = nombre del modulo. logging.getLogger = Usa la misma instancia de clase (del starter.py).
+logger = logging.getLogger(__name__)
 
-import core.cons as cons
+from core import cons
 
 
 PWD_FILE_PATH = os.path.join(cons.APP_PATH, "pwd.txt")
@@ -49,11 +49,11 @@ class _PasswordsHandler:
         """"""
         try:
             with open(PWD_FILE_PATH, "r", cons.FILE_BUFSIZE) as fh:
-                lines_list = [line.strip() for line in fh.readlines() if line.strip()]
+                passwords_set = {line.strip() for line in fh.readlines() if line.strip()}
         except Exception as err:
             logger.exception(err)
         else:
-            self.__passwords_set = set(lines_list)
+            self.__passwords_set = passwords_set
 
 
 #modules are singletons in python :)

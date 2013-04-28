@@ -1,54 +1,55 @@
-import asyncore
 import socket
 import logging
 logger = logging.getLogger(__name__)
 
-from .server import FILE
+from core import cons
 
 
-class Client(asyncore.dispatcher):
+class SocketError(Exception): pass
+
+
+class Client:
     def __init__(self, host, port, data):
-        asyncore.dispatcher.__init__(self)
+        self.buffer = data
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connect((host, port))
-        self.buffer = data
 
-    def handle_connect(self):
-        pass
+    def create_socket(self, family, stype):
+        self.family_and_type = family, stype
+        self.socket = socket.socket(family, stype)
 
-    def handle_close(self):
+    def connect(self, address):
+        try:
+            self.socket.connect(address)
+        except socket.error as err:
+            raise SocketError(err)
+
+    def send(self):
+        while self.buffer:
+            sent = self.socket.send(self.buffer)
+            self.buffer = self.buffer[sent:]
         self.close()
 
-    def handle_read(self):
-        logger.debug(self.recv(8192))
-
-    def writable(self):
-        return len(self.buffer) > 0
-
-    def handle_write(self):
-        sent = self.send(self.buffer)
-        self.buffer = self.buffer[sent:]
+    def close(self):
+        self.socket.close()
 
 
-def start(data):
-    port = get_port_from_file()
-    if port:
-        client = Client('localhost', port, data)
-        asyncore.loop()  # blocks
+class ClientManager():
+    def __init__(self, data):
+        self.port = self.get_port_from_file()
+        self.client = Client('localhost', self.port, data)
 
+    def start(self):
+        try:
+            self.client.send()
+        except Exception as err:
+            logger.exception(err)
 
-def get_port_from_file():
-    try:
-        with open(FILE, "rb") as fh:
-            port = int(fh.read().strip())
-    except (EnvironmentError, ValueError) as err:
-        logger.exception(err)
-    else:
-        return port
-
-
-if __name__ == "__main__":
-    data = "some"
-    client = Client('localhost', get_port_from_file(), data)
-    # Note that here loop is infinite (count is not given)
-    asyncore.loop() #blocks
+    def get_port_from_file(self):
+        try:
+            with open(cons.IPC_PORT_FILE, "rb") as fh:
+                port = int(fh.read().strip())
+        except (EnvironmentError, ValueError) as err:
+            logger.exception(err)
+        else:
+            return port

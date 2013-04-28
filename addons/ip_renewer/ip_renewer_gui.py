@@ -26,6 +26,7 @@ class IPRenewerGUI:
         if self.can_change_ip():
             self.id_item_list = [download_item.id for download_item in api.get_active_downloads().values() + api.get_queue_downloads().values()]
             signals.on_stop_all.emit()
+
             if conf.get_addon_option(OPTION_RENEW_SCRIPT_ACTIVE, default=False, is_bool=True):
                 self.ip_renewer.start_shell_script()
             else:
@@ -33,7 +34,6 @@ class IPRenewerGUI:
             
             self.status_msg = _("Changing IP...")
             signals.status_bar_push_msg.emit(self.status_msg)
-            
             self.timer = self.parent.idle_timeout(1000, self.update)
         else:
             self.is_working = False
