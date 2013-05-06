@@ -75,12 +75,13 @@ class Tray(QSystemTrayIcon):
         self.showMessage(title, msg, icon, duration * 1000)
 
     def connect_messages(self):
-        events.captcha_dialog.connect(self.show_catpcha_message)
+        # TODO: add signal to show messages
+        #signals.captcha_dialog.connect(self.show_catpcha_message)
         events.all_downloads_complete.connect(self.show_all_downloads_complete_message)
         signals.captured_links_count.connect(self.show_captured_links_message)
 
     def disconnect_messages(self):
-        events.captcha_dialog.disconnect(self.show_catpcha_message)
+        #signals.captcha_dialog.disconnect(self.show_catpcha_message)
         events.all_downloads_complete.disconnect(self.show_all_downloads_complete_message)
         signals.captured_links_count.disconnect(self.show_captured_links_message)
 
