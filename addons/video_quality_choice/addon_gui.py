@@ -1,10 +1,9 @@
 import logging
 logger = logging.getLogger(__name__)
 
-from core import events
-
 from qt.addons import AddonCore
 
+import signals
 from choice_gui import QualityChoiceDialog
 
 
@@ -20,7 +19,7 @@ class Addon(AddonCore):
         pass
 
     def connect(self):
-        events.quality_choice_dialog.connect(self.trigger) #connect event
+        signals.quality_choice_dialog.connect(self.trigger) #connect event
 
     #def disconnect(self):
         #events.quality_choice_dialog.disconnect(self.trigger)

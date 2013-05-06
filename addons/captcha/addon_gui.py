@@ -1,11 +1,10 @@
 import logging
 logger = logging.getLogger(__name__)
 
-from core import events
-
 from qt.addons import AddonCore
 
-from captcha_gui import CaptchaDialog
+import signals
+from .captcha_gui import CaptchaDialog
 
 
 class Addon(AddonCore):
@@ -21,7 +20,7 @@ class Addon(AddonCore):
     
     def connect(self):
         """"""
-        events.captcha_dialog.connect(self.trigger) #connect event
+        signals.captcha_dialog.connect(self.trigger) #connect event
     
     #def disconnect(self):
         #""""""

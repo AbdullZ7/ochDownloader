@@ -1,10 +1,10 @@
 import threading
 import logging
-from core.dispatch import idle_queue
-
 logger = logging.getLogger(__name__)
 
-from core import events
+from core.dispatch import idle_queue
+
+import signals
 
 _thread_lock = threading.Lock()
 
@@ -34,7 +34,7 @@ class QualityChoice:
 
     def make_choice(self):
         if idle_queue.register_event(self.event):
-            events.quality_choice_dialog.emit(self.f_name, self.choices_list, self.set_solution)
+            signals.quality_choice_dialog.emit(self.f_name, self.choices_list, self.set_solution)
             self.event.wait()
             self.event.clear() #re-use.
             idle_queue.remove_event(self.event)

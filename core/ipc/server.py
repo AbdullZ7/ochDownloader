@@ -34,7 +34,7 @@ class ServerHandler(asyncore.dispatcher):
                 cj = utils.load_cookie(parser.arguments.cookie)
             else:
                 cj = None
-            events.add_downloads.emit(links, path, cj)
+            events.add_raw_downloads.emit(links, path, cj)
         #del self.data[:]
 
 

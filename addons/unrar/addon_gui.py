@@ -4,6 +4,7 @@ logger = logging.getLogger(__name__)
 from core import events
 from core.config import conf
 
+from qt import signals as qt_signals
 from qt.addons import AddonCore
 
 import signals
@@ -24,7 +25,7 @@ class Addon(AddonCore):
         AddonCore.__init__(self, parent)
         self.name = _("Auto extraction")
         self.unrar_gui = UnRARGUI(parent)
-        events.add_password.connect(passwords_handler.add)
+        qt_signals.add_password.connect(passwords_handler.add)
         #self.ip_renewer_cls = IPRenewer()
 
     def get_preferences(self):

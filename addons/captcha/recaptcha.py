@@ -1,11 +1,12 @@
 import threading
 import logging
-from core.dispatch import idle_queue
-
 logger = logging.getLogger(__name__)
 
-from core import events
+from core.dispatch import idle_queue
 from core.network.connection import request
+
+import signals
+
 
 _thread_lock = threading.Lock()
 
@@ -37,7 +38,7 @@ class Recaptcha:
         self.captcha_challenge = None
         if idle_queue.register_event(self.event):
             challenge = Challenge(self.captcha_link)
-            events.captcha_dialog.emit(self.host, challenge, self.set_solution)
+            signals.captcha_dialog.emit(self.host, challenge, self.set_solution)
             self.event.wait()
             self.event.clear() #re-use.
             idle_queue.remove_event(self.event)

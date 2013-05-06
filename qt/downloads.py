@@ -5,6 +5,7 @@ logger = logging.getLogger(__name__)
 
 from core import cons
 from core import utils
+from core.config import conf
 from core.api import api
 
 from PySide.QtGui import *
@@ -253,6 +254,21 @@ class Downloads(QTreeView):
         for row in self.items:
             if row[1] == queue_icon:
                 row[1] = stopped_icon
+
+    def add_raw_downloads(self, links, path, cookie):
+        # called by ipc
+        download_items_list = []
+        for link in links:
+            download_item = api.create_download_item(cons.UNKNOWN, link)
+            download_item.cookie = cookie
+            download_items_list.append(download_item)
+
+        if download_items_list:
+            api.downloader_init(download_items_list, path)
+            self.store_items(download_items_list)
+
+            if conf.get_auto_switch_tab():
+                signals.switch_tab.emit(0)
 
     def store_items(self, item_list):
         for download_item in item_list:

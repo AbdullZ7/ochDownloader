@@ -28,28 +28,28 @@ class AddDownloads(QVBoxLayout):
         self.weak_parent = weakref.ref(parent)
         
         self.tree_view = QTreeView()
-        #
+
         self.tree_view.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tree_view.customContextMenuRequested.connect(self.context_menu)
-        #
+
         #listview look
         self.tree_view.setWordWrap(True) #search textElideMode
         self.tree_view.setRootIsDecorated(False)
         self.tree_view.setIndentation(0)
         self.tree_view.setAlternatingRowColors(True)
-        #
+
         self.icons_dict = self.get_icons()
         self.items = []
         self.rows_buffer = {} #{id_item: row_obj, }
-        #self.items = [[True, "1", "11", "t5est", "t3est"], [True, "1", "11", "t5est", "t3est"], [True, "1", "11", "t5est", "t3est"]]
+
         bool_cols = [1, ]
         image_cols = [2, ]
         headers = ["hidden_id_item", "", "", _("File Name"), _("Host"), _("Size"), _("Status Message")]
-        #
+
         self.__model = SimpleListModel(headers, self.items, bool_cols, image_cols)
         self.tree_view.setModel(self.__model)
         self.addWidget(self.tree_view)
-        #
+
         self.tree_view.setColumnHidden(0, True)
         self.tree_view.setColumnWidth(1, 27)
         self.tree_view.setColumnWidth(2, 27)
@@ -66,13 +66,14 @@ class AddDownloads(QVBoxLayout):
         self.cb.setMinimumWidth(1)
         cb_view = self.cb.view()
         cb_view.setAlternatingRowColors(True)
-        #
+
         self.paths_list = conf.get_save_dl_paths()
+
         if not self.paths_list:
             self.cb.addItem(cons.DLFOLDER_PATH)
         else:
             [self.cb.addItem(path) for path in reversed(self.paths_list)]
-        #
+
         hbox.addWidget(self.cb)
         
         btn_examine = QPushButton('...')
@@ -104,14 +105,13 @@ class AddDownloads(QVBoxLayout):
         self.menu.addSeparator()
         recheck_action = self.menu.addAction(_("Re-check"), self.on_recheck)
         clear_action = self.menu.addAction(_("Clear list"), self.on_clear_list)
-        #
+
         btn_menu = QPushButton()
         btn_menu.setMenu(self.menu)
         btn_menu.setFixedHeight(35)
         btn_menu.setMaximumWidth(22)
         btn_menu.setFlat(True)
         hbox.addWidget(btn_menu)
-        
         
         self.addLayout(hbox)
 
@@ -157,11 +157,13 @@ class AddDownloads(QVBoxLayout):
         item_id = row[0]
         download_item = api.get_checking_download_item(item_id)
         widget = QLineEdit()
+
         # set the line entry file name if we have one.
         if download_item.save_as:
             widget.setText(download_item.save_as)
         elif download_item.name != cons.UNKNOWN:
             widget.setText(download_item.name)
+
         dialog = Dialog(self.parent, "Save as", widget)
         if dialog.result() == QDialog.Accepted:
             save_as = widget.text()
@@ -219,26 +221,34 @@ class AddDownloads(QVBoxLayout):
             self.cb.removeItem(index)
     
     def on_download_selected(self):
+        # save the selected path
         current_path = self.cb.currentText()
         self.cb_remove(current_path)
         self.cb.insertItem(0, current_path)
+
         if current_path in self.paths_list:
             self.paths_list.remove(current_path)
+
         self.paths_list.append(current_path)
+
         if len(self.paths_list) > 5:
             self.paths_list.pop(0)
             self.cb.removeItem(5)
+
         self.cb.setCurrentIndex(0)
         conf.set_save_dl_paths(self.paths_list)
-        
+
+        # move selected items to downloads tab
         id_items_list = []
         iters = []
+
         for row in self.items:
-            if row[1]: # and row[4] != cons.UNSUPPORTED: #tmp
+            if row[1]:
                 iters.append(row)
                 id_item = row[0]
                 id_items_list.append(id_item)
                 del self.rows_buffer[id_item]
+
         [self.__model.remove(self.items.index(iter)) for iter in iters]
         
         item_list = api.pop_checking_items(id_items_list)
@@ -250,7 +260,7 @@ class AddDownloads(QVBoxLayout):
 
     def add_downloads_to_check(self, links_list, copy_link=True):
         for link in links_list:
-            download_item = api.create_download_item(cons.UNKNOWN, link, copy_link=copy_link) #return download_item object
+            download_item = api.create_download_item(cons.UNKNOWN, link, copy_link=copy_link)
             item = [download_item.id, True, self.icons_dict[cons.LINK_CHECKING], cons.UNKNOWN, None, None, None]
             #self.items.append(item)
             self.__model.append(item)
@@ -267,7 +277,8 @@ class AddDownloads(QVBoxLayout):
                     row[1] = False
                 row[2] = self.icons_dict[download_item.link_status]
                 row[3] = download_item.name
-                row[4] = download_item.host
+                if not download_item.host == cons.UNSUPPORTED:
+                    row[4] = download_item.host
                 if download_item.size:
                     row[5] = utils.size_format(download_item.size)
                 row[6] = download_item.link_status_msg
