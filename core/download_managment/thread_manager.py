@@ -38,10 +38,9 @@ class ThreadManager:
         """"""
         logger.debug("Asking threads to exit.")
         threads = self.thread_downloads.values()
-        while threads:
-            for th in threads[:]:
-                th.stop_flag = True
-                if th.is_alive():
-                    th.join(0.1)
-                else:
-                    threads.remove(th)
+
+        for th in threads:
+            th.stop_flag = True
+
+        for th in threads:
+            th.join()
