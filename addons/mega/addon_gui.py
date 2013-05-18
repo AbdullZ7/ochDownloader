@@ -8,7 +8,7 @@ from qt.addons import AddonCore
 from .tab import Tab
 from .manager import DecryptManager
 
-HOST_MEGA = "mega"
+HOST_MEGA = "mega.co.nz"
 
 
 class Addon(AddonCore):
