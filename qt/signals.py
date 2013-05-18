@@ -10,3 +10,4 @@ status_bar_push_msg = Event('status_bar_push_msg')
 captured_links_count = Event('captured_links_count')
 show_or_hide_tray = Event('show_or_hide_tray')
 add_password = Event('add_password')  # args: password
+add_to_downloader = Event('add_to_downloader')

@@ -16,7 +16,7 @@ class DownloaderBase:
         self.error_flag = False
         self.source = None
         self.link_file = None
-        self.status = cons.STATUS_RUNNING #status: Running, stopped, Queue, finished.
+        self.status = cons.STATUS_RUNNING
         self.status_msg = "Connecting"
         self.size_file = 0
         self.size_complete = 0

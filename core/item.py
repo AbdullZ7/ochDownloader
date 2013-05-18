@@ -5,19 +5,20 @@ logger = logging.getLogger(__name__)
 from collections import deque
 
 #Libs
-from core import cons
+import cons
+from plugin.config import plugins_config
 
 
 class DownloadItem:
     """"""
-    def __init__(self, name, host, link, path=cons.DLFOLDER_PATH, can_copy_link=True):
+    def __init__(self, name, link, path=cons.DLFOLDER_PATH, can_copy_link=True):
         """"""
-        self.id = str(uuid.uuid1()) #id unico.
+        self.id = str(uuid.uuid1())
         self.name = name
-        self.host = host
         self.link = link
         self.path = path
         self.can_copy_link = can_copy_link
+        self.host = self._get_host(link)
         self.status = cons.STATUS_QUEUE
         self.status_msg = None
         self.link_status = cons.LINK_CHECKING
@@ -43,6 +44,18 @@ class DownloadItem:
         self.speed = 0
         self.time_remain = 0
         self.time = 0
+
+    def _get_host(self, link):
+        i = 2 if link.startswith(("http://", "https://")) else 0
+        host = link.split("/")[i]  # get (www.|subdomain.)website.com
+        host_alt = ".".join(host.split(".")[1:])  # get website.com
+
+        if host in plugins_config.services_dict:
+            return host
+        elif host_alt in plugins_config.services_dict:
+            return host_alt
+        else:
+            return cons.UNSUPPORTED
 
     def _progress(self):
         """"""
@@ -89,7 +102,7 @@ class DownloadItem:
         else:
             return 0
 
-    def recalc_stats(self):
+    def calc_stats(self):
         """"""
         self.progress = self._progress()
         self.speed = self._speed()

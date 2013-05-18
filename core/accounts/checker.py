@@ -23,7 +23,7 @@ class AccountChecker(threading.Thread):
     def check(self):
         """"""
         try:
-            module = importlib.import_module("plugins.{0}.account".format(self.host))
+            module = importlib.import_module("plugins.{0}.account".format(self.host.replace('.', '_')))
             account = module.PluginAccount(self.username, self.password)
             account.parse()
         except ImportError as err:

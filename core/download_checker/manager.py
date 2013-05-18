@@ -3,11 +3,8 @@ logger = logging.getLogger(__name__)
 from collections import OrderedDict
 
 from core import cons
-from core import utils
 from core.slots import Slots
-from core.plugin.config import plugins_config
 from checker import LinkChecker
-from item import DownloadItem
 
 
 class DownloadCheckerManager:
@@ -40,20 +37,14 @@ class DownloadCheckerManager:
         self.__thread_checking_downloads.clear()
         self.__slots.slots = 0
 
-    def create_download_item(self, file_name, link, copy_link=True):
-        """"""
-        host = utils.get_host(link)
-        if plugins_config.services_dict.get(host, None) is None:
-            host = cons.UNSUPPORTED
-        download_item = DownloadItem(file_name, host, link, can_copy_link=copy_link)
+    def add_to_checker(self, download_item):
         self.__pending_downloads[download_item.id] = download_item
-        return download_item
     
     def start_checking(self):
         """"""
         for id_item, download_item in self.__pending_downloads.items():
             if self.__slots.add_slot():
-                th = LinkChecker(download_item.link)
+                th = LinkChecker(download_item)
                 th.start()
                 self.__thread_checking_downloads[id_item] = th
                 self.__checking_downloads[id_item] = download_item

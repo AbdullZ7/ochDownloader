@@ -27,10 +27,11 @@ class LimitExceededError(Exception): pass
 
 class PluginBase:
     """"""
-    def __init__(self, link, content_range, wait_func, cookie, video_quality):
+    def __init__(self, link, host, content_range, wait_func, cookie, video_quality):
         """"""
         self.link = link # host link
         self.dl_link = link # file ready to download link
+        self.host = host
         self.content_range = content_range
         self.wait_func = wait_func
         self.cookie = cookie or cookielib.CookieJar() # if empty or None do not use it
@@ -90,7 +91,7 @@ class PluginBase:
         if m is not None:
             link = "http://www.google.com/recaptcha/api/challenge?k=%s" % m.group('key')
             for retry in range(CAPTCHA_MAX_RETRIES):
-                c = Recaptcha(utils.get_host(self.link), link, self.wait_func)
+                c = Recaptcha(self.host, link, self.wait_func)
                 c.run_captcha()
                 if c.solution is not None:
                     page = self.recaptcha_post(pattern, page, c.captcha_challenge, c.solution, extra_fields)
@@ -117,7 +118,7 @@ class PluginBase:
             return self.get_match(pattern, page, err)
         except ParsingError as err:
             if warning:
-                logger.warning("%s %s" % (utils.get_host(self.link), err))
+                logger.warning("%s %s" % (self.host, err))
             return
 
     def countdown(self, pattern, page, limit, default):

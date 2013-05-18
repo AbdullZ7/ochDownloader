@@ -252,15 +252,15 @@ class AddDownloads(QVBoxLayout):
         [self.__model.remove(self.items.index(iter)) for iter in iters]
         
         item_list = api.pop_checking_items(id_items_list)
-        api.downloader_init(item_list, current_path)
-        signals.store_items.emit(item_list)
+        for download_item in item_list:
+            download_item.path = current_path
 
-        if conf.get_auto_switch_tab():
-            signals.switch_tab.emit(0)
+        signals.add_to_downloader.emit(item_list)
 
     def add_downloads_to_check(self, links_list, copy_link=True):
         for link in links_list:
             download_item = api.create_download_item(cons.UNKNOWN, link, copy_link=copy_link)
+            api.add_to_checker(download_item)
             item = [download_item.id, True, self.icons_dict[cons.LINK_CHECKING], cons.UNKNOWN, None, None, None]
             #self.items.append(item)
             self.__model.append(item)

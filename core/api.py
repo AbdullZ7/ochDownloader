@@ -3,30 +3,25 @@ logger = logging.getLogger(__name__)
 
 #Libs
 import cons
-from core.download_managment.manager import DownloadManager
-from core.download_checker.manager import DownloadCheckerManager
-from core.download_checker.item import DownloadItem
+import utils
+from download_managment.manager import DownloadManager
+from download_checker.manager import DownloadCheckerManager
+from item import DownloadItem
 from update_manager import UpdateManager
 from session import SessionParser
+from plugin.config import plugins_config
 
 
 class _Api(DownloadManager, DownloadCheckerManager):
-    """
-    AddDownloadsManager:
-    .Contiene la lista de archivos pendientes, y metodos para el chequeo de links.
-    .Atributos heredados:
-    self.pending_downloads - privados.
-    .Metodos heredados:
-    N/A
-    
-    DownloadManager:
-    N/A
-    """
+    """"""
     def __init__(self):
         """"""
         DownloadManager.__init__(self)
         DownloadCheckerManager.__init__(self)
         self.session_parser = SessionParser()
+
+    def create_download_item(self, file_name, link, copy_link=True):
+        return DownloadItem(file_name, link, can_copy_link=copy_link)
     
     def start_update_manager(self):
         update_manager = UpdateManager() #new thread.
@@ -68,7 +63,7 @@ class _Api(DownloadManager, DownloadCheckerManager):
         download_list = self.session_parser.load()
         try:
             for item in download_list:
-                download_item = DownloadItem(item[FILE_NAME], item[HOST], item[LINK], item[FILE_PATH])
+                download_item = DownloadItem(item[FILE_NAME], item[LINK], path=item[FILE_PATH])
                 download_item.status = cons.STATUS_STOPPED
                 download_item.progress = item[PROGRESS]
                 download_item.size = item[SIZE]

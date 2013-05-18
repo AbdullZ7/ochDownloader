@@ -9,12 +9,12 @@ from core import utils
 
 class LinkChecker(threading.Thread):
     """"""
-    def __init__(self, link):
+    def __init__(self, download_item):
         """"""
         threading.Thread.__init__(self)
         self.file_name = cons.UNKNOWN
-        self.host = utils.get_host(link)
-        self.link = link
+        self.host = download_item.host
+        self.link = download_item.link
         self.size = 0
         self.link_status = cons.LINK_CHECKING
         self.status_msg = None
@@ -26,7 +26,7 @@ class LinkChecker(threading.Thread):
     def check(self):
         """"""
         try:
-            module = importlib.import_module("plugins.{0}.link_checker".format(self.host))
+            module = importlib.import_module("plugins.{0}.link_checker".format(self.host.replace('.', '_')))
             self.link_status, file_name, self.size, self.status_msg = module.LinkChecker().check(self.link)
             self.file_name = utils.normalize_file_name(file_name)
         except ImportError as err:

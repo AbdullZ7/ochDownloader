@@ -168,13 +168,10 @@ class DownloadManager(ThreadManager):
         download_item.can_resume = th.can_resume
         download_item.is_premium = th.is_premium
         download_item.video_quality = th.video_quality
-        download_item.recalc_stats()
+        download_item.calc_stats()
 
-    def downloader_init(self, item_list, path):
-        for download_item in item_list:
-            download_item.path = path
-            self.queue_downloads[download_item.id] = download_item
-        self.next_download()
+    def add_to_downloader(self, download_item):
+        self.queue_downloads[download_item.id] = download_item
 
     def next_download(self):
         for download_item in self.queue_downloads.values():

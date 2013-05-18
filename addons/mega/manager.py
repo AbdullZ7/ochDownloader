@@ -8,7 +8,7 @@ try:
 except ImportError:
     unrar_file = None
 
-from core.download_checker.item import DownloadItem
+from core.item import DownloadItem
 
 from .decrypt import Decrypter
 
@@ -73,7 +73,7 @@ class DecryptManager:
                     else:
                         self.remove_file(item.path, item.name)
                         if unrar_file is not None:
-                            unrar_file.emit(DownloadItem(item.out_name, "mega", item.link, path=item.path))
+                            unrar_file.emit(DownloadItem(item.out_name, item.link, path=item.path))
                 else:
                     status = "Error: Empty pipe"
                     logger.error(status)

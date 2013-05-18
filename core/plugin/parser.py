@@ -49,8 +49,8 @@ class PluginParser:
 
     def set_data(self, module_name):
         try:
-            module = importlib.import_module("plugins.{0}.{1}".format(self.host, module_name))
-            p = module.PluginDownload(self.link, self.content_range, self.wait_func, self.cookie, self.video_quality)
+            module = importlib.import_module("plugins.{0}.{1}".format(self.host.replace('.', '_'), module_name))
+            p = module.PluginDownload(self.link, self.host, self.content_range, self.wait_func, self.cookie, self.video_quality)
             p.parse()
         except (ParsingError, LimitExceededError, CaptchaException) as err:
             if isinstance(err, LimitExceededError):

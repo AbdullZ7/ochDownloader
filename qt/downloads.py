@@ -4,6 +4,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 from core import cons
+from core import events
 from core import utils
 from core.config import conf
 from core.api import api
@@ -74,7 +75,7 @@ class Downloads(QTreeView):
         self.line.hide()
 
         #custom signals
-        signals.store_items.connect(self.store_items)
+        signals.add_to_downloader.connect(self.add_to_downloader)
         signals.on_stop_all.connect(self.on_stop_all)
 
         #update list
@@ -255,33 +256,27 @@ class Downloads(QTreeView):
             if row[1] == queue_icon:
                 row[1] = stopped_icon
 
-    def add_raw_downloads(self, links, path, cookie):
-        # called by ipc
-        download_items_list = []
-        for link in links:
-            download_item = api.create_download_item(cons.UNKNOWN, link)
-            download_item.cookie = cookie
-            download_items_list.append(download_item)
-
-        if download_items_list:
-            api.downloader_init(download_items_list, path)
-            self.store_items(download_items_list)
+    def add_to_downloader(self, download_items):
+        for download_item in download_items:
+            api.add_to_downloader(download_item)
+            self.store_item(download_item)
 
             if conf.get_auto_switch_tab():
                 signals.switch_tab.emit(0)
 
-    def store_items(self, item_list):
-        for download_item in item_list:
-            size_file = utils.size_format(download_item.size) if download_item.size else None
-            size_complete = utils.size_format(download_item.size_complete) if download_item.size_complete else None
-            time = utils.time_format(download_item.time) if download_item.time else None
-            host_icon = self.get_host_icon(download_item.host)
-            
-            item = [download_item.id, self.icons_dict[download_item.status], download_item.name, [host_icon, None, None],
-                    size_file, size_complete, download_item.progress, time, None, None, download_item.status_msg]
-            
-            self.__model.append(item)
-            self.rows_buffer[item[0]] = item
+        api.next_download()
+
+    def store_item(self, download_item):
+        size_file = utils.size_format(download_item.size) if download_item.size else None
+        size_complete = utils.size_format(download_item.size_complete) if download_item.size_complete else None
+        time = utils.time_format(download_item.time) if download_item.time else None
+        host_icon = self.get_host_icon(download_item.host)
+
+        item = [download_item.id, self.icons_dict[download_item.status], download_item.name, [host_icon, None, None],
+                size_file, size_complete, download_item.progress, time, None, None, download_item.status_msg]
+
+        self.__model.append(item)
+        self.rows_buffer[item[0]] = item
 
     def update_(self):
         active_downloads = api.get_active_downloads()
@@ -316,7 +311,7 @@ class Downloads(QTreeView):
         try:
             return self.icons_dict[host]
         except KeyError:
-            self.icons_dict[host] = QPixmap(os.path.join(cons.PLUGINS_PATH, host, "favicon.ico"))
+            self.icons_dict[host] = QPixmap(os.path.join(cons.PLUGINS_PATH, host.replace('.', '_'), "favicon.ico"))
             return self.icons_dict[host]
     
     def get_icons(self):

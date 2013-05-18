@@ -34,6 +34,7 @@ class _PluginsConfigLoader:
         try:
             for module_loader, plugin, ispkg in pkgutil.iter_modules(path=[cons.PLUGINS_PATH, ]):
                 path = os.path.join(cons.PLUGINS_PATH, plugin, cons.PLUGIN_CONFIG_FILE)
+                plugin = plugin.replace('_', '.')
                 self.services_dict[plugin] = _PluginConfig(path)
         except Exception as err:
             logger.exception(err)
