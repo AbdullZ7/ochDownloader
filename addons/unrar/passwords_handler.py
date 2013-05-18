@@ -51,7 +51,7 @@ class _PasswordsHandler:
             with open(PWD_FILE_PATH, "r", cons.FILE_BUFSIZE) as fh:
                 passwords_set = {line.strip() for line in fh.readlines() if line.strip()}
         except Exception as err:
-            logger.exception(err)
+            logger.warning(err)
         else:
             self.__passwords_set = passwords_set
 

@@ -10,7 +10,7 @@ from item import AccountItem
 from checker import AccountChecker
 
 HOST, STATUS, USER, PASSWORD, ENABLE = range(5)
-PATH_FILE = os.path.join(cons.APP_PATH, "accounts")
+PATH_FILE = os.path.join(cons.HOME_APP_PATH, "accounts")
 
 
 class _AccountManager:
