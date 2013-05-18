@@ -3,14 +3,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 from core.config import conf
-from core import cons
 
 from passwords_handler import passwords_handler
 
 from PySide.QtGui import *
 from PySide.QtCore import *
 
-PWD_FILE_PATH = os.path.join(cons.APP_PATH, "pwd.txt")
 #Config parser
 OPTION_UNRAR_REMOVE_FILES = "unrar_remove_files"
 

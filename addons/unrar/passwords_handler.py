@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 from core import cons
 
 
-PWD_FILE_PATH = os.path.join(cons.APP_PATH, "pwd.txt")
+PWD_FILE_PATH = os.path.join(cons.HOME_APP_PATH, "pwd.txt")
 
 #thread safety
 _thread_lock = threading.Lock()
