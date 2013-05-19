@@ -271,19 +271,16 @@ class AddDownloads(QVBoxLayout):
         checking_downloads = api.get_checking_downloads()
         api.update_checking_downloads()
         for download_item in checking_downloads.itervalues():
-            try:
-                row = self.rows_buffer[download_item.id]
-                if download_item.link_status == cons.LINK_DEAD:
-                    row[1] = False
-                row[2] = self.icons_dict[download_item.link_status]
-                row[3] = download_item.name
-                if not download_item.host == cons.UNSUPPORTED:
-                    row[4] = download_item.host
-                if download_item.size:
-                    row[5] = utils.size_format(download_item.size)
-                row[6] = download_item.link_status_msg
-            except KeyError as err:
-                logger.debug(err)
+            row = self.rows_buffer[download_item.id]
+            if download_item.link_status == cons.LINK_DEAD:
+                row[1] = False
+            row[2] = self.icons_dict[download_item.link_status]
+            row[3] = download_item.name
+            if not download_item.host == cons.UNSUPPORTED:
+                row[4] = download_item.host
+            if download_item.size:
+                row[5] = utils.size_format(download_item.size)
+            row[6] = download_item.link_status_msg
         self.__model.refresh()
 
     def get_icons(self):

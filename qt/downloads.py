@@ -35,7 +35,8 @@ class Downloads(QTreeView):
         self.items = []
         self.rows_buffer = {} #{id_item: row_obj, }
 
-        headers = ["hidden_id_item", "", _("File Name"), _("Host"), _("Size"), _("Complete"), _("Progress"), _("Time"), _("Remain"), _("Speed"), _("Status Message")]
+        headers = ["hidden_id_item", "", _("File Name"), _("Host"), _("Size"), _("Complete"),
+                   _("Progress"), _("Time"), _("Remain"), _("Speed"), _("Status Message")]
         
         self.__model = SimpleListModel(headers, self.items)
         self.setModel(self.__model)
@@ -165,24 +166,23 @@ class Downloads(QTreeView):
         BTN = 0
         rows = self.get_selected_rows()
 
-        self.parent.stop[BTN].setEnabled(False)
-        self.parent.start[BTN].setEnabled(False)
-
-        if len(rows) == 1: #single selection.
+        if len(rows) == 1:  # single selection.
             row_index = rows[0]
             id_item = self.items[row_index][0]
-            self.parent.stop[BTN].setEnabled(True)
-            self.parent.start[BTN].setEnabled(False)
             stopped_downloads = api.get_stopped_downloads()
-            try:
-                item = stopped_downloads[id_item]
+
+            if id_item in stopped_downloads:
                 self.parent.stop[BTN].setEnabled(False)
                 self.parent.start[BTN].setEnabled(True)
-            except KeyError:
-                pass
-        elif rows: #multi selection
+            else:
+                self.parent.stop[BTN].setEnabled(True)
+                self.parent.start[BTN].setEnabled(False)
+        elif rows:  # multi selection
             self.parent.stop[BTN].setEnabled(True)
             self.parent.start[BTN].setEnabled(True)
+        else:  # no selection
+            self.parent.stop[BTN].setEnabled(False)
+            self.parent.start[BTN].setEnabled(False)
     
     def on_open_folder(self):
         rows = self.get_selected_rows()
@@ -261,8 +261,8 @@ class Downloads(QTreeView):
             api.add_to_downloader(download_item)
             self.store_item(download_item)
 
-            if conf.get_auto_switch_tab():
-                signals.switch_tab.emit(0)
+        if conf.get_auto_switch_tab():
+            signals.switch_tab.emit(0)
 
         api.next_download()
 
@@ -282,23 +282,20 @@ class Downloads(QTreeView):
         active_downloads = api.get_active_downloads()
         api.update_active_downloads()
         for download_item in active_downloads.itervalues():
-            try:
-                row = self.rows_buffer[download_item.id]
-                #row[0] = download_item.id
-                row[1] = self.icons_dict[download_item.status] #col 1
-                row[2] = download_item.name #col 2
-                #row[3][0] = download_item.host
-                row[3][1] = self.icons_dict[cons.DL_RESUME] if download_item.can_resume else None
-                row[3][2] = self.icons_dict[cons.DL_PREMIUM] if download_item.is_premium else None
-                row[4] = utils.size_format(download_item.size) if download_item.size else None
-                row[5] = utils.size_format(download_item.size_complete) if download_item.size_complete else None
-                row[6] = download_item.progress
-                row[7] = utils.time_format(download_item.time) if download_item.time else None
-                row[8] = utils.time_format(download_item.time_remain) if download_item.time_remain else None
-                row[9] = utils.speed_format(download_item.speed) if download_item.speed else None
-                row[10] = self.get_status_msg(download_item)
-            except KeyError as err:
-                logger.debug(err)
+            row = self.rows_buffer[download_item.id]
+            #row[0] = download_item.id
+            row[1] = self.icons_dict[download_item.status]
+            row[2] = download_item.name
+            #row[3][0] = download_item.host
+            row[3][1] = self.icons_dict[cons.DL_RESUME] if download_item.can_resume else None
+            row[3][2] = self.icons_dict[cons.DL_PREMIUM] if download_item.is_premium else None
+            row[4] = utils.size_format(download_item.size) if download_item.size else None
+            row[5] = utils.size_format(download_item.size_complete) if download_item.size_complete else None
+            row[6] = download_item.progress
+            row[7] = utils.time_format(download_item.time) if download_item.time else None
+            row[8] = utils.time_format(download_item.time_remain) if download_item.time_remain else None
+            row[9] = utils.speed_format(download_item.speed) if download_item.speed else None
+            row[10] = self.get_status_msg(download_item)
         self.__model.refresh()
 
     def get_status_msg(self, download_item):
@@ -417,9 +414,3 @@ class ProgressBarDelegate(QStyledItemDelegate):
         #else:
             #QStyledItemDelegate.paint(self, painter, option, index)
         painter.restore()
-
-        
-        
-        
-    
-    
