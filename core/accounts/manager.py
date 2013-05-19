@@ -15,8 +15,8 @@ PATH_FILE = os.path.join(cons.HOME_APP_PATH, "accounts")
 
 class _AccountManager:
     def __init__(self):
-        self.accounts_dict = {} # {host: {id_account: account_item, }, }
-        self.thread_checking_accounts = {} # {id_account: th, }
+        self.accounts_dict = {}  # {host: {id_account: account_item, }, }
+        self.thread_checking_accounts = {}  # {id_account: th, }
         self.checking_accounts = []
         self.slots = Slots(limit=5)
         self.load()
@@ -34,7 +34,7 @@ class _AccountManager:
             logger.exception(err)
 
     def save(self):
-        accounts_list = [] # [[user, pass, ...], ]
+        accounts_list = []  # [[user, pass, ...], ]
         try:
             with open(PATH_FILE, "wb", cons.FILE_BUFSIZE) as fh:
                 for accounts in self.accounts_dict.itervalues():
@@ -42,7 +42,7 @@ class _AccountManager:
                         accounts_list.append([account.host, account.status, account.username, account.password, account.enable])
                 pickle.dump(accounts_list, fh, pickle.HIGHEST_PROTOCOL)
         except (EnvironmentError, pickle.PicklingError) as err:
-            logger.warning("Can't save the account: {0}".format(err))
+            logger.warning(err)
 
     def add_account_item(self, account_item):
         accounts = self.accounts_dict.get(account_item.host, OrderedDict())

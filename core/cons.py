@@ -81,9 +81,3 @@ UNSUPPORTED = "unsupported"
 #Download features
 DL_RESUME = "can_reconnect"
 DL_PREMIUM = "is_premium"
-
-
-if __name__ == "__main__":
-    print sys.argv[0]
-    print os.path.abspath(os.path.dirname(sys.argv[0]))
-    print APP_PATH

@@ -140,6 +140,9 @@ class ImportDialog(QDialog):
 
         vbox.addLayout(hbox)
 
+        self.link_label = QLabel("ex: http://mega.co.nz/#!file_id!decrypted_key")
+        vbox.addWidget(self.link_label)
+
         self.link_line = QLineEdit()
         vbox.addWidget(self.link_line)
 
