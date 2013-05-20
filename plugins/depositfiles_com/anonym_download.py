@@ -3,13 +3,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Libs
-from core.plugin.base import PluginBase
+from addons.captcha.recaptcha import PluginRecaptcha
 
 BASE_URL = "http://depositfiles.com"
 WAITING = 60
 
 
-class PluginDownload(PluginBase):
+class PluginDownload(PluginRecaptcha):
     def parse(self):
         link = self.link
         form = [("gateway_result", "1"), ]

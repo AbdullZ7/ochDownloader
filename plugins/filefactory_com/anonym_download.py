@@ -3,14 +3,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Libs
-from core.plugin.base import PluginBase
+from addons.captcha.recaptcha import PluginRecaptcha
 
 #CONNECTION_RETRY = 3
 BASE_URL = "http://www.filefactory.com"
 WAITING = 60
 
 
-class PluginDownload(PluginBase):
+class PluginDownload(PluginRecaptcha):
     def parse(self):
         link = self.link
         page = self.get_page(link)

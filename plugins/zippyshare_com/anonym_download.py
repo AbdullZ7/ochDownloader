@@ -4,11 +4,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Libs
-from core.plugin.base import PluginBase
+from addons.captcha.recaptcha import PluginRecaptcha
 from addons.swfdump import dump
 
 
-class PluginDownload(PluginBase):
+class PluginDownload(PluginRecaptcha):
     def parse(self):
         www = self.link.split('.')[0].split('/')[-1]
         link = 'http://%s.zippyshare.com' % www

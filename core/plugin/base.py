@@ -6,20 +6,12 @@ import cookielib
 import logging
 logger = logging.getLogger(__name__)
 
-try:
-    from addons.captcha.recaptcha import Recaptcha
-except ImportError as err:
-    logger.warning(err)
-    Recaptcha = None
-
 from core import utils
 from core.network.connection import URLClose, request
 
 BUFF_SZ = 1024 * 1024 #1MB
-CAPTCHA_MAX_RETRIES = 3
 
 
-class CaptchaException(Exception): pass
 class StopParsing(Exception): pass
 class ParsingError(Exception): pass
 class LimitExceededError(Exception): pass
@@ -38,11 +30,6 @@ class PluginBase:
         self.video_quality = video_quality
         self.source = None
         self.save_as = None # file name for videos
-
-        # recaptcha
-        self.recaptcha_post_link = link
-        self.recaptcha_challenge_field = "recaptcha_challenge_field"
-        self.recaptcha_response_field = "recaptcha_response_field"
 
     def parse(self):
         raise NotImplementedError()
@@ -68,40 +55,6 @@ class PluginBase:
         m = self.get_match(pattern, page, "Link not found")
         link = m.group('link')
         return self.get_page(link, close=close)
-
-    def recaptcha_post(self, pattern, page, challenge, response, extra_fields=None):
-        #POST
-        form_list = [(self.recaptcha_challenge_field, challenge), (self.recaptcha_response_field, response)]
-        if extra_fields:
-            form_list.extend(extra_fields)
-        page = self.get_page(self.recaptcha_post_link, form=form_list)
-        return page
-
-    def recaptcha_success(self, pattern, page):
-        m = self.get_match_or_none(pattern, page, warning=False)
-        if m is None:
-            return True
-        else:
-            return False
-
-    def recaptcha(self, pattern, page, extra_fields=None):
-        if Recaptcha is None:
-            return page
-        m = self.get_match_or_none(pattern, page, "Recaptcha not found")
-        if m is not None:
-            link = "http://www.google.com/recaptcha/api/challenge?k=%s" % m.group('key')
-            for retry in range(CAPTCHA_MAX_RETRIES):
-                c = Recaptcha(self.host, link, self.wait_func)
-                c.run_captcha()
-                if c.solution is not None:
-                    page = self.recaptcha_post(pattern, page, c.captcha_challenge, c.solution, extra_fields)
-                    if self.recaptcha_success(pattern, page) or not self.is_running():
-                        return page
-                else:
-                    raise CaptchaException("Captcha, no response from the user")
-            raise CaptchaException("Captcha, max retries reached")
-        else:
-            return page
 
     def get_match(self, pattern, page, err=None):
         if self.is_running():

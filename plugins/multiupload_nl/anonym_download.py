@@ -4,12 +4,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Libs
-from core.plugin.base import PluginBase
+from addons.captcha.recaptcha import PluginRecaptcha
 
 BASE_URL = "http://multiupload.nl"
 
 
-class PluginDownload(PluginBase):
+class PluginDownload(PluginRecaptcha):
     def parse(self):
         file_id = self.link.split("/")[-1]
 

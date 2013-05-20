@@ -3,14 +3,15 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Libs
-from core.plugin.base import PluginBase, LimitExceededError
+from addons.captcha.recaptcha import PluginRecaptcha
+from core.plugin.base import LimitExceededError
 
 
 BASE_URL = "http://uploaded.to"
 WAITING = 20
 
 
-class PluginDownload(PluginBase):
+class PluginDownload(PluginRecaptcha):
     def parse(self):
         link = self.link
         file_id = self.get_file_id()

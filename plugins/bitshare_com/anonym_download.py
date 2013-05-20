@@ -3,13 +3,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Libs
-from core.plugin.base import PluginBase
+from addons.captcha.recaptcha import PluginRecaptcha
 
 BASE_URL = "http://bitshare.com"
 WAITING = 60
 
 
-class PluginDownload(PluginBase):
+class PluginDownload(PluginRecaptcha):
     def parse(self):
         link = self.link
         page = self.get_page(link)
@@ -31,16 +31,3 @@ class PluginDownload(PluginBase):
         page = self.get_page(ajax_url, form=form)
         s_pattern = 'SUCCESS#(?P<link>.*?)$'
         self.source = self.click(s_pattern, page, False)
-
-
-if __name__ == "__main__":
-    import re
-    page = 'SUCCESS#http://s45.bitshare.com/download.php?d=95708257284fa1714e6e399&g=0'
-    pattern = 'SUCCESS#(?P<link>.*?)$'
-    m = re.search(pattern, page, re.S)
-    if m is not None:
-        print m.groups()
-    else:
-        print 'not found'
-
-

@@ -4,13 +4,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 #Libs
-from core.plugin.base import PluginBase
+from addons.captcha.recaptcha import PluginRecaptcha
 
 BASE_URL = "http://mediafire.com"
 COOKIE = cookielib.CookieJar()
 
 
-class PluginDownload(PluginBase):
+class PluginDownload(PluginRecaptcha):
     def parse(self):
         self.cookie = COOKIE
         link = self.link.replace("download.php", "")
