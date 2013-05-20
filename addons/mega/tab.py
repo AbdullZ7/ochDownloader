@@ -79,8 +79,8 @@ class Tab(QWidget):
     def on_import(self):
         dialog = ImportDialog(self.parent)
         if dialog.result() == QDialog.Accepted:
-            path = dialog.file_line.text()
-            link = dialog.link_line.text()
+            path = dialog.file_line.text().strip()
+            link = dialog.link_line.text().strip()
             if path and link:
                 file_path, file_name = os.path.split(path)
                 download_item = api.create_download_item(file_name, link)
@@ -121,30 +121,36 @@ class ImportDialog(QDialog):
         self.resize(340, 200)
 
         vbox = QVBoxLayout()
-        vbox.setSpacing(20)
+        vbox.setSpacing(5)
         self.setLayout(vbox)
 
-        hbox = QHBoxLayout()
+        self.group = QGroupBox(_('File to decrypt:'))
+        vbox.addWidget(self.group)
+
+        self.grid = QGridLayout()
+        self.group.setLayout(self.grid)
+
+        self.file_label = QLabel(_("Path:"))
+        self.grid.addWidget(self.file_label, 1, 0)
 
         self.file_line = QLineEdit()
         self.file_line.setFixedHeight(35)
         self.file_line.setMinimumWidth(1)
+        self.grid.addWidget(self.file_line, 1, 1)
 
-        hbox.addWidget(self.file_line)
+        self.btn_examine = QPushButton('...')
+        self.btn_examine.clicked.connect(self.on_examine)
+        self.btn_examine.setFixedHeight(35)
+        self.btn_examine.setMaximumWidth(80)
+        self.grid.addWidget(self.btn_examine, 1, 2)
 
-        btn_examine = QPushButton('...')
-        btn_examine.clicked.connect(self.on_examine)
-        btn_examine.setFixedHeight(35)
-        btn_examine.setMaximumWidth(80)
-        hbox.addWidget(btn_examine)
-
-        vbox.addLayout(hbox)
-
-        self.link_label = QLabel("ex: http://mega.co.nz/#!file_id!decrypted_key")
-        vbox.addWidget(self.link_label)
-
+        self.link_label = QLabel(_("Link:"))
         self.link_line = QLineEdit()
-        vbox.addWidget(self.link_line)
+        self.grid.addWidget(self.link_label, 2, 0)
+        self.grid.addWidget(self.link_line, 2, 1)
+
+        self.link_help = QLabel("ex: http://mega.co.nz/#!file_id!decrypted_key")
+        self.grid.addWidget(self.link_help, 3, 1)
 
         # buttons
         vbox.addStretch()
