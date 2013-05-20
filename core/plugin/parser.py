@@ -7,7 +7,7 @@ from core import cons
 from core.plugin.config import plugins_config
 from core.accounts.manager import accounts_manager
 from core.dispatch.idle_queue import idle_add_and_wait
-from base import ParsingError, StopParsing, LimitExceededError, CaptchaException
+from base import ParsingError, StopParsing, LimitExceededError
 
 PREMIUM_MODULE = "premium_download"
 FREE_MODULE = "free_download"
@@ -52,11 +52,9 @@ class PluginParser:
             module = importlib.import_module("plugins.{0}.{1}".format(self.host.replace('.', '_'), module_name))
             p = module.PluginDownload(self.link, self.host, self.content_range, self.wait_func, self.cookie, self.video_quality)
             p.parse()
-        except (ParsingError, LimitExceededError, CaptchaException) as err:
+        except (ParsingError, LimitExceededError) as err:
             if isinstance(err, LimitExceededError):
                 self.limit_exceeded = True
-                logger.warning("%s %s" % (self.host, str(err)))
-            elif isinstance(err, CaptchaException):
                 logger.warning("%s %s" % (self.host, str(err)))
             else:  # ParsingError
                 logger.exception(err)

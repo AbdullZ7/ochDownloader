@@ -4,7 +4,7 @@ logger = logging.getLogger(__name__)
 
 from core.dispatch import idle_queue
 from core.network.connection import request
-from core.plugin.base import PluginBase
+from core.plugin.base import PluginBase, ParsingError
 
 import signals
 
@@ -67,9 +67,6 @@ class Challenge:
             logger.exception("%s :%s" % (self.captcha_link, err))
 
 
-class CaptchaException(Exception): pass
-
-
 class PluginRecaptcha(PluginBase):
     def __init__(self, *args, **kwargs):
         PluginBase.__init__(self, *args, **kwargs)
@@ -106,7 +103,7 @@ class PluginRecaptcha(PluginBase):
                     if self.recaptcha_success(pattern, page) or not self.is_running():
                         return page
                 else:
-                    raise CaptchaException("Captcha, no response from the user")
-            raise CaptchaException("Captcha, max retries reached")
+                    raise ParsingError("Captcha, no response from the user")
+            raise ParsingError("Captcha, max retries reached")
         else:
             return page
