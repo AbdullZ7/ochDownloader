@@ -3,7 +3,6 @@ import httplib
 import socket
 import time
 import threading
-import math
 import logging
 logger = logging.getLogger(__name__)
 
@@ -34,10 +33,10 @@ class MultiDownload(DownloaderBase):
         DownloaderBase.__init__(self, download_item, bucket)
 
         #Threading stuff
-        self.lock1 = threading.Lock() #lock to write file.
+        self.lock1 = threading.Lock()  # lock to write file.
         self.lock2 = threading.Lock()
 
-        self.chunks = download_item.chunks[:] if download_item.chunks else [] #shallow copy
+        self.chunks = download_item.chunks[:] if download_item.chunks else []  # shallow copy
         self.chunks_control = []
 
         self.first_flag = True
@@ -85,10 +84,10 @@ class MultiDownload(DownloaderBase):
             self.size_complete = self.__get_chunks_size_complete()
             self.size_tmp = self.size_complete
 
-        self.chunks_control = [True for _ in self.chunks] #can_run
+        self.chunks_control = [True for _ in self.chunks]  # can_run
 
         th_list = [self.spawn_thread(fh, i, chunk) for i, chunk in enumerate(self.chunks[:])
-                   if not chunk[END] or chunk[START] < chunk[END]] #end may be 0
+                   if not chunk[END] or chunk[START] < chunk[END]]  # end may be 0
 
         for th in th_list:
             th.join()
@@ -97,7 +96,7 @@ class MultiDownload(DownloaderBase):
 
     def check_chunks_complete(self):
         if not self.stop_flag and not self.error_flag:
-            for chunk in self.chunks: #re-check
+            for chunk in self.chunks:  # re-check
                 if not self.is_chunk_complete(chunk):
                     self.set_err('Incomplete chunk')
                     logger.debug("INCOMPLETE: {} of {}".format(chunk[START], chunk[END]))
@@ -116,14 +115,14 @@ class MultiDownload(DownloaderBase):
     def dl_next_chunk(self, chunk, i):
         with self.lock2:
             try:
-                if self.chunks_control[i] and chunk[END] == self.chunks[i][START]: #on resume, end from the current segment must be equal to start from the next one.
+                if self.chunks_control[i] and chunk[END] == self.chunks[i][START]:  # on resume, end from the current segment must be equal to start from the next one.
                     self.chunks_control[i] = False
-                    chunk = (chunk[START], self.chunks[i][END]) #in case chunk[START] > self.chunks[i_][START] ?
+                    chunk = (chunk[START], self.chunks[i][END])  # in case chunk[START] > self.chunks[i_][START] ?
                     return chunk
                 elif not self.chunks_control[i]:
                     raise CanNotRun('Next chunk is downloading')
                 else:
-                    #chunks completeness will be checked later.
+                    # chunks completeness will be checked later.
                     raise CanNotRun('Can not resume next chunk')
             except IndexError:
                 raise CanNotRun('No more chunks left')
@@ -145,9 +144,9 @@ class MultiDownload(DownloaderBase):
             self.set_err(err)
 
     def thread_download(self, fh, i, chunk, is_first):
-        #first thread wont retry.
-        #downloading chunk wont retry.
-        #not downloading and not first should retry.
+        # first thread wont retry.
+        # downloading chunk wont retry.
+        # not downloading and not first should retry.
         is_downloading = False
         buf = StringIO()
         len_buf = 0
@@ -202,20 +201,20 @@ class MultiDownload(DownloaderBase):
                         i += 1
 
         except IncompleteChunk as err:
-            #propagate
+            # propagate
             self.set_err(err)
         except (BadSource, CanNotRun) as err:
-            #do not propagate
+            # do not propagate
             logger.debug(err)
         except (urllib2.URLError, httplib.HTTPException, socket.error) as err:
             if is_first or is_downloading:
-                #propagate
+                # propagate
                 self.set_err(err)
             else:
                 logger.debug(err)
-                #retry?
+                # retry?
         except EnvironmentError as err:
-            #propagate
+            # propagate
             self.set_err(err)
         finally:
             if is_downloading:
