@@ -1,8 +1,9 @@
 import urllib2
-import httplib #httplib.HTTPException
+import httplib
 import socket
 import time
 import threading
+import math
 import logging
 logger = logging.getLogger(__name__)
 
@@ -16,8 +17,8 @@ from core.network.connection import URLClose, request
 from core.download.base import DownloaderBase
 
 
-NT_BUFSIZ = 8 * 1024 #8K. Network buffer.
-DATA_BUFSIZ = 64 * 1024 #64K.
+NT_BUFSIZ = 8 * 1024  # 8K. Network buffer.
+DATA_BUFSIZ = 64 * 1024  # 64K.
 START, END = range(2)
 
 
@@ -55,16 +56,18 @@ class MultiDownload(DownloaderBase):
         return th
 
     def create_chunks(self):
-        chunk_size = (self.size_file / self.max_conn) + (self.size_file % self.max_conn)
-        chunk_size = ((chunk_size / DATA_BUFSIZ) + 1) * DATA_BUFSIZ #proximo numero al tamanio del chunk que sea multiplo del buffer
+        chunk_size = (self.size_file / self.max_conn)
+        chunk_size = (chunk_size / NT_BUFSIZ) * NT_BUFSIZ
+        if not chunk_size:  # too small
+            return [(0, self.size_file), ]
         chunks = []
         start = 0
-        while True:
-            end = start + chunk_size if (start + chunk_size) < self.size_file else self.size_file
+        for _ in xrange(self.max_conn):
+            end = start + chunk_size
             chunks.append((start, end))
             start += chunk_size
-            if end == self.size_file:
-                break
+        chunks[-1] = (chunks[-1][0], self.size_file)
+        logger.debug("{} connections: {}".format(len(chunks), chunks))
         return chunks
 
     def __get_chunks_size_complete(self):
@@ -181,14 +184,14 @@ class MultiDownload(DownloaderBase):
                     with self.lock2:
                         self.size_complete += len_data
 
-                    if self.bucket.fill_rate: #self.bucket.fill_rate != 0
+                    if self.bucket.fill_rate:
                         time.sleep(self.bucket.consume(len_data))
 
                     if self.stop_flag or self.error_flag:
                         return
 
-                    if not len_data or (chunk[END] and chunk[START] >= chunk[END]): #end may be 0
-                        flush() #make sure the chunk is complete or oversized.
+                    if not len_data or (chunk[END] and chunk[START] >= chunk[END]):  # end may be 0
+                        flush()
                         buf = StringIO()
                         len_buf = 0
                         logger.debug("complete {0} {1}".format(chunk[START], chunk[END]))
