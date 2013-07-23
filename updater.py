@@ -22,6 +22,10 @@ class Updater:
         fh.setFormatter(logging.Formatter(LOG_FORMAT))
         logging.getLogger("").addHandler(fh)
 
+    def check_active_app(self):
+        # checks if the app is still running by using sockets
+        pass
+
     def uncompress(self):
         # uncompress the new zipped app version in to a temp folder
         pass

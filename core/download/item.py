@@ -5,8 +5,21 @@ logger = logging.getLogger(__name__)
 from collections import deque
 
 #Libs
-import cons
-from plugin.config import plugins_config
+from core import cons
+from core.plugin.config import plugins_config
+
+
+class DownloadItemBase:
+    # Unimplemented
+    def __init__(self, name, host):
+        self.id = str(uuid.uuid1())
+        self.name = name
+        self.host = host
+        self.status = None
+
+    @property
+    def plugin(self):
+        return self.host.replace(".", "_")
 
 
 class DownloadItem:

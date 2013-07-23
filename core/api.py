@@ -3,13 +3,11 @@ logger = logging.getLogger(__name__)
 
 #Libs
 import cons
-import utils
 from download_managment.manager import DownloadManager
 from download_checker.manager import DownloadCheckerManager
-from item import DownloadItem
+from core.download.item import DownloadItem
 from update_manager import UpdateManager
 from session import SessionParser
-from plugin.config import plugins_config
 
 
 class _Api(DownloadManager, DownloadCheckerManager):

@@ -43,7 +43,7 @@ class Request:
 
     def set_proxy(self, ptype, ip, port):
         if ptype == cons.PROXY_HTTP:
-            self.proxy = {cons.PROXY_HTTP: ":".join((ip, str(port)))}
+            self.proxy = {cons.PROXY_HTTP: ":".join((ip, str(port))), }
             #socket.socket = self.__socket
         #elif ptype in (cons.PROXY_SOCKS5, socks.PROXY_TYPE_SOCKS4):
             #self.__proxy = None

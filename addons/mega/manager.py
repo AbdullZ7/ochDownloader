@@ -8,7 +8,7 @@ try:
 except ImportError:
     unrar_file = None
 
-from core.item import DownloadItem
+from core.download.item import DownloadItem
 
 from .decrypt import Decrypter
 

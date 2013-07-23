@@ -76,7 +76,7 @@ class PluginParser:
         # update account status
         # check if plugin supports premium or free and disable otherwise
         try:
-            module = importlib.import_module("plugins.{0}.account".format(self.host))
+            module = importlib.import_module("plugins.{0}.account".format(self.host.replace('.', '_')))
             p = module.PluginAccount(self.account_dict['username'], self.account_dict['password'], self.wait_func)
             p.parse()
         except Exception as err:
