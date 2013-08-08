@@ -49,13 +49,13 @@ class DownloaderBase:
 
     def is_valid_range(self, source, start_range):
         info = source.info()
-        if not start_range: #start_range = 0, nothing to do here.
-            return True
-        elif info.getheader("Content-Range", None) and self.size_file == self.get_content_size(info):
+
+        if info.getheader("Content-Range", None) and self.size_file == self.get_content_size(info):
             try:
                 range = int(info["Content-Range"].split("/")[0].strip().split(" ")[-1].split("-")[0]) #Content-Range: bytes 61505536-92244842/92244843
                 if range == start_range:
                     return True
             except ValueError:
                 pass
+
         return False
