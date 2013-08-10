@@ -184,7 +184,9 @@ class MultiDownload(DownloaderBase):
                         self.size_complete += len_data
 
                     if self.bucket.fill_rate:
-                        time.sleep(self.bucket.consume(len_data))
+                        nap = self.bucket.consume(len_data)
+                        if nap:  # avoid thread switching if nap == 0
+                            time.sleep(nap)
 
                     if self.stop_flag or self.error_flag:
                         return
