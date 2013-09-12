@@ -17,7 +17,8 @@ from core.download.base import DownloaderBase
 
 
 NT_BUFSIZ = 8 * 1024  # 8K. Network buffer.
-DATA_BUFSIZ = 64 * 1024  # 64K.
+#DATA_BUFSIZ = 64 * 1024  # 64K.
+DATA_BUFSIZ = 1024 * 1024  # 1MB.
 START, END = range(2)
 
 

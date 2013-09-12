@@ -156,7 +156,8 @@ class Downloader(threading.Thread, MultiDownload):
             del self.chunks[:]
         
         try:
-            with open(os.path.join(self.path, self.file_name), mode, cons.FILE_BUFSIZE) as fh:
+            # open file buffer only works on wb mode
+            with open(os.path.join(self.path, self.file_name), mode) as fh:
                 self.start_time = time.time()
                 self.status_msg = cons.STATUS_RUNNING
                 self.threaded_download_manager(fh)
