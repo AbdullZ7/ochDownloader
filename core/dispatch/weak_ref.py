@@ -16,7 +16,7 @@ class _BoundMethodWeakref:
 
 
 def weak_ref(callback):
-    if getattr(callback, '__self__') is not None:  # is a bound method?
+    if getattr(callback, '__self__', None) is not None:  # is a bound method?
         return _BoundMethodWeakref(callback)
     else:
         return weakref.ref(callback)
