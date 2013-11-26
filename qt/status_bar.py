@@ -55,7 +55,7 @@ class StatusBar(QStatusBar):
         api.new_slot_limit(new_value)
     
     def on_speed_changed(self, new_value):
-        api.bucket.rate_limit(new_value)
+        api.bucket.set_rate(new_value)
 
     def push_msg(self, msg):
         self.showMessage(msg)

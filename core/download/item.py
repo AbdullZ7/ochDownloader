@@ -60,8 +60,8 @@ class DownloadItem:
 
     def _get_host(self, link):
         i = 2 if link.startswith(("http://", "https://")) else 0
-        host = link.split("/")[i]  # get (www.|subdomain.)website.com
-        host_alt = ".".join(host.split(".")[1:])  # get website.com
+        host = link.split("/")[i] # get (www.|subdomain.)website.com
+        host_alt = ".".join(host.split(".")[1:]) # get website.com
 
         if host in plugins_config.services_dict:
             return host
@@ -121,10 +121,3 @@ class DownloadItem:
         self.speed = self._speed()
         self.time_remain = self._time_remain()
         self.time = self._time()
-
-
-if __name__ == "__main__":
-    pass
-    
-    
-    

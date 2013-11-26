@@ -17,12 +17,13 @@ def keep_system_awake(stop=False):
     TODO: implement.
     """
     #UNTESTED. check if the system go to sleep if the process is terminated
-    mode_dict = {"ES_AWAYMODE_REQUIRED": "0x00000040",
-                "ES_CONTINUOUS": "0x80000000",
-                "ES_DISPLAY_REQUIRED": "0x00000002",
-                "ES_SYSTEM_REQUIRED": "0x00000001",
-                "ES_USER_PRESENT": "0x00000004"
-                }
+    mode_dict = {
+        "ES_AWAYMODE_REQUIRED": "0x00000040",
+        "ES_CONTINUOUS": "0x80000000",
+        "ES_DISPLAY_REQUIRED": "0x00000002",
+        "ES_SYSTEM_REQUIRED": "0x00000001",
+        "ES_USER_PRESENT": "0x00000004"
+    }
     try:
         if cons.OS_WIN:
             if not stop:
@@ -61,8 +62,8 @@ def subprocess_call(*args, **kwargs):
     #hide console window on Windows. Python 2.7 only.
     if cons.OS_WIN:
         startupinfo = subprocess.STARTUPINFO()
-        startupinfo.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW
-        startupinfo.wShowWindow = subprocess.SW_HIDE
+        startupinfo.dwFlags |= subprocess._subprocess.STARTF_USESHOWWINDOW
+        startupinfo.wShowWindow = subprocess._subprocess.SW_HIDE
         kwargs['startupinfo'] = startupinfo
     retcode = subprocess.call(*args, **kwargs)
     return retcode
@@ -72,8 +73,8 @@ def subprocess_popen(*args, **kwargs):
     #hide console window on Windows. Python 2.7 only.
     if cons.OS_WIN:
         startupinfo = subprocess.STARTUPINFO()
-        startupinfo.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW
-        startupinfo.wShowWindow = subprocess.SW_HIDE
+        startupinfo.dwFlags |= subprocess._subprocess.STARTF_USESHOWWINDOW
+        startupinfo.wShowWindow = subprocess._subprocess.SW_HIDE
         kwargs['startupinfo'] = startupinfo
     popen = subprocess.Popen(*args, **kwargs)
     return popen
