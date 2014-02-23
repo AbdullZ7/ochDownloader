@@ -6,14 +6,16 @@ These dependencies are meant for Linux and MacOS users.
 If you are a Windows user, you better download the binary package.
 
 Dependencies:
-Python 2.7.3
-PySide 1.1.2
+
+* Python 2.7.3
+* PySide 1.1.2
 
 Optional dependencies:
-swftools (for zippyshare)
-Tesseract (for Netload)
-PIL 1.1.7 (for tesseract)
-PyCrypto (to import .och files)
+
+* swftools (for zippyshare)
+* Tesseract (for Netload)
+* PIL 1.1.7 (for tesseract)
+* PyCrypto (to import .och files)
 ____________________________________________________________________________
 
 
