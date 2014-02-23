@@ -3,11 +3,15 @@
 ochDownloader is a Python based download manager and accelerator.
 
 > **Note:** this branch is under heavy development.
+>
 > Main goals:
 > * Complete all unit testing.
 > * Develop a minimum viable product (MVP).
 > * Focus on developing the core as a framework for plugins and addons.
 > * Reduce code complexity.
+>
+> Most code here was written in a private branch and is broken/untestted,
+> I'll probably create another branch to clean up all the mess and then merge it.
 
 ## Requirements
 
