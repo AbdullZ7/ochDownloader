@@ -1,4 +1,4 @@
-# ochDownloader
+# ochDownloader [![Build Status](https://travis-ci.org/nitely/ochDownloader.png?branch=future)](https://travis-ci.org/nitely/ochDownloader)
 
 ochDownloader is a Python based download manager and accelerator.
 

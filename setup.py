@@ -21,7 +21,7 @@ setup(
     packages=[
         'ochDownloader',
     ],
-    test_suite="ochDownloader.tests",
+    test_suite="ochDownloader.tests.suite",
     include_package_data=True,
     install_requires=REQUIREMENTS,
     license='MIT License',
@@ -34,5 +34,6 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Topic :: Internet',
+        'Topic :: Desktop Environment',
     ],
 )
