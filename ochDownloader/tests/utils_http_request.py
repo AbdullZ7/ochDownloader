@@ -61,9 +61,16 @@ class UtilsHTTPRequestTest(unittest.TestCase):
             url_open.assert_called_with(url, data=data, foo='bar')
 
 
+class MockResponse(BytesIO):
+
+    def info(self):
+        return {}
+
+
 class UtilsHTTPResponseTest(unittest.TestCase):
+
     def setUp(self):
-        fp = BytesIO()
+        fp = MockResponse()
         fp.write(b'foo\nbar')
         fp.seek(0)
         self.response = request.Response(fp)
