@@ -27,6 +27,9 @@ class UtilsTest(unittest.TestCase):
         self.assertRaises(OSError, utils.subprocess_call, "unexistent_file")
 
     def test_open_folder_window(self):
+        if not cons.OS_WIN:
+            return
+
         # Windows
         with patch.object(cons, 'OS_WIN', True):
             with patch.object(os, 'startfile') as s:
@@ -34,6 +37,9 @@ class UtilsTest(unittest.TestCase):
                 s.assert_called_with('path\\foo', 'explore')
 
     def test_run_file(self):
+        if not cons.OS_WIN:
+            return
+
         # Windows
         with patch.object(cons, 'OS_WIN', True):
             with patch.object(utils, 'subprocess_popen') as s:
