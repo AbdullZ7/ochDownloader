@@ -31,20 +31,18 @@ class UtilsTest(unittest.TestCase):
             return
 
         # Windows
-        with patch.object(cons, 'OS_WIN', True):
-            with patch.object(os, 'startfile') as s:
-                utils.open_folder_window("path/foo")
-                s.assert_called_with('path\\foo', 'explore')
+        with patch.object(os, 'startfile') as s:
+            utils.open_folder_window("path/foo")
+            s.assert_called_with('path\\foo', 'explore')
 
     def test_run_file(self):
         if not cons.OS_WIN:
             return
 
         # Windows
-        with patch.object(cons, 'OS_WIN', True):
-            with patch.object(utils, 'subprocess_popen') as s:
-                utils.run_file("path/unexistent_file")
-                s.assert_called_with(['path/unexistent_file', ], shell=True)
+        with patch.object(utils, 'subprocess_popen') as s:
+            utils.run_file("path/unexistent_file")
+            s.assert_called_with(['path/unexistent_file', ], shell=True)
 
     def test_links_parser(self):
         text = """https://link_1.com/file.ext
