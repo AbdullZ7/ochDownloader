@@ -11,6 +11,3 @@ script:
 
 after_success:
   - "coveralls"
-
-script:
-  - "python setup.py test"
