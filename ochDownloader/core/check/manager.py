@@ -72,7 +72,6 @@ class DownloadCheckerManager:
         self.start_checking()
 
     def pop(self, id_item_list):
-        """"""
         result = []
 
         for uid in id_item_list:
@@ -86,8 +85,8 @@ class DownloadCheckerManager:
 
     def _pop(self, uid):
         try:
-            checking = self.checking_downloads.pop(uid)
-            return checking.item
+            w_item = self.checking_downloads.pop(uid)
+            return w_item.item
         except KeyError:
             pass
 

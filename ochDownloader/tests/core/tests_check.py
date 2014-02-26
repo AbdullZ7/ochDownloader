@@ -35,7 +35,7 @@ class WorkerThreadMock:
         return True
 
 
-class UtilsTest(unittest.TestCase):
+class CheckManagerTest(unittest.TestCase):
 
     def setUp(self):
         self.checker = DownloadCheckerManager()
@@ -107,5 +107,10 @@ class UtilsTest(unittest.TestCase):
 
             s.assert_called_with()
 
-    def test_(self):
-        pass
+    def test_pop(self):
+        with patch.object(DownloadCheckerManager, 'start_checking', return_value=None) as s:
+            uid_list = [self.item1.uid, self.item2.uid, self.item3.uid]
+            res = self.checker.pop(uid_list)
+            self.assertListEqual(res, [self.item1, self.item2, self.item3])
+            s.assert_called_with()
+            self.assertRaises(KeyError, self.checker.pop, ['bad-uid', ])
