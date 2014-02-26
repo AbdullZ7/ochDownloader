@@ -2,7 +2,7 @@ from core.common.item import uid, get_host_from_url
 
 
 class CheckWorkerItem:
-    # TODO: rename class
+
     def __init__(self, item):
         self.item = item
         self.thread = None

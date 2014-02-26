@@ -114,3 +114,12 @@ class CheckManagerTest(unittest.TestCase):
             self.assertListEqual(res, [self.item1, self.item2, self.item3])
             s.assert_called_with()
             self.assertRaises(KeyError, self.checker.pop, ['bad-uid', ])
+
+
+class CheckItemTest(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
