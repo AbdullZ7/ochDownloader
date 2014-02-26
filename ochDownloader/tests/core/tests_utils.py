@@ -1,4 +1,3 @@
-import os
 import io
 import logging
 from http import cookiejar
@@ -31,7 +30,7 @@ class UtilsTest(unittest.TestCase):
             return
 
         # Windows
-        with patch.object(os, 'startfile') as s:
+        with patch('os.startfile') as s:
             utils.open_folder_window("path/foo")
             s.assert_called_with('path\\foo', 'explore')
 
@@ -132,7 +131,7 @@ class UtilsTest(unittest.TestCase):
 
     def test_remove_file(self):
         path = "path/bar/unexistent_file"
-        with patch.object(os, 'remove') as remove:
+        with patch('os.remove') as remove:
             utils.remove_file(path)
             remove.assert_called_with(path)
 

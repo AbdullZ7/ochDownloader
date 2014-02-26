@@ -1,7 +1,7 @@
 from core.common.item import uid, get_host_from_url
 
 
-class CheckingItem:
+class CheckWorkerItem:
     # TODO: rename class
     def __init__(self, item):
         self.item = item
@@ -21,4 +21,7 @@ class CheckItem:
 
     @property
     def plugin(self):
+        if not self.host:
+            return
+
         return self.host.replace(".", "_")

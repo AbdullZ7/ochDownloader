@@ -21,7 +21,7 @@ class UtilsHTTPRequestTest(unittest.TestCase):
         pass
 
     def test_request(self):
-        with patch.object(urllib.request, 'Request') as Request:
+        with patch('urllib.request.Request') as Request:
             with patch.object(urllib.request.OpenerDirector, 'open') as open:
                 url = "http://foo.bar"
                 data = urlencode({"Foo": "bar", })

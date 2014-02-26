@@ -5,7 +5,7 @@ from core import cons
 from core.utils.concurrent.thread import Future
 
 from .worker import worker
-from .item import CheckItem, CheckingItem
+from .item import CheckItem, CheckWorkerItem
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +14,7 @@ class DownloadCheckerManager:
 
     def __init__(self):
         self.pending_downloads = OrderedDict()  # {uid: item, }
-        self.checking_downloads = {}  # {uid: CheckingItem, }
+        self.checking_downloads = {}  # {uid: CheckWorkerItem, }
         self.ready_downloads = {}  # {uid: item, }
         self._active_limit = 20
 
@@ -38,22 +38,22 @@ class DownloadCheckerManager:
                 break
 
             del self.pending_downloads[uid]
-            checking = CheckingItem(item)
+            checking = CheckWorkerItem(item)
             checking.thread = Future(target=worker, args=(item.plugin, item.url))
             self.checking_downloads[uid] = checking
 
     def update(self):
         result = []
 
-        for uid, checking in list(self.checking_downloads.items()):
-            if not checking.thread.done():
+        for uid, w_item in list(self.checking_downloads.items()):
+            if not w_item.thread.done():
                 continue
 
-            checking.item.status, checking.item.name,\
-                checking.item.size, checking.item.status_msg = checking.thread.result()
-            self.ready_downloads[uid] = checking.item
+            w_item.item.status, w_item.item.name,\
+                w_item.item.size, w_item.item.status_msg = w_item.thread.result()
+            self.ready_downloads[uid] = w_item.item
             del self.checking_downloads[uid]
-            result.append(checking.item)
+            result.append(w_item.item)
 
         if result:
             self.start_checking()

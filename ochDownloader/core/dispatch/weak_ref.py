@@ -18,6 +18,7 @@ class _BoundMethodWeakref:
 
 
 def weak_ref(callback):
+    # TODO: in python 3 there is no more bound methods!
     if getattr(callback, '__self__', None) is not None:  # is a bound method?
         return _BoundMethodWeakref(callback)
     else:
