@@ -62,7 +62,7 @@ class DownloadCheckerManager:
     
     def recheck(self):
         for uid, item in list(self.ready_downloads.items()):
-            if item.status in (cons.LINK_CHECKING, cons.LINK_ALIVE):
+            if item.status == cons.LINK_ALIVE:
                 continue
 
             item.status = cons.LINK_CHECKING

@@ -11,8 +11,13 @@ from core import cons
 logging.disable(logging.CRITICAL)
 
 
-def create_item():
-    return CheckItem("http://url.com")
+def create_item(**kwargs):
+    item = CheckItem("http://url.com")
+
+    if 'status' in kwargs:
+        item.status = kwargs['status']
+
+    return item
 
 
 def create_checking_item():
@@ -79,6 +84,27 @@ class UtilsTest(unittest.TestCase):
             self.assertIn(self.item2, res)
             self.assertNotIn(self.item2.uid, self.checker.checking_downloads)
             self.assertIn(self.item2.uid, self.checker.ready_downloads)
+            s.assert_called_with()
+
+    def test_recheck(self):
+        with patch.object(DownloadCheckerManager, 'start_checking', return_value=None) as s:
+            self.checker.ready_downloads.clear()
+            item_alive = create_item(status=cons.LINK_ALIVE)
+            item_dead = create_item(status=cons.LINK_DEAD)
+            item_error = create_item(status=cons.LINK_ERROR)
+            item_unavailable = create_item(status=cons.LINK_UNAVAILABLE)
+            self.checker.ready_downloads.update({item_alive.uid: item_alive,
+                                                 item_dead.uid: item_dead,
+                                                 item_error.uid: item_error,
+                                                 item_unavailable.uid: item_unavailable})
+            self.checker.recheck()
+            self.assertEqual(len(self.checker.ready_downloads), 1)
+            self.assertIn(item_alive.uid, self.checker.ready_downloads)
+
+            for item in (item_dead, item_error, item_unavailable):
+                self.assertIn(item.uid, self.checker.pending_downloads)
+                self.assertEqual(item.status, cons.LINK_CHECKING)
+
             s.assert_called_with()
 
     def test_(self):
