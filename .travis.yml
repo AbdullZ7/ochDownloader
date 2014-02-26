@@ -3,5 +3,14 @@ language: python
 python:
   - "3.3"
 
+install:
+  - "pip install coveralls"
+
+script:
+  - "coverage run --source=ochDownloader setup.py test"
+
+after_success:
+  - "coveralls"
+
 script:
   - "python setup.py test"
