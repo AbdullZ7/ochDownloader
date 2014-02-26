@@ -1,6 +1,4 @@
-# ochDownloader
-[![Build Status](https://travis-ci.org/nitely/ochDownloader.png?branch=future)](https://travis-ci.org/nitely/ochDownloader)
-[![Coverage Status](https://coveralls.io/repos/nitely/ochDownloader/badge.png?branch=future)](https://coveralls.io/r/nitely/ochDownloader?branch=future)
+# ochDownloader [![Build Status](https://travis-ci.org/nitely/ochDownloader.png?branch=future)](https://travis-ci.org/nitely/ochDownloader) [![Coverage Status](https://coveralls.io/repos/nitely/ochDownloader/badge.png?branch=future)](https://coveralls.io/r/nitely/ochDownloader?branch=future)
 
 ochDownloader is a Python based download manager and accelerator.
 
