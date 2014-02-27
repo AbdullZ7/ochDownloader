@@ -184,3 +184,8 @@ class CheckWorkerTest(unittest.TestCase):
             res = worker("foo_com", "http://foo.com")
             m.assert_called_once_with("plugins.foo_com.checker")
             self.assertEqual(res, (cons.STATUS_ERROR, None, 0, 'foo!'))
+
+        with patch('importlib.import_module') as m:
+            res = worker(None, "http://foo.com")
+            self.assertFalse(m.called)
+            self.assertEqual(res, (cons.STATUS_ERROR, None, 0, None))
