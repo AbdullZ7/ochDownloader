@@ -7,6 +7,7 @@ from core import const
 from core.config import conf
 from core.config.conf import _Config, rlock, RawConfigParser
 from core.config.const import SECTION_ADDONS
+from core.config import const as c_const
 
 logging.disable(logging.CRITICAL)
 
@@ -141,3 +142,33 @@ class ConfTest(unittest.TestCase):
         with patch.object(self.conf, 'getint') as g:
             self.conf.getint_addon_option("option", default=1)
             g.assert_called_once_with(SECTION_ADDONS, "option", fallback=1)
+
+    def test_set_proxy_active(self):
+        with patch.object(self.conf, 'setboolean') as s:
+            self.conf.set_proxy_active(is_active=True)
+            s.assert_called_once_with(c_const.SECTION_NETWORK, c_const.OPTION_PROXY_ACTIVE, True)
+
+    def test_get_proxy_active(self):
+        with patch.object(self.conf, 'getboolean') as g:
+            self.conf.get_proxy_active()
+            g.assert_called_once_with(c_const.SECTION_NETWORK, c_const.OPTION_PROXY_ACTIVE)
+
+    def test_set_proxy(self):
+        with patch.object(self.conf, 'set') as s:
+            with patch.object(self.conf, 'setint') as sint:
+                self.conf.set_proxy("ptype", "ip", 8000)
+                #s.assert_called_with(c_const.SECTION_NETWORK, c_const.OPTION_PROXY_TYPE, "ptype")
+                s.assert_called_with(c_const.SECTION_NETWORK, c_const.OPTION_PROXY_IP, "ip")
+                sint.assert_called_with(c_const.SECTION_NETWORK, c_const.OPTION_PROXY_PORT, 8000)
+
+    def test_get_proxy(self):
+        with patch.object(self.conf, 'get') as g:
+            with patch.object(self.conf, 'getint') as gint:
+                self.conf.get_proxy()
+                g.assert_called_with(c_const.SECTION_NETWORK, c_const.OPTION_PROXY_IP)
+                gint.assert_called_once_with(c_const.SECTION_NETWORK, c_const.OPTION_PROXY_PORT)
+
+    def test_set_retries_limit(self):
+        with patch.object(self.conf, 'setint') as s:
+            self.conf.set_retries_limit(1)
+            s.assert_called_once_with(c_const.SECTION_NETWORK, c_const.OPTION_RETRIES_LIMIT, 1)
