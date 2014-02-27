@@ -1,7 +1,6 @@
 import threading
 import logging
 
-from core import cons
 from core.plugin.config import services_dict
 
 logger = logging.getLogger(__name__)

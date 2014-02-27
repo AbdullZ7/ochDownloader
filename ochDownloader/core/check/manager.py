@@ -38,9 +38,9 @@ class DownloadCheckerManager:
                 break
 
             del self.pending_downloads[uid]
-            checking = CheckWorkerItem(item)
-            checking.thread = Future(target=worker, args=(item.plugin, item.url))
-            self.checking_downloads[uid] = checking
+            w_item = CheckWorkerItem(item)
+            w_item.thread = Future(target=worker, args=(item.plugin, item.url))
+            self.checking_downloads[uid] = w_item
 
     def update(self):
         result = []

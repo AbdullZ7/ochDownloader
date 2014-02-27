@@ -8,6 +8,9 @@ logger = logging.getLogger(__name__)
 
 
 def worker(plugin, url):
+    if not plugin:
+        return cons.LINK_ERROR, None, 0, None
+
     try:
         module = importlib.import_module("plugins.{module}.checker".format(module=plugin))
         checker = module.Checker(url)

@@ -12,7 +12,8 @@ logging.disable(logging.CRITICAL)
 
 
 def create_item(**kwargs):
-    item = CheckItem("http://url.com")
+    url = kwargs.get('url', "http://url.com")
+    item = CheckItem(url)
 
     if 'status' in kwargs:
         item.status = kwargs['status']
@@ -73,18 +74,18 @@ class CheckManagerTest(unittest.TestCase):
     def test_start_checking(self):
         with patch('core.utils.concurrent.thread.Future.__init__', return_value=None) as f:
             self.checker.start_checking()
+            f.assert_called_with(target=worker, args=(self.item1.plugin, self.item1.url))
             self.assertNotIn(self.item1.uid, self.checker.pending_downloads)
             self.assertIn(self.item1.uid, self.checker.checking_downloads)
-            f.assert_called_with(target=worker, args=(self.item1.plugin, self.item1.url))
 
     def test_update(self):
         with patch.object(DownloadCheckerManager, 'start_checking', return_value=None) as s:
             res = self.checker.update()
+            s.assert_called_with()
             # TODO: test setted item attributes
             self.assertIn(self.item2, res)
             self.assertNotIn(self.item2.uid, self.checker.checking_downloads)
             self.assertIn(self.item2.uid, self.checker.ready_downloads)
-            s.assert_called_with()
 
     def test_recheck(self):
         with patch.object(DownloadCheckerManager, 'start_checking', return_value=None) as s:
@@ -98,6 +99,7 @@ class CheckManagerTest(unittest.TestCase):
                                                  item_error.uid: item_error,
                                                  item_unavailable.uid: item_unavailable})
             self.checker.recheck()
+            s.assert_called_with()
             self.assertEqual(len(self.checker.ready_downloads), 1)
             self.assertIn(item_alive.uid, self.checker.ready_downloads)
 
@@ -105,14 +107,12 @@ class CheckManagerTest(unittest.TestCase):
                 self.assertIn(item.uid, self.checker.pending_downloads)
                 self.assertEqual(item.status, cons.LINK_CHECKING)
 
-            s.assert_called_with()
-
     def test_pop(self):
         with patch.object(DownloadCheckerManager, 'start_checking', return_value=None) as s:
             uid_list = [self.item1.uid, self.item2.uid, self.item3.uid]
             res = self.checker.pop(uid_list)
-            self.assertListEqual(res, [self.item1, self.item2, self.item3])
             s.assert_called_with()
+            self.assertListEqual(res, [self.item1, self.item2, self.item3])
             self.assertRaises(KeyError, self.checker.pop, ['bad-uid', ])
 
 
@@ -123,3 +123,29 @@ class CheckItemTest(unittest.TestCase):
 
     def tearDown(self):
         pass
+
+    def test_worker_item(self):
+        item = create_item()
+        w_item = CheckWorkerItem(item)
+        self.assertEqual(w_item.item, item)
+        self.assertIs(w_item.thread, None)
+
+    def test_item(self):
+        with patch('core.check.item.uid', return_value="uid") as u:
+            with patch('core.check.item.get_host_from_url', return_value="foo.com") as h:
+                item2 = CheckItem(url="http://foo.com")
+                self.assertEqual(item2.uid, "uid")
+                u.assert_called_with()
+                h.assert_called_with("http://foo.com")
+                self.assertEqual(item2.uid, "uid")
+                self.assertEqual(item2.url, "http://foo.com")
+                self.assertEqual(item2.host, "foo.com")
+                self.assertIs(item2.name, None)
+                self.assertEqual(item2.size, 0)
+                self.assertIs(item2.status, None)
+                self.assertIs(item2.message, None)
+                self.assertEqual(item2.plugin, "foo_com")
+
+        item1 = create_item()
+        self.assertIs(item1.host, None)
+        self.assertIs(item1.plugin, None)
