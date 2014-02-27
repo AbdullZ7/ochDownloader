@@ -18,8 +18,9 @@ class CommonItemTest(unittest.TestCase):
         pass
 
     def test_uid(self):
-        self.assertEqual(uid(), "1")
-        self.assertEqual(uid(), "2")
+        unique_id = uid()
+        self.assertEqual(uid(), str(int(unique_id) + 1))
+        self.assertEqual(uid(), str(int(unique_id) + 2))
 
     def test_get_host_from_url(self):
         self.assertIs(get_host_from_url("http://foo.com"), None)
