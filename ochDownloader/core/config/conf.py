@@ -29,12 +29,6 @@ class _Config(RawConfigParser):
         self.load()
         self.create()
 
-    def load(self):
-        try:
-            self.read(const.CONFIG_FILE, encoding='utf-8')
-        except OSError as err:
-            logger.exception(err)
-
     def create(self):
         for section, options in list(DEFAULT.items()):
             if not self.has_section(section):
@@ -43,6 +37,12 @@ class _Config(RawConfigParser):
             for option, value in list(options.items()):
                 if not self.has_option(section, option):
                     self.set(section, option, value)
+
+    def load(self):
+        try:
+            self.read(const.CONFIG_FILE, encoding='utf-8')
+        except OSError as err:
+            logger.exception(err)
 
     def save(self):
         try:
@@ -78,21 +78,23 @@ class _Config(RawConfigParser):
     def setint(self, section, option, value):
         self.set(section, option, str(value))
 
-    def set_addon_option(self, option, value, is_bool=False, is_int=False):
-        if is_bool:
-            self.setboolean(SECTION_ADDONS, option, value)
-        elif is_int:
-            self.setint(SECTION_ADDONS, option, value)
-        else:
-            self.set(SECTION_ADDONS, option, value)
+    def set_addon_option(self, option, value):
+        self.set(SECTION_ADDONS, option, value)
 
-    def get_addon_option(self, option, default=None, is_bool=False, is_int=False):
-        if is_bool:
-            return self.getboolean(SECTION_ADDONS, option, fallback=default)
-        elif is_int:
-            return self.getint(SECTION_ADDONS, option, fallback=default)
-        else:
-            return self.get(SECTION_ADDONS, option, fallback=default)
+    def setboolean_addon_option(self, option, value):
+        self.setboolean(SECTION_ADDONS, option, value)
+
+    def setint_addon_option(self, option, value):
+        self.setint(SECTION_ADDONS, option, value)
+
+    def get_addon_option(self, option, default=None):
+        return self.get(SECTION_ADDONS, option, fallback=default)
+
+    def getboolean_addon_option(self, option, default=None):
+        return self.getboolean(SECTION_ADDONS, option, fallback=default)
+
+    def getint_addon_option(self, option, default=None):
+        return self.getint(SECTION_ADDONS, option, fallback=default)
 
     # Network
 
