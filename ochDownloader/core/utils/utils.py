@@ -6,13 +6,13 @@ import logging
 from http import cookiejar
 from urllib.parse import unquote_plus
 
-from core import cons
+from core import const
 
 logger = logging.getLogger(__name__)
 
 
 def subprocess_call(*args, **kwargs):
-    if cons.OS_WIN:
+    if const.OS_WIN:
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         startupinfo.wShowWindow = subprocess.SW_HIDE
@@ -22,7 +22,7 @@ def subprocess_call(*args, **kwargs):
 
 
 def subprocess_popen(*args, **kwargs):
-    if cons.OS_WIN:
+    if const.OS_WIN:
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         startupinfo.wShowWindow = subprocess.SW_HIDE
@@ -33,10 +33,10 @@ def subprocess_popen(*args, **kwargs):
 
 def open_folder_window(path):
     try:
-        if cons.OS_WIN:
+        if const.OS_WIN:
             os.startfile(os.path.normpath(path), "explore")
             # subprocess("explorer") is buggy, the explorer process never dies.
-        elif cons.OS_UNIX:
+        elif const.OS_UNIX:
             subprocess_popen(["xdg-open", path], shell=True)
         else:  # mac
             subprocess_popen(["open", path], shell=True)
@@ -46,7 +46,7 @@ def open_folder_window(path):
 
 def run_file(path):
     try:
-        if cons.OS_WIN:
+        if const.OS_WIN:
             subprocess_popen([path, ], shell=True)
     except OSError as err:
         logger.warning(err)

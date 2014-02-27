@@ -3,7 +3,7 @@ from xmlrpc.server import SimpleXMLRPCServer
 
 from core import signals
 from core import utils
-from core import cons
+from core import const
 
 logger = logging.getLogger(__name__)
 port = 8000
@@ -20,7 +20,7 @@ def start():
 
 
 def add_raw_downloads(links, cookie, path):
-    path = path or cons.DLFOLDER_PATH
+    path = path or const.DLFOLDER_PATH
 
     if cookie is not None:
         cj = utils.load_cookie(cookie)

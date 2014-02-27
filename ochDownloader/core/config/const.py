@@ -1,12 +1,11 @@
 import json
 
-from core import cons
+from core import const
 
 
 # Main
 SECTION_MAIN = "main"
 OPTION_VERSION = "version"
-OPTION_CLIPBOARD_ACTIVE = "clipboard_active"
 
 # Network
 SECTION_NETWORK = "network"
@@ -31,23 +30,22 @@ SECTION_ADDONS = "addons"
 # Default values
 DEFAULT = {
     SECTION_MAIN: {
-        OPTION_VERSION: cons.APP_VER,
-        OPTION_CLIPBOARD_ACTIVE: "True"
+        OPTION_VERSION: const.APP_VER,
     },
     SECTION_NETWORK: {
-        OPTION_PROXY_TYPE: cons.PROXY_HTTP,
+        OPTION_PROXY_TYPE: const.PROXY_HTTP,
         OPTION_PROXY_IP: "",
         OPTION_PROXY_PORT: "0",
         OPTION_PROXY_ACTIVE: "False",
         OPTION_RETRIES_LIMIT: "99",
         OPTION_HTML_DL: "False",
-        OPTION_MAX_CONN: "5"
+        OPTION_MAX_CONN: "5",
     },
     SECTION_GUI: {
         OPTION_WINDOW_SETTINGS: json.dumps([-1, -1, -1, -1]),
         OPTION_SAVE_DL_PATHS: json.dumps([]),
         OPTION_TRAY_ICON: "False",
-        OPTION_SWITCH_TAB: "True"
+        OPTION_SWITCH_TAB: "True",
     },
     SECTION_ADDONS: {}
 }

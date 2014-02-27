@@ -3,7 +3,7 @@ import importlib
 import weakref
 import logging
 
-from core import cons
+from core import const
 
 logger = logging.getLogger(__name__)
 _registry = []
@@ -18,7 +18,7 @@ def register(addon_cls):
 
 
 def autodiscover():
-    for module_loader, name, ispkg in pkgutil.iter_modules(path=[cons.ADDONS_GUI_PATH, ]):
+    for module_loader, name, ispkg in pkgutil.iter_modules(path=[const.ADDONS_GUI_PATH, ]):
         try:
             importlib.import_module("addons.{module}.addon".format(module=name))
         except Exception as err:

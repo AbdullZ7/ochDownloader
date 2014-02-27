@@ -3,6 +3,7 @@ import functools
 import logging
 from configparser import RawConfigParser
 
+from core import const
 from .const import *
 
 
@@ -30,8 +31,8 @@ class _Config(RawConfigParser):
 
     def load(self):
         try:
-            self.read(cons.CONFIG_FILE, encoding='utf-8')
-        except Exception as err:
+            self.read(const.CONFIG_FILE, encoding='utf-8')
+        except OSError as err:
             logger.exception(err)
 
     def create(self):
@@ -45,9 +46,9 @@ class _Config(RawConfigParser):
 
     def save(self):
         try:
-            with open(cons.CONFIG_FILE, "w", encoding='utf-8') as fh:
+            with open(const.CONFIG_FILE, mode='w', encoding='utf-8') as fh:
                 self.write(fh)
-        except Exception as err:
+        except OSError as err:
             logger.exception(err)
 
     @rlock
@@ -67,35 +68,36 @@ class _Config(RawConfigParser):
         super().set(section, option, value)
 
     def setboolean(self, section, option, value):
-        value = "True" if value else "False"
+        if value:
+            value = "True"
+        else:
+            value = "False"
+
         self.set(section, option, value)
 
     def setint(self, section, option, value):
         self.set(section, option, str(value))
 
-    def set_addon_option(self, option, value, is_bool=False):
+    def set_addon_option(self, option, value, is_bool=False, is_int=False):
         if is_bool:
             self.setboolean(SECTION_ADDONS, option, value)
+        elif is_int:
+            self.setint(SECTION_ADDONS, option, value)
         else:
             self.set(SECTION_ADDONS, option, value)
 
-    def get_addon_option(self, option, default=None, is_bool=False):
+    def get_addon_option(self, option, default=None, is_bool=False, is_int=False):
         if is_bool:
             return self.getboolean(SECTION_ADDONS, option, fallback=default)
+        elif is_int:
+            return self.getint(SECTION_ADDONS, option, fallback=default)
         else:
             return self.get(SECTION_ADDONS, option, fallback=default)
 
-    # TODO: Clipboard is an addon, remove this
-    def set_clipboard_active(self, active):
-        self.setboolean(SECTION_MAIN, OPTION_CLIPBOARD_ACTIVE, active)
-
-    def get_clipboard_active(self):
-        return self.getboolean(SECTION_MAIN, OPTION_CLIPBOARD_ACTIVE)
-
     # Network
 
-    def set_proxy_active(self, active):
-        self.setboolean(SECTION_NETWORK, OPTION_PROXY_ACTIVE, active)
+    def set_proxy_active(self, is_active):
+        self.setboolean(SECTION_NETWORK, OPTION_PROXY_ACTIVE, is_active)
 
     def get_proxy_active(self):
         return self.getboolean(SECTION_NETWORK, OPTION_PROXY_ACTIVE)
@@ -117,8 +119,8 @@ class _Config(RawConfigParser):
     def get_retries_limit(self):
         return self.getint(SECTION_NETWORK, OPTION_RETRIES_LIMIT)
 
-    def set_html_dl(self, active):
-        self.setboolean(SECTION_NETWORK, OPTION_HTML_DL, active)
+    def set_html_dl(self, is_active):
+        self.setboolean(SECTION_NETWORK, OPTION_HTML_DL, is_active)
 
     def get_html_dl(self):
         return self.getboolean(SECTION_NETWORK, OPTION_HTML_DL)
@@ -145,14 +147,14 @@ class _Config(RawConfigParser):
         paths = self.get(SECTION_GUI, OPTION_SAVE_DL_PATHS)
         return json.loads(paths)
 
-    def set_tray_available(self, active):
-        self.setboolean(SECTION_GUI, OPTION_TRAY_ICON, active)
+    def set_tray_available(self, is_active):
+        self.setboolean(SECTION_GUI, OPTION_TRAY_ICON, is_active)
 
     def get_tray_available(self):
         return self.getboolean(SECTION_GUI, OPTION_TRAY_ICON)
 
-    def set_auto_switch_tab(self, active):
-        self.setboolean(SECTION_GUI, OPTION_SWITCH_TAB, active)
+    def set_auto_switch_tab(self, is_active):
+        self.setboolean(SECTION_GUI, OPTION_SWITCH_TAB, is_active)
 
     def get_auto_switch_tab(self):
         return self.getboolean(SECTION_GUI, OPTION_SWITCH_TAB)

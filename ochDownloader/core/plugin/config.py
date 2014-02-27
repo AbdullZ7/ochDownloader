@@ -3,7 +3,7 @@ import pkgutil
 import logging
 from configparser import RawConfigParser
 
-from core import cons
+from core import const
 
 logger = logging.getLogger(__name__)
 
@@ -40,11 +40,11 @@ class _PluginConfig(RawConfigParser):
 def load():
     global services_dict
 
-    for module_loader, plugin, ispkg in pkgutil.iter_modules(path=[cons.PLUGINS_PATH, ]):
+    for module_loader, plugin, ispkg in pkgutil.iter_modules(path=[const.PLUGINS_PATH, ]):
         if not ispkg:
             continue
 
-        path = os.path.join(cons.PLUGINS_PATH, plugin, cons.PLUGIN_CONFIG_FILE)
+        path = os.path.join(const.PLUGINS_PATH, plugin, const.PLUGIN_CONFIG_FILE)
         host = plugin.replace('_', '.')
         services_dict[host] = _PluginConfig(path)
 

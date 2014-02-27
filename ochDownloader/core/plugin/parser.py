@@ -1,7 +1,7 @@
 import importlib
 import logging
 
-from core import cons
+from core import const
 from core.plugin.config import services_dict
 from core.plugin.exceptions import StopParsing, ParsingError, LimitExceededError
 
@@ -24,9 +24,9 @@ class PluginParser:
         if self.account_dict:
             self.check_account()
 
-        if self.account_status == cons.ACCOUNT_PREMIUM:
+        if self.account_status == const.ACCOUNT_PREMIUM:
             return PREMIUM_MODULE
-        elif self.account_status == cons.ACCOUNT_FREE:
+        elif self.account_status == const.ACCOUNT_FREE:
             return FREE_MODULE
         else:
             return ANONYM_MODULE
@@ -73,8 +73,8 @@ class PluginParser:
             except KeyError:
                 return
 
-            if (p.account_status == cons.ACCOUNT_PREMIUM and conf.get_premium_available()) or \
-                    (p.account_status == cons.ACCOUNT_FREE and conf.get_free_available()):
+            if (p.account_status == const.ACCOUNT_PREMIUM and conf.get_premium_available()) or \
+                    (p.account_status == const.ACCOUNT_FREE and conf.get_free_available()):
                 self.account_status = p.account_status
             else:
                 self.disable_account()

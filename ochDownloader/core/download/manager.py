@@ -2,7 +2,7 @@ import os
 import logging
 from collections import OrderedDict
 
-from core import cons
+from core import const
 from core import signals
 from core import utils
 from core.config import conf
@@ -134,30 +134,30 @@ class DownloadManager:
             item = active.item
             old_status = item.status
 
-            if old_status == cons.STATUS_STOPPED:
+            if old_status == const.STATUS_STOPPED:
                 self.stopped_downloads[uid] = item
-            elif old_status == cons.STATUS_FINISHED:
+            elif old_status == const.STATUS_FINISHED:
                 self.complete_downloads[uid] = item
             else:  # status == cons.STATUS_ERROR
                 item.fail_count += 1
 
                 if item.fail_count > conf.get_retries_limit():
-                    item.status = cons.STATUS_STOPPED
+                    item.status = const.STATUS_STOPPED
                     self.stopped_downloads[uid] = item
                 else:
-                    item.status = cons.STATUS_QUEUE
+                    item.status = const.STATUS_QUEUE
                     self.queue_downloads[uid] = item
 
             del self.active_downloads[uid]
             self.next_download()
 
-            if old_status == cons.STATUS_FINISHED:
+            if old_status == const.STATUS_FINISHED:
                 signals.download_complete.emit(item)
 
-            if not self.active_downloads and not old_status == cons.STATUS_STOPPED:
+            if not self.active_downloads and not old_status == const.STATUS_STOPPED:
                 signals.all_downloads_complete.emit()
 
-            if item.limit_exceeded and self.active_downloads and old_status == cons.STATUS_ERROR:
+            if item.limit_exceeded and self.active_downloads and old_status == const.STATUS_ERROR:
                 signals.limit_exceeded.emit()
 
             result.append(item)

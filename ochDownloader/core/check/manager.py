@@ -1,7 +1,7 @@
 import logging
 from collections import OrderedDict
 
-from core import cons
+from core import const
 from core.utils.concurrent.thread import Future
 
 from .worker import worker
@@ -25,8 +25,8 @@ class DownloadCheckerManager:
 
     def create_item(self, url):
         item = CheckItem(url)
-        item.status = cons.LINK_CHECKING
-        item.name = cons.UNKNOWN
+        item.status = const.LINK_CHECKING
+        item.name = const.UNKNOWN
         return item
 
     def add(self, item):
@@ -62,10 +62,10 @@ class DownloadCheckerManager:
     
     def recheck(self):
         for uid, item in list(self.ready_downloads.items()):
-            if item.status == cons.LINK_ALIVE:
+            if item.status == const.LINK_ALIVE:
                 continue
 
-            item.status = cons.LINK_CHECKING
+            item.status = const.LINK_CHECKING
             self.pending_downloads[uid] = item
             del self.ready_downloads[uid]
 

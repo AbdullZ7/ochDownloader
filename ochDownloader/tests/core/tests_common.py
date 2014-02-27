@@ -3,7 +3,7 @@ import logging
 import unittest
 from unittest.mock import patch, Mock
 
-from core import cons
+from core import const
 from core.common.item import uid, get_host_from_url
 
 logging.disable(logging.CRITICAL)

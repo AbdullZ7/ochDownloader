@@ -11,7 +11,7 @@ import logging
 import logging.handlers
 import os
 
-from core import cons
+from core import const
 
 logger = logging.getLogger(__name__)
 
@@ -27,21 +27,21 @@ sys.excepthook = except_hook
 
 
 def create_config_folder():
-    if not os.path.exists(cons.HOME_APP_PATH):
-        os.makedirs(cons.HOME_APP_PATH)
+    if not os.path.exists(const.HOME_APP_PATH):
+        os.makedirs(const.HOME_APP_PATH)
 
 
 def logger_setup():
     logging.basicConfig(level=logging.DEBUG,
                         format="%(levelname)-7s %(name)s: %(message)s")
     rotate_mb = 1
-    rotating = logging.handlers.RotatingFileHandler(cons.LOG_FILE,
+    rotating = logging.handlers.RotatingFileHandler(const.LOG_FILE,
                                                     mode="a",
                                                     encoding='utf-8',
                                                     maxBytes=rotate_mb * 1024 * 1024,
                                                     backupCount=5)
     rotating.setLevel(logging.INFO)
-    rotating.setFormatter(logging.Formatter(cons.LOG_FORMAT))
+    rotating.setFormatter(logging.Formatter(const.LOG_FORMAT))
     logging.getLogger().addHandler(rotating)
 
 
@@ -52,7 +52,7 @@ def gettext_setup():
     lc, encoding = locale.getdefaultlocale()
     lc_sub_lang = lc.lower().replace("_", "-")  # ie: es-ar
     lc_lang = lc.split("_")[0]  # ie: es
-    lang = gettext.translation(cons.APP_NAME, cons.LOCALE_PATH,
+    lang = gettext.translation(const.APP_NAME, const.LOCALE_PATH,
                                languages=[lc_sub_lang, lc_lang, ],
                                fallback=True)
     lang.install()  # install _() on builtins namespace

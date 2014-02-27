@@ -5,7 +5,7 @@ from contextlib import closing
 
 from .exceptions import StopParsing, ParsingError
 from core import utils
-from core import cons
+from core import const
 from core.utils.http import request
 
 logger = logging.getLogger(__name__)
@@ -18,7 +18,7 @@ class PluginCheckBase:
     def __init__(self, url):
         """"""
         self.url = url
-        self.status = cons.LINK_ERROR
+        self.status = const.LINK_ERROR
         self.name = None
         self.size = 0
         self.message = None

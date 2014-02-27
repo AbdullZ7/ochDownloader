@@ -2,7 +2,7 @@ import threading
 from queue import Queue
 from http import cookiejar
 
-from core import cons
+from core import const
 
 
 class DownloaderItem:
@@ -21,7 +21,7 @@ class DownloaderItem:
         self.start_time = 0
         self.can_resume = False
         self.is_premium = False
-        self.status = cons.STATUS_RUNNING
+        self.status = const.STATUS_RUNNING
         self.message = _("Connecting")
 
         self.limit_exceeded = False

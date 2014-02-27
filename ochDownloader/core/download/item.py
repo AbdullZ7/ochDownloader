@@ -2,7 +2,7 @@ import time
 import logging
 from collections import deque
 
-from core import cons
+from core import const
 from core.common.item import uid, get_host_from_url
 
 logger = logging.getLogger(__name__)
@@ -39,8 +39,8 @@ class ActiveItem:
         #item.calc_stats()
 
         # Force status stopped in case there is a "status error"
-        if self.is_stopped() and self.item.status == cons.STATUS_ERROR:
-            self.item.status = cons.STATUS_STOPPED
+        if self.is_stopped() and self.item.status == const.STATUS_ERROR:
+            self.item.status = const.STATUS_STOPPED
 
     def stop(self):
         self.stop_event.set()
@@ -92,7 +92,7 @@ class DownloadItem:
         return progress
 
     def speed(self):
-        if not self.start_time or self.status != cons.STATUS_RUNNING:
+        if not self.start_time or self.status != const.STATUS_RUNNING:
             return 0
 
         size_complete = self.size_complete

@@ -1,7 +1,7 @@
 import importlib
 import logging
 
-from core import cons
+from core import const
 
 logger = logging.getLogger(__name__)
 
@@ -13,6 +13,6 @@ def worker(plugin, username, password):
         account.parse()
     except Exception as err:
         logger.exception(err)
-        return cons.ACCOUNT_ERROR
+        return const.ACCOUNT_ERROR
     else:
         return account.status

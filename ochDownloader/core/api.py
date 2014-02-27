@@ -1,6 +1,6 @@
 import logging
 
-from core import cons
+from core import const
 from .download.manager import DownloadManager
 from .download.item import DownloadItem
 from .check.manager import DownloadCheckerManager
@@ -64,7 +64,7 @@ class _Api:
         try:
             for item in download_list:
                 download_item = self.create_download_item(item[LINK], item[FILE_NAME], item[FILE_PATH])
-                download_item.status = cons.STATUS_STOPPED
+                download_item.status = const.STATUS_STOPPED
                 download_item.progress = item[PROGRESS]
                 download_item.size = item[SIZE]
                 download_item.time = item[TIME]
@@ -83,7 +83,7 @@ class _Api:
         download_list = []
         all_downloads = self.get_all_downloads()
         for download_item in (all_downloads[id_item] for id_item in id_item_list): #generator
-            if download_item.status != cons.STATUS_FINISHED:
+            if download_item.status != const.STATUS_FINISHED:
                 download_list.append([download_item.name, download_item.path, download_item.url, download_item.host,
                                       download_item.size, download_item.progress, download_item.time, download_item.chunks,
                                       download_item.video_quality, download_item.save_as])

@@ -6,7 +6,7 @@ import unittest
 from unittest.mock import patch
 
 from core.utils import utils
-from core import cons
+from core import const
 
 logging.disable(logging.CRITICAL)
 
@@ -26,7 +26,7 @@ class UtilsTest(unittest.TestCase):
         self.assertRaises(OSError, utils.subprocess_call, "unexistent_file")
 
     def test_open_folder_window(self):
-        if not cons.OS_WIN:
+        if not const.OS_WIN:
             return
 
         # Windows
@@ -35,7 +35,7 @@ class UtilsTest(unittest.TestCase):
             s.assert_called_with('path\\foo', 'explore')
 
     def test_run_file(self):
-        if not cons.OS_WIN:
+        if not const.OS_WIN:
             return
 
         # Windows

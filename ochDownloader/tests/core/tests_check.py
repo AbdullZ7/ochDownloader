@@ -6,7 +6,7 @@ from unittest.mock import patch, Mock
 from core.check.manager import DownloadCheckerManager
 from core.check.item import CheckItem, CheckWorkerItem
 from core.check.worker import worker
-from core import cons
+from core import const
 
 logging.disable(logging.CRITICAL)
 
@@ -63,8 +63,8 @@ class CheckManagerTest(unittest.TestCase):
 
     def test_create_item(self):
         item = self.checker.create_item("http://foo.com")
-        self.assertEqual(item.status, cons.LINK_CHECKING)
-        self.assertEqual(item.name, cons.UNKNOWN)
+        self.assertEqual(item.status, const.LINK_CHECKING)
+        self.assertEqual(item.name, const.UNKNOWN)
 
     def test_add(self):
         item = create_item()
@@ -89,10 +89,10 @@ class CheckManagerTest(unittest.TestCase):
 
     def test_recheck(self):
         self.checker.ready_downloads.clear()
-        item_alive = create_item(status=cons.LINK_ALIVE)
-        item_dead = create_item(status=cons.LINK_DEAD)
-        item_error = create_item(status=cons.LINK_ERROR)
-        item_unavailable = create_item(status=cons.LINK_UNAVAILABLE)
+        item_alive = create_item(status=const.LINK_ALIVE)
+        item_dead = create_item(status=const.LINK_DEAD)
+        item_error = create_item(status=const.LINK_ERROR)
+        item_unavailable = create_item(status=const.LINK_UNAVAILABLE)
         self.checker.ready_downloads.update({item_alive.uid: item_alive,
                                              item_dead.uid: item_dead,
                                              item_error.uid: item_error,
@@ -106,7 +106,7 @@ class CheckManagerTest(unittest.TestCase):
 
             for item in (item_dead, item_error, item_unavailable):
                 self.assertIn(item.uid, self.checker.pending_downloads)
-                self.assertEqual(item.status, cons.LINK_CHECKING)
+                self.assertEqual(item.status, const.LINK_CHECKING)
 
     def test_pop(self):
         with patch.object(DownloadCheckerManager, 'start_checking', return_value=None) as s:
@@ -183,9 +183,9 @@ class CheckWorkerTest(unittest.TestCase):
         with patch('importlib.import_module', side_effect=Exception("foo!")) as m:
             res = worker("foo_com", "http://foo.com")
             m.assert_called_once_with("plugins.foo_com.checker")
-            self.assertEqual(res, (cons.STATUS_ERROR, None, 0, 'foo!'))
+            self.assertEqual(res, (const.STATUS_ERROR, None, 0, 'foo!'))
 
         with patch('importlib.import_module') as m:
             res = worker(None, "http://foo.com")
             self.assertFalse(m.called)
-            self.assertEqual(res, (cons.STATUS_ERROR, None, 0, None))
+            self.assertEqual(res, (const.STATUS_ERROR, None, 0, None))

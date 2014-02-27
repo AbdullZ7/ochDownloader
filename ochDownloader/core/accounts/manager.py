@@ -3,7 +3,7 @@ import json
 import logging
 from collections import OrderedDict
 
-from core import cons
+from core import const
 from core.utils.concurrent.thread import Future
 
 from . import worker
@@ -12,7 +12,7 @@ from .item import AccountItem, CheckingAccountItem
 logger = logging.getLogger(__name__)
 
 HOST, STATUS, USER, PASSWORD, ENABLE = range(5)
-PATH_FILE = os.path.join(cons.HOME_APP_PATH, "accounts")
+PATH_FILE = os.path.join(const.HOME_APP_PATH, "accounts")
 
 
 class _AccountManager:

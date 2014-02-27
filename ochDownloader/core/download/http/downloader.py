@@ -5,7 +5,7 @@ import logging
 from . import helpers
 from .item import DownloaderItem
 from .exceptions import DownloadError, DownloadStopped
-from core import cons
+from core import const
 from core import utils
 from core.config import conf
 from core.plugin.parser import PluginParser
@@ -42,15 +42,15 @@ def start(di):
     try:
         _start(di)
     except DownloadError as err:
-        di.status = cons.STATUS_ERROR
+        di.status = const.STATUS_ERROR
         di.message = "Error: {}".format(err)
         logger.warning(err)
     except DownloadStopped as err:
-        di.status = cons.STATUS_STOPPED
+        di.status = const.STATUS_STOPPED
         di.message = _("Stopped")
         logger.debug(err)
     else:
-        di.status = cons.STATUS_FINISHED
+        di.status = const.STATUS_FINISHED
         di.message = _("Completed")
     finally:
         if di.source:
