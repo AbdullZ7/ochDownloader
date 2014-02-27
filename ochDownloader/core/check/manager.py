@@ -26,7 +26,6 @@ class DownloadCheckerManager:
     def create_item(self, url):
         item = CheckItem(url)
         item.status = const.LINK_CHECKING
-        item.name = const.UNKNOWN
         return item
 
     def add(self, item):
@@ -37,10 +36,10 @@ class DownloadCheckerManager:
             if len(self.checking_downloads) >= self._active_limit:
                 break
 
-            del self.pending_downloads[uid]
             w_item = CheckWorkerItem(item)
             w_item.thread = Future(target=worker, args=(item.plugin, item.url))
             self.checking_downloads[uid] = w_item
+            del self.pending_downloads[uid]
 
     def update(self):
         result = []

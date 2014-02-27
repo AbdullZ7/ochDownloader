@@ -64,7 +64,7 @@ class CheckManagerTest(unittest.TestCase):
     def test_create_item(self):
         item = self.checker.create_item("http://foo.com")
         self.assertEqual(item.status, const.LINK_CHECKING)
-        self.assertEqual(item.name, const.UNKNOWN)
+        self.assertIs(item.name, None)
 
     def test_add(self):
         item = create_item()
