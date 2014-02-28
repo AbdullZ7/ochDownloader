@@ -1,5 +1,6 @@
 import logging
-import weakref
+
+from .weak_ref import weak_ref
 
 logger = logging.getLogger(__name__)
 
@@ -10,7 +11,7 @@ class Signal:
         self.callbacks = []
 
     def connect(self, callback):
-        callback = weakref.ref(callback)
+        callback = weak_ref(callback)
         self.callbacks.append(callback)
 
     def disconnect(self, callback):
