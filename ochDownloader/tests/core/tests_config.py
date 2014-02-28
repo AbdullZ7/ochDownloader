@@ -1,3 +1,4 @@
+import json
 import logging
 
 import unittest
@@ -172,3 +173,75 @@ class ConfTest(unittest.TestCase):
         with patch.object(self.conf, 'setint') as s:
             self.conf.set_retries_limit(1)
             s.assert_called_once_with(c_const.SECTION_NETWORK, c_const.OPTION_RETRIES_LIMIT, 1)
+
+    def test_get_retries_limit(self):
+        with patch.object(self.conf, 'getint') as g:
+            self.conf.get_retries_limit()
+            g.assert_called_once_with(c_const.SECTION_NETWORK, c_const.OPTION_RETRIES_LIMIT)
+
+    def test_set_html_dl(self):
+        with patch.object(self.conf, 'setboolean') as s:
+            self.conf.set_html_dl(is_active=True)
+            s.assert_called_once_with(c_const.SECTION_NETWORK, c_const.OPTION_HTML_DL, True)
+
+    def test_get_html_dl(self):
+        with patch.object(self.conf, 'getboolean') as g:
+            self.conf.get_html_dl()
+            g.assert_called_once_with(c_const.SECTION_NETWORK, c_const.OPTION_HTML_DL)
+
+    def test_set_max_conn(self):
+        with patch.object(self.conf, 'setint') as s:
+            self.conf.set_max_conn(1)
+            s.assert_called_once_with(c_const.SECTION_NETWORK, c_const.OPTION_MAX_CONN, 1)
+
+    def test_get_max_conn(self):
+        with patch.object(self.conf, 'getint') as g:
+            self.conf.get_max_conn()
+            g.assert_called_once_with(c_const.SECTION_NETWORK, c_const.OPTION_MAX_CONN)
+
+    def test_set_window_settings(self):
+        with patch.object(self.conf, 'set') as s:
+            self.conf.set_window_settings(1, 1, 1, 1)
+            s.assert_called_once_with(c_const.SECTION_GUI, c_const.OPTION_WINDOW_SETTINGS,
+                                      json.dumps([1, 1, 1, 1]))
+
+    def test_get_window_settings(self):
+        ret = c_const.DEFAULT[c_const.SECTION_GUI][c_const.OPTION_WINDOW_SETTINGS]
+
+        with patch.object(self.conf, 'get', return_value=ret) as g:
+            x, y, w, h = self.conf.get_window_settings()
+            g.assert_called_once_with(c_const.SECTION_GUI, c_const.OPTION_WINDOW_SETTINGS)
+
+    def test_set_save_dl_paths(self):
+        with patch.object(self.conf, 'set') as s:
+            self.conf.set_save_dl_paths(['foo', ])
+            s.assert_called_once_with(c_const.SECTION_GUI, c_const.OPTION_SAVE_DL_PATHS,
+                                      json.dumps(['foo', ]))
+
+    def test_get_save_dl_paths(self):
+        ret = c_const.DEFAULT[c_const.SECTION_GUI][c_const.OPTION_SAVE_DL_PATHS]
+
+        with patch.object(self.conf, 'get', return_value=ret) as g:
+            paths = self.conf.get_save_dl_paths()
+            g.assert_called_once_with(c_const.SECTION_GUI, c_const.OPTION_SAVE_DL_PATHS)
+            self.assertEqual(paths, json.loads(ret))
+
+    def test_set_tray_available(self):
+        with patch.object(self.conf, 'setboolean') as s:
+            self.conf.set_tray_available(is_active=True)
+            s.assert_called_once_with(c_const.SECTION_GUI, c_const.OPTION_TRAY_ICON, True)
+
+    def test_get_tray_available(self):
+        with patch.object(self.conf, 'getboolean') as g:
+            self.conf.get_tray_available()
+            g.assert_called_once_with(c_const.SECTION_GUI, c_const.OPTION_TRAY_ICON)
+
+    def test_set_auto_switch_tab(self):
+        with patch.object(self.conf, 'setboolean') as s:
+            self.conf.set_auto_switch_tab(is_active=True)
+            s.assert_called_once_with(c_const.SECTION_GUI, c_const.OPTION_SWITCH_TAB, True)
+
+    def test_get_auto_switch_tab(self):
+        with patch.object(self.conf, 'getboolean') as g:
+            self.conf.get_auto_switch_tab()
+            g.assert_called_once_with(c_const.SECTION_GUI, c_const.OPTION_SWITCH_TAB)
