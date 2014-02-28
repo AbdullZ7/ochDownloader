@@ -9,6 +9,7 @@ from core.utils.concurrent.thread import Future
 
 
 class CLI:
+    # TODO: wont work with signals... remove and make a non-interactive cli
 
     def __init__(self):
         self.stdin = sys.stdin
