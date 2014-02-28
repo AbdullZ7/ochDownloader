@@ -14,8 +14,12 @@ def run_in_main_thread(func, *args, **kwargs):
     q = Queue()
 
     def wrapper():
-        result = func(*args, **kwargs)
-        q.put(result, block=False)
+        result = None
+
+        try:
+            result = func(*args, **kwargs)
+        finally:
+            q.put(result, block=False)
 
     #post_in_main_thread(wrapper)
 
