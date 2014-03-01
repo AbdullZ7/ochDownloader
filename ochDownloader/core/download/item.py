@@ -78,6 +78,9 @@ class DownloadItem:
 
     @property
     def plugin(self):
+        if not self.host:
+            return
+
         return self.host.replace(".", "_")
 
     def progress(self):
