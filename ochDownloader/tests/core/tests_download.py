@@ -78,7 +78,7 @@ class DownloadActiveItemTest(unittest.TestCase):
         a_item = ActiveItem(item)
         a_item.stop_event = Event()
 
-        with patch.object(Event, 'is_set', return_value=True) as e:
+        with patch.object(Event, 'is_set', return_value="stopped_event") as e:
             res = a_item.is_stopped()
             e.assert_called_once_with()
-            self.assertEqual(res, True)
+            self.assertEqual(res, "stopped_event")
