@@ -82,3 +82,13 @@ class DownloadActiveItemTest(unittest.TestCase):
             res = a_item.is_stopped()
             e.assert_called_once_with()
             self.assertEqual(res, "stopped_event")
+
+
+class DownloadItemTest(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+

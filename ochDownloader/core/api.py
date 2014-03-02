@@ -19,8 +19,8 @@ class _Api:
         #self.accounts = AccountManager()
         #self.session_parser = SessionParser()
 
-    def create_download_item(self, url, name=None, path=None):
-        return DownloadItem(url, name=name, path=path)
+    def create_download_item(self, url):
+        return DownloadItem(url)
     
     def start_update_manager(self):
         #update_manager = UpdateManager() #new thread.
@@ -63,7 +63,9 @@ class _Api:
         download_list = self.session_parser.load()
         try:
             for item in download_list:
-                download_item = self.create_download_item(item[LINK], item[FILE_NAME], item[FILE_PATH])
+                download_item = self.create_download_item(item[LINK])
+                download_item.path = item[FILE_PATH]
+                download_item.name = item[FILE_NAME]
                 download_item.status = const.STATUS_STOPPED
                 download_item.progress = item[PROGRESS]
                 download_item.size = item[SIZE]

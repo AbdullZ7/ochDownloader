@@ -36,8 +36,6 @@ class ActiveItem:
         finally:
             self.queue.put(i, block=False)
 
-        #item.calc_stats()
-
         # Force status stopped in case there is a "status error"
         if self.is_stopped() and self.item.status == const.STATUS_ERROR:
             self.item.status = const.STATUS_STOPPED
@@ -51,12 +49,12 @@ class ActiveItem:
 
 class DownloadItem:
 
-    def __init__(self, url, name=None, path=None):
+    def __init__(self, url):
         self.uid = uid()
         self.url = url
         self.host = get_host_from_url(url)
-        self.name = name
-        self.path = path
+        self.name = None
+        self.path = None
         self.size = 0
         self.size_complete = 0
         self.can_resume = False
@@ -72,9 +70,9 @@ class DownloadItem:
         self.start_time = 0
         self.size_resume = 0
 
-        self.sp_size = 0
-        self.sp_time = 0
-        self.sp_deque = deque([], 5)
+        self._sp_size = 0
+        self._sp_time = 0
+        self._sp_deque = deque([], 5)
 
     @property
     def plugin(self):
@@ -99,11 +97,13 @@ class DownloadItem:
             return 0
 
         size_complete = self.size_complete
-        speed = float((size_complete - self.sp_size)) / (time.time() - self.sp_time)  # size / elapsed_time
-        self.sp_size = size_complete
-        self.sp_time = time.time()
-        self.sp_deque.append(speed)
-        deque_speeds = [last_speed for last_speed in self.sp_deque if int(last_speed) > 0]
+        speed = float((size_complete - self._sp_size)) / (time.time() - self._sp_time)  # size / elapsed_time
+        self._sp_size = size_complete
+        self._sp_time = time.time()
+        self._sp_deque.append(speed)
+        deque_speeds = [last_speed
+                        for last_speed in self._sp_deque
+                        if int(last_speed) > 0]
 
         try:
             speed = sum(deque_speeds) / len(deque_speeds)
