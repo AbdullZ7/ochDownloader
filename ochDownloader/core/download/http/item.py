@@ -1,8 +1,8 @@
 import threading
-from queue import Queue
 from http import cookiejar
 
 from core import const
+from core.utils.queue import ImmmutableQueue
 
 
 class DownloaderItem:
@@ -32,9 +32,7 @@ class DownloaderItem:
         self.conn_count = 0
         self.stop_event = threading.Event()
 
-        # TODO: replace this queue by utils.queue.ImmutableQueue
-        self.queue = Queue(1)
-        self.queue.put(self._update(), block=False)
+        self.queue = ImmmutableQueue(self._update())
 
     @property
     def plugin(self):
@@ -56,11 +54,7 @@ class DownloaderItem:
         )
 
     def update(self):
-        i = self.queue.get()
-        try:
-            i = self._update()
-        finally:
-            self.queue.put(i, block=False)
+        self.queue.put(self._update())
 
     def is_stopped(self):
         return self.stop_event.is_set()

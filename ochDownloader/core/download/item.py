@@ -17,24 +17,19 @@ class ActiveItem:
         self.stop_event = None
 
     def update(self):
-        i = self.queue.get()
-        try:
-            (
-                self.item.name,
-                self.item.video_quality,
-                self.item.chunks,
-                self.item.save_as,
-                self.item.size,
-                self.item.size_complete,
-                self.item.start_time,
-                self.item.can_resume,
-                self.item.is_premium,
-                self.item.status,
-                self.item.message,
-                #item.size_resume,
-            ) = i
-        finally:
-            self.queue.put(i, block=False)
+        (self.item.name,
+         self.item.video_quality,
+         self.item.chunks,
+         self.item.save_as,
+         self.item.size,
+         self.item.size_complete,
+         self.item.start_time,
+         self.item.can_resume,
+         self.item.is_premium,
+         self.item.status,
+         self.item.message,
+         #item.size_resume,
+         ) = self.queue.get()
 
         # Force status stopped in case there is a "status error"
         if self.is_stopped() and self.item.status == const.STATUS_ERROR:
