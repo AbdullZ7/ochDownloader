@@ -23,6 +23,7 @@ setup(
     ],
     test_suite="ochDownloader.tests.suite",
     include_package_data=True,
+    zip_safe=False,
     install_requires=REQUIREMENTS,
     license='MIT License',
     classifiers=[

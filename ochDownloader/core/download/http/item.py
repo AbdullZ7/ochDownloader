@@ -32,6 +32,7 @@ class DownloaderItem:
         self.conn_count = 0
         self.stop_event = threading.Event()
 
+        # TODO: replace this queue by utils.queue.ImmutableQueue
         self.queue = Queue(1)
         self.queue.put(self._update(), block=False)
 

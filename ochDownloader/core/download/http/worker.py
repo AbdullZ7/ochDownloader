@@ -64,7 +64,7 @@ def worker(i, chunks, queue, w_queue, e_queue, err_event, stop_event):
     """
     @i: thread number
     @chunks: chunks tuple
-    @queue: file writting
+    @_queue: file writting
     @w_queue: control threads start up
     @e_queue: error message
     @err_event: stop all threads, setted on thread error

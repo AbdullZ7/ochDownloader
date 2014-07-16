@@ -57,10 +57,10 @@ class DownloadItem:
         self.path = None
         self.size = 0
         self.size_complete = 0
-        self.can_resume = False
-        self.is_premium = False
         self.status = None
         self.message = None
+        self.can_resume = False
+        self.is_premium = False
 
         self.chunks = tuple()
         self.video_quality = None

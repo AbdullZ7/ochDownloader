@@ -87,8 +87,10 @@ class DownloadActiveItemTest(unittest.TestCase):
 class DownloadItemTest(unittest.TestCase):
 
     def setUp(self):
-        pass
+        self.item = DownloadItem("http://foo.com")
 
     def tearDown(self):
         pass
 
+    def test_plugin(self):
+        pass
