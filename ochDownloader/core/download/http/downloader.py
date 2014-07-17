@@ -87,7 +87,7 @@ def check_file_exists(di):
 def create_path(di):
     try:
         if not os.path.exists(di.path):
-            os.makedirs(di.path)
+            os.makedirs(di.path, exist_ok=True)
     except OSError as err:
         logger.exception(err)
         raise DownloadError(err)

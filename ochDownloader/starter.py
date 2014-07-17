@@ -28,7 +28,7 @@ sys.excepthook = except_hook
 
 def create_config_folder():
     if not os.path.exists(const.HOME_APP_PATH):
-        os.makedirs(const.HOME_APP_PATH)
+        os.makedirs(const.HOME_APP_PATH, exist_ok=True)
 
 
 def logger_setup():
