@@ -98,6 +98,6 @@ def worker(i, chunks, queue, w_queue, e_queue, err_event, stop_event):
     except (IncompleteChunk, request.RequestError) as err:
         logger.exception(err)
         err_event.set()
-        #e_queue.put(str(err))
+        e_queue.put(str(err))
     finally:
         queue.put(None)

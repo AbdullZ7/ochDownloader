@@ -1,12 +1,12 @@
 import logging
-from queue import Queue
 from threading import Event
 
 import unittest
 from unittest.mock import patch, Mock
 
 from core import const
-from core.download.item import ActiveItem,DownloadItem
+from core.utils.queue import ImmutableQueue
+from core.download.item import ActiveItem, DownloadItem
 
 logging.disable(logging.CRITICAL)
 
@@ -26,7 +26,7 @@ class DownloadActiveItemTest(unittest.TestCase):
 
         item = Mock()
         a_item = ActiveItem(item)
-        a_item.queue = Queue(1)
+        a_item.queue = ImmutableQueue(item=None)
         i = ("name",
              "video_quality",
              "chunks",
@@ -40,29 +40,27 @@ class DownloadActiveItemTest(unittest.TestCase):
              "message")
 
         with patch.object(a_item, 'is_stopped', return_value=False) as e:
-            with patch.object(Queue, 'get', return_value=i) as q_get:
-                with patch.object(Queue, 'put') as q_put:
-                    a_item.update()
-                    e.assert_called_once_with()
-                    q_get.assert_called_once_with()
-                    q_put.assert_called_once_with(i, block=False)
-                    i_item = (item.name,
-                              item.video_quality,
-                              item.chunks,
-                              item.save_as,
-                              item.size,
-                              item.size_complete,
-                              item.start_time,
-                              item.can_resume,
-                              item.is_premium,
-                              item.status,
-                              item.message,)
-                    self.assertEqual(i_item, i)
+            with patch.object(ImmutableQueue, 'get', return_value=i) as q_get:
+                a_item.update()
+                e.assert_called_once_with()
+                q_get.assert_called_once_with()
+                i_item = (item.name,
+                          item.video_quality,
+                          item.chunks,
+                          item.save_as,
+                          item.size,
+                          item.size_complete,
+                          item.start_time,
+                          item.can_resume,
+                          item.is_premium,
+                          item.status,
+                          item.message,)
+                self.assertEqual(i_item, i)
 
-                    with patch("core.download.item.const", new_callable=ConstMock):
-                        e.return_value = True
-                        a_item.update()
-                        self.assertEqual(item.status, "status_stopped")
+                with patch("core.download.item.const", new_callable=ConstMock):
+                    e.return_value = True
+                    a_item.update()
+                    self.assertEqual(item.status, "status_stopped")
 
     def test_stop(self):
         item = Mock()

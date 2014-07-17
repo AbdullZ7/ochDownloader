@@ -5,6 +5,7 @@ from queue import Queue
 from .worker import worker, is_chunk_complete, DATA_BUFSIZ
 from core.config import conf
 from core.utils.concurrent.thread import Future
+from core.utils.queue import PersistentQueue
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +60,7 @@ def pooler(di, fh):
     queue = Queue(len(di.chunks) + 1)
     w_queue = Queue(1)
     w_queue.put(tuple())
-    e_queue = Queue(1)
+    e_queue = PersistentQueue(item=None)
     err_event = threading.Event()
 
     threads = [spawn(i, tuple(di.chunks), queue, w_queue, e_queue, err_event, di.stop_event)
