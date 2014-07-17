@@ -31,7 +31,24 @@ class ImmutableQueue(PersistentQueue):
     A queue that can only hold immmutable types.
     It's limited to hold one item.
     """
+    err_message = "The provided item is mutable."
+
+    def __init__(self, item):
+        if not self._is_immutable(item):
+            raise ValueError(self.err_message)
+
+        super().__init__(item)
+
+    def put(self, item):
+        if not self._is_immutable(item):
+            raise ValueError(self.err_message)
+
+        super().put(item)
+
     def _is_immutable(self, item):
+        if item is None:
+            return True
+
         if isinstance(item, (str, int)):
             return True
 
@@ -43,9 +60,3 @@ class ImmutableQueue(PersistentQueue):
             return True
 
         return False
-
-    def put(self, item):
-        if not self._is_immutable(item):
-            raise ValueError("The provided item is mutable.")
-
-        super().put(item)
