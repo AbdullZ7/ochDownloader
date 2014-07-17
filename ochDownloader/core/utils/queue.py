@@ -2,7 +2,7 @@
 import threading
 
 
-__all__ = ["PersistentQueue", "ImmmutableQueue"]
+__all__ = ["PersistentQueue", "ImmutableQueue"]
 
 
 class PersistentQueue:
@@ -26,7 +26,7 @@ class PersistentQueue:
             self._item = item
 
 
-class ImmmutableQueue(PersistentQueue):
+class ImmutableQueue(PersistentQueue):
     """
     A queue that can only hold immmutable types.
     It's limited to hold one item.
