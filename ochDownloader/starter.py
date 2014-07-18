@@ -2,7 +2,9 @@
 
 import sys
 
+
 requires = (3, 3)
+
 if (sys.version_info[0], sys.version_info[1]) != requires:
     sys.exit("Python %s.%s is required. Yours is %s" % (requires[0], requires[1], sys.version))
 
